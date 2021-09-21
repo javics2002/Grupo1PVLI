@@ -32,7 +32,7 @@ Cuando lleguemos a rescatarla, empezaremos otro nivel con una torre más dificil
 
 
 ### Estética
-Tendrá un estilo cartoon, inspirándonos en Cuphead pero no tanto. Los personajes tendrán proporciones Chibi.
+Tendrá un estilo cartoon, inspirándonos un poco en dibujos animados de los años 50 (porque Vertigo es del 58). Los personajes tendrán proporciones Chibi.
 El protagonista es Scottie y la mujer que se agarra en el borde es Judy.
 
 <img src="https://user-images.githubusercontent.com/49459590/134153379-07b1a4f2-81d5-4cfa-b3d4-54f554adbfb5.png" width="400" height="300">
