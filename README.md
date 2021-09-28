@@ -2,7 +2,7 @@
 
 ### Grupo1PVLI
 - Jonathan Sebastián Andrade Gordillo
-- Daniel Alonso Hernandez
+- Daniel Alonso Herranz
 - Pablo Arredondo Nowak
 - Javier Cano Salcedo
 
