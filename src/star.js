@@ -19,6 +19,8 @@ export default class Star extends Phaser.GameObjects.Sprite {
     this.scene.physics.add.existing(this, true);
     this.y -= this.height;
     this.base = base;
+  
+
   }
 
   /**
