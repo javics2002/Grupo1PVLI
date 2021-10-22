@@ -20,6 +20,9 @@ export default class Player extends Phaser.GameObjects.Sprite {
     this.body.setCollideWorldBounds();
     this.speed = 300;
     this.jumpSpeed = -1500;
+    // Coyote Time
+    this.coyoteTime = 100;
+    this.coyoteCounter = 0;
     // Esta label es la UI en la que pondremos la puntuación del jugador
     this.label = this.scene.add.text(10, 10, "");
     this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -50,6 +53,15 @@ export default class Player extends Phaser.GameObjects.Sprite {
    */
   preUpdate(t,dt) {
     super.preUpdate(t,dt);
+
+    // Coyote Time
+    if (this.body.onFloor()){
+      this.coyoteCounter = this.coyoteTime;
+    }
+    else {
+      this.coyoteCounter = this.coyoteCounter - dt;
+    }
+
     if (this.cursors.up.isDown && this.body.onFloor()) {
       this.body.setVelocityY(this.jumpSpeed);
     }
