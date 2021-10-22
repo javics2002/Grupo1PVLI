@@ -23,6 +23,9 @@ export default class Player extends Phaser.GameObjects.Sprite {
     // Coyote Time
     this.coyoteTime = 100;
     this.coyoteCounter = 0;
+    // Jump Buffer
+    this.jumpBufferLength = 100;
+    this.jumpBufferCounter;
     // Esta label es la UI en la que pondremos la puntuación del jugador
     this.label = this.scene.add.text(10, 10, "");
     this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -62,7 +65,15 @@ export default class Player extends Phaser.GameObjects.Sprite {
       this.coyoteCounter = this.coyoteCounter - dt;
     }
 
-    if (this.cursors.up.isDown && this.body.onFloor()) {
+    // Jump Buffer
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.up)){
+      this.jumpBufferCounter = this.jumpBufferLength;
+    }
+    else {
+      this.jumpBufferCounter = this.jumpBufferCounter - dt;
+    }
+
+    if (this.jumpBufferCounter >= 0 && this.coyoteCounter > 0) {
       this.body.setVelocityY(this.jumpSpeed);
     }
     if (this.cursors.up.isDown && this.body.velocity.y < 0){
