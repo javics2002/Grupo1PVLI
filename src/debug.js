@@ -21,18 +21,23 @@ export default class Debug extends Phaser.Scene {
    * Creación de los elementos de la escena principal de juego
    */
   create() {
-    this.stars = 10;
-    this.bases = this.add.group();
-    this.player = new Player(this, 200, 1300);
-    new Platform(this, this.player, this.bases, 500, 250, 'platform');
-    new Platform(this, this.player, this.bases, 200, 600, 'platform');
-    new Platform(this, this.player, this.bases, 800, 1000, 'platform');
-    new Platform(this, this.player, this.bases, 640, 1400, 'longplatform');
+    //this.stars = 10;
+    //this.bases = this.add.group();
+    
+    let floorGap = 500;
+    let floors = 3;
+    
+    this.player = new Player(this, 200, 580 + floorGap * (floors - 1));
+    for(let i = 0; i< floors; i++)
+    {
+      new Platform(this, this.player, this.bases, 640, 630 + floorGap * i, 'longplatform');
+    }
+    
 
-    let pisos = 2;
-    this.cameras.main.setBounds(0,0,1280, pisos * 720);
+    
+    this.cameras.main.setBounds(0,0,1280, floors * 500 + 220);
     this.physics.world.bounds.width = 1280;
-    this.physics.world.bounds.height = pisos * 720;
+    this.physics.world.bounds.height = floors * 500 + 220;
 
     this.cameras.main.startFollow(this.player);
   }
