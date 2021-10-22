@@ -21,8 +21,8 @@ export default class Debug extends Phaser.Scene {
    * Creación de los elementos de la escena principal de juego
    */
   create() {
-    //this.stars = 10;
-    //this.bases = this.add.group();
+    this.stars = 10;
+    this.bases = this.add.group();
     
     let floorGap = 500;
     let floors = 3;
