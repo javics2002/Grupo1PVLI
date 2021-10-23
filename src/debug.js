@@ -40,4 +40,10 @@ export default class Debug extends Phaser.Scene {
 
     this.cameras.main.startFollow(this.player);
   }
+
+  //Metodo de ganar
+  win()
+  {
+    this.scene.start('end');
+  }
 }
