@@ -13,6 +13,7 @@ export default class Platform extends Phaser.GameObjects.Sprite {
    * @param {Phaser.GameObjects.Group} baseGroup Grupo en el que se incluirá la base creada por la plataforma
    * @param {number} x Coordenada x
    * @param {number} y Coordenada y
+   * @param {Phaser.Image} img Imagen que utilizará la platforma para darse forma. Recuerda instanciarla en el boot.js
    */
   constructor(scene, player, baseGroup, x, y, img) {
     super(scene, x, y, img);
