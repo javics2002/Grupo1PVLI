@@ -19,6 +19,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     // Queremos que el jugador no se salga de los límites del mundo
     this.body.setCollideWorldBounds();
     this.speed = 300;
+
     this.jumpSpeed = -1500;
     // Coyote Time
     this.coyoteTime = 100;
@@ -92,6 +93,9 @@ export default class Player extends Phaser.GameObjects.Sprite {
     else {
       this.body.setVelocityX(0);
     }
+
+    if(this.y < 630)
+      this.scene.win();
   }
   
 }
