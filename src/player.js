@@ -19,7 +19,14 @@ export default class Player extends Phaser.GameObjects.Sprite {
     // Queremos que el jugador no se salga de los límites del mundo
     this.body.setCollideWorldBounds();
     this.speed = 300;
-    this.jumpSpeed = -4000;
+
+    this.jumpSpeed = -1500;
+    // Coyote Time
+    this.coyoteTime = 100;
+    this.coyoteCounter = 0;
+    // Jump Buffer
+    this.jumpBufferLength = 100;
+    this.jumpBufferCounter;
     // Esta label es la UI en la que pondremos la puntuación del jugador
     this.label = this.scene.add.text(10, 10, "");
     this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -50,9 +57,33 @@ export default class Player extends Phaser.GameObjects.Sprite {
    */
   preUpdate(t,dt) {
     super.preUpdate(t,dt);
-    if (this.cursors.up.isDown && this.body.onFloor()) {
+
+    // Coyote Time
+    if (this.body.onFloor()){
+      this.coyoteCounter = this.coyoteTime;
+    }
+    else {
+      this.coyoteCounter = this.coyoteCounter - dt;
+    }
+
+    // Jump Buffer
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.up)){
+      this.jumpBufferCounter = this.jumpBufferLength;
+    }
+    else {
+      this.jumpBufferCounter = this.jumpBufferCounter - dt;
+    }
+
+    if (this.jumpBufferCounter >= 0 && this.coyoteCounter > 0) {
       this.body.setVelocityY(this.jumpSpeed);
     }
+    if (this.cursors.up.isDown && this.body.velocity.y < 0){
+      this.body.setVelocityY(this.body.velocity.y * 0.9);
+    }
+    if (!this.body.onFloor() && this.body.velocity.y < 0 && !this.cursors.up.isDown){
+      this.body.setVelocityY(this.body.velocity.y * 0.6);
+    }
+
     if (this.cursors.left.isDown) {
       this.body.setVelocityX(-this.speed);
     }
