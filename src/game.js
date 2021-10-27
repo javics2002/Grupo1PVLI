@@ -2,6 +2,7 @@ import Boot from './boot.js';
 import End from './end.js';
 import Platform from './platform.js';
 import Level from './scene.js';
+import Debug from './debug.js';
 
 /**
  * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
@@ -9,18 +10,18 @@ import Level from './scene.js';
  */
 let config = {
     type: Phaser.AUTO,
-    width:  1000,
-    height: 500,
+    width:  1280,
+    height: 720,
     scale: {
         // mode: Phaser.Scale.FIT,  
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    scene: [Boot, Level, End],
+    scene: [Boot, Level, End, Debug],
     physics: { 
         default: 'arcade', 
         arcade: { 
-            gravity: { y: 400 }, 
+            gravity: { y: 2000 }, 
             debug: false 
         } 
     }

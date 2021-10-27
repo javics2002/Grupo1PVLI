@@ -24,8 +24,9 @@ export default class Level extends Phaser.Scene {
     this.stars = 10;
     this.bases = this.add.group();
     this.player = new Player(this, 200, 300);
-    new Platform(this, this.player, this.bases, 500, 250, 'platform');
-    new Platform(this, this.player, this.bases, 500, 475, 'longplatform');
+    new Platform(this, this.player, this.bases, 500, 400, 'platform');
+    new Platform(this, this.player, this.bases, 800, 475, 'longplatform');
+    new Platform(this, this.player, this.bases, 200, 475, 'longplatform');
     this.spawn();
   }
 
@@ -51,7 +52,6 @@ export default class Level extends Phaser.Scene {
       else {
         let s = this.bases.children.entries;
         this.spawn(s.filter(o => o !== base));
-
       }
   }
 }
