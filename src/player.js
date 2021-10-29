@@ -21,7 +21,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     this.body.setCollideWorldBounds();
     this.speed = 300;
 
-    this.jumpSpeed = -1500;
+    this.jumpSpeed = -1200;
     // Coyote Time
     this.coyoteTime = 100;
     this.coyoteCounter = 0;
