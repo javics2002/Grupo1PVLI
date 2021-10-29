@@ -39,6 +39,8 @@ export default class Debug extends Phaser.Scene {
     this.physics.world.bounds.height = floors * 500 + 220;
 
     this.cameras.main.startFollow(this.player);
+      this.spawn();
+      
   }
 
   //Metodo de ganar
@@ -46,4 +48,28 @@ export default class Debug extends Phaser.Scene {
   {
     this.scene.start('end');
   }
+    
+spawn(from = null) {
+    Phaser.Math.RND.pick(from || this.bases.children.entries).spawnStair();
+  }
+    
+  starPickt (base) {
+    this.player.point();
+      if (this.player.score == this.stars) {
+        this.scene.start('end');
+      }
+      else {
+        let s = this.bases.children.entries;
+        this.spawn(s.filter(o => o !== base));
+      }
+    }
+
+   stairsPicked (base) {
+      this.player.point();
+        if (!this.player.brokenStair) {   
+          this.player.brokenStair = true;
+            return true;
+        }
+          return false;
+    }
 }

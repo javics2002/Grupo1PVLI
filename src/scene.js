@@ -21,6 +21,7 @@ export default class Level extends Phaser.Scene {
    * Creación de los elementos de la escena principal de juego
    */
   create() {
+    
     this.stars = 10;
     this.bases = this.add.group();
     this.player = new Player(this, 200, 300);
@@ -38,13 +39,15 @@ export default class Level extends Phaser.Scene {
   spawn(from = null) {
     Phaser.Math.RND.pick(from || this.bases.children.entries).spawn();
   }
-
-  /**
+    
+    
+    /**
    * Método que se ejecuta al coger una estrella. Se pasa la base
    * sobre la que estaba la estrella cogida para evitar repeticiones
    * @param {Base} base La base sobre la que estaba la estrella que se ha cogido
    */
-  starPickt (base) {
+    
+    starPickt (base) {
     this.player.point();
       if (this.player.score == this.stars) {
         this.scene.start('end');
@@ -54,4 +57,17 @@ export default class Level extends Phaser.Scene {
         this.spawn(s.filter(o => o !== base));
       }
   }
+    
+
+ stairsPicked (base) {
+    this.player.point();
+      if (!this.player.brokenStair) {   
+        this.player.brokenStair = true;
+         // return true;
+      }
+        //return false;
+  }
+    
+
+
 }

@@ -1,4 +1,5 @@
 import Star from './star.js';
+import S from './S.js'
 /**
  * Clase que representa el jugador del juego. El jugador se mueve por el mundo usando los cursores.
  * También almacena la puntuación o número de estrellas que ha recogido hasta el momento.
@@ -31,6 +32,17 @@ export default class Player extends Phaser.GameObjects.Sprite {
     this.label = this.scene.add.text(10, 10, "");
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.updateScore();
+      
+      
+      
+      //escaleras
+      this.brokenStair = false;
+      
+      this.propE = new S(this.scene,    x, y - this.height/2);
+      //this.propE = this.scene.add.image(x, y - this.height/2,"brokenStair");
+      this.propE.y -= this.propE.height/2;
+      this.propE.depth = 6
+      
   }
 
   /**
@@ -57,7 +69,13 @@ export default class Player extends Phaser.GameObjects.Sprite {
    */
   preUpdate(t,dt) {
     super.preUpdate(t,dt);
-
+      
+    
+      
+      if(this.brokenStair)
+          this.propE.visible = true;
+      else this.propE.visible = false;
+      
     // Coyote Time
     if (this.body.onFloor()){
       this.coyoteCounter = this.coyoteTime;
@@ -96,6 +114,10 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
     if(this.y < 630)
       this.scene.win();
+
+
+      this.propE.x = this.x;
+      this.propE.y = this.y-(this.propE.height*2);
   }
   
 }

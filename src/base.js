@@ -1,5 +1,5 @@
 import Star from './star.js';
-
+import StairFragment from './stairs.js'
 /**
  * Clase que representa la base sobre la que se sitúan las estrellas que aparecen en el juego
  */
@@ -25,7 +25,11 @@ export default class Base extends Phaser.GameObjects.Sprite {
    * Método para que la base instancie una estrella sobre ella
    */
   spawn() {
-    this.scene.add.existing(new Star(this.scene, this, this.x, this.y));
+    //this.scene.add.existing(new Star(this.scene, this, this.x, this.y));
+  }
+
+  spawnStair(){
+    this.scene.add.existing(new StairFragment(this.scene, this, this.x, this.y));
   }
 
 }
