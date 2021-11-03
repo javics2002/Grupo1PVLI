@@ -13,12 +13,22 @@ export default class Boot extends Phaser.Scene {
     super({ key: 'boot' });
   }
 
+  loadFont(name, url) {
+    let newFont = new FontFace(name, `url(${url})`);
+    newFont.load().then(function (loaded) {
+        document.fonts.add(loaded);
+    }).catch(function (error) {
+        return error;
+    });
+}
+
   /**
    * Carga de los assets del juego
    */
   preload() {
-    //Cargamos las fuentes
+    //Fuentes del juego
     this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+    this.loadFont("Vertigon", "assets/fonts/Vertigon.otf");
 
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;
@@ -77,7 +87,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('brokenStair', 'broken_stairs1.png')
 
     //Temporalmente para probar la barra de carga
-    for (var i = 0; i < 500; i++) {
+    for (var i = 0; i < 0; i++) {
       this.load.image('archivo_innecesario'+i, 'player.png');
     }
 
@@ -109,12 +119,6 @@ export default class Boot extends Phaser.Scene {
    * Creación de la escena. En este caso, solo cambiamos a la escena que representa la pantalla de título
    */
   create() {
-    WebFont.load({
-        google: {
-            families: [ 'Caveat' ]
-        }
-    });
-
-    this.scene.start('debug');
+    this.scene.start('title');
   }
 }
