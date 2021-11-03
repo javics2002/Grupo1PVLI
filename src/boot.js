@@ -17,6 +17,9 @@ export default class Boot extends Phaser.Scene {
    * Carga de los assets del juego
    */
   preload() {
+    //Cargamos las fuentes
+    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;
     
@@ -74,7 +77,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('brokenStair', 'broken_stairs1.png')
 
     //Temporalmente para probar la barra de carga
-    for (var i = 0; i < 2000; i++) {
+    for (var i = 0; i < 500; i++) {
       this.load.image('archivo_innecesario'+i, 'player.png');
     }
 
@@ -85,15 +88,6 @@ export default class Boot extends Phaser.Scene {
       progressBar.fillStyle(0xffffff, 1);
       progressBar.fillRect(width / 2 - 150, height / 2 + 10, 300 * value, 30);
       percentText.setText(parseInt(value * 100) + '%');
-
-      //Así la letra se actualiza pero queda muy mal
-      /*
-      if(parseInt(value * 100) % 3 === 0)
-      loadingText.setText('Loading.  ')
-      else if(parseInt(value * 100) % 3 === 1)
-      loadingText.setText('Loading.. ')
-      else if(parseInt(value * 100) % 3 === 2)
-      loadingText.setText('Loading...')*/
     });
 
     this.load.on('fileprogress', function (file) {
@@ -115,6 +109,12 @@ export default class Boot extends Phaser.Scene {
    * Creación de la escena. En este caso, solo cambiamos a la escena que representa la pantalla de título
    */
   create() {
+    WebFont.load({
+        google: {
+            families: [ 'Caveat' ]
+        }
+    });
+
     this.scene.start('debug');
   }
 }
