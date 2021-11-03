@@ -85,6 +85,15 @@ export default class Boot extends Phaser.Scene {
       progressBar.fillStyle(0xffffff, 1);
       progressBar.fillRect(width / 2 - 150, height / 2 + 10, 300 * value, 30);
       percentText.setText(parseInt(value * 100) + '%');
+
+      //Así la letra se actualiza pero queda muy mal
+      /*
+      if(parseInt(value * 100) % 3 === 0)
+      loadingText.setText('Loading.  ')
+      else if(parseInt(value * 100) % 3 === 1)
+      loadingText.setText('Loading.. ')
+      else if(parseInt(value * 100) % 3 === 2)
+      loadingText.setText('Loading...')*/
     });
 
     this.load.on('fileprogress', function (file) {
