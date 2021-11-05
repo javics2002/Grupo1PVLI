@@ -1,2 +1,3 @@
 jsconfig.json
 tsDefinitions/phaser.d.ts
+node_modules

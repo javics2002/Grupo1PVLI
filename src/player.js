@@ -4,7 +4,7 @@ import S from './S.js'
  * Clase que representa el jugador del juego. El jugador se mueve por el mundo usando los cursores.
  * También almacena la puntuación o número de estrellas que ha recogido hasta el momento.
  */
-export default class Player extends Phaser.GameObjects.Sprite {
+export default class Player extends Phaser.Physics.Matter.Sprite {
   
   /**
    * Constructor del jugador
@@ -13,12 +13,11 @@ export default class Player extends Phaser.GameObjects.Sprite {
    * @param {number} y Coordenada Y
    */
   constructor(scene, x, y) {
-    super(scene, x, y, 'player');
+    super(scene.matter.world, x, y, 'player');
     this.score = 0;
     this.scene.add.existing(this);
-    this.scene.physics.add.existing(this);
     // Queremos que el jugador no se salga de los límites del mundo
-    this.body.setCollideWorldBounds();
+    
     this.speed = 300;
 
     this.jumpSpeed = -1200;

@@ -23,9 +23,10 @@ export default class Debug extends Phaser.Scene {
   create() {
     this.stars = 10;
     this.bases = this.add.group();
-    
     let floorGap = 500;
     let floors = 3;
+
+    this.matter.world.setBounds(0,0,1280, floors * 500 + 220);
     
     this.player = new Player(this, 200, 580 + floorGap * (floors - 1));
     for(let i = 0; i< floors; i++)

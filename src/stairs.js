@@ -16,7 +16,7 @@ export default class StairFragment extends Phaser.GameObjects.Sprite {
   constructor(scene, base, x, y) {
     super(scene, x, y, 'brokenStair');
     this.scene.add.existing(this);
-    this.scene.physics.add.existing(this, true);
+    this.scene.matter.add.existing(this, true);
     this.y -= this.height;
     this.base = base;
   
