@@ -1,4 +1,3 @@
-import Star from './star.js';
 import S from './S.js'
 /**
  * Clase que representa el jugador del juego. El jugador se mueve por el mundo usando los cursores.
@@ -14,7 +13,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
    */
   constructor(scene, x, y) {
     super(scene, x, y, 'player');
-    this.score = 0;
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
     // Queremos que el jugador no se salga de los límites del mundo
@@ -28,13 +26,10 @@ export default class Player extends Phaser.GameObjects.Sprite {
     // Jump Buffer
     this.jumpBufferLength = 100;
     this.jumpBufferCounter;
-    // Esta label es la UI en la que pondremos la puntuación del jugador
-    this.label = this.scene.add.text(10, 10, "");
+
+    //Input
     this.cursors = this.scene.input.keyboard.createCursorKeys();
-    this.updateScore();
-      
-      
-      
+    
       //escaleras
       this.brokenStair = false;
       
@@ -46,22 +41,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
   }
 
   /**
-   * El jugador ha recogido una estrella por lo que este método añade un punto y
-   * actualiza la UI con la puntuación actual.
-   */
-  point() {
-    this.score++;
-    this.updateScore();
-  }
-  
-  /**
-   * Actualiza la UI con la puntuación actual
-   */
-  updateScore() {
-    this.label.text = 'Score: ' + this.score;
-  }
-
-  /**
    * Métodos preUpdate de Phaser. En este caso solo se encarga del movimiento del jugador.
    * Como se puede ver, no se tratan las colisiones con las estrellas, ya que estas colisiones 
    * ya son gestionadas por la estrella (no gestionar las colisiones dos veces)
@@ -69,8 +48,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
    */
   preUpdate(t,dt) {
     super.preUpdate(t,dt);
-      
-    
       
       if(this.brokenStair)
           this.propE.visible = true;
@@ -112,12 +89,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
       this.body.setVelocityX(0);
     }
 
+    //Condicion de ganar
     if(this.y < 630)
       this.scene.win();
-
-
-      this.propE.x = this.x;
-      this.propE.y = this.y-(this.propE.height*2);
   }
-  
 }

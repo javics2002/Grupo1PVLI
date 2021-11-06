@@ -78,21 +78,16 @@ export default class Boot extends Phaser.Scene {
     this.load.setPath('assets/sprites/');
 
     //Cargamos todos los sprites
-    this.load.image('platform', 'platform.png');
-    this.load.image('base', 'base.png');
-    this.load.image('star', 'star.png');
-    this.load.image('player', 'player.png')
-    this.load.image('longplatform', 'longplatform.png')
-    this.load.image('brokenStair', 'broken_stairs1.png')
+    this.load.image('player', 'player.png');
+    this.load.image('brokenStair', 'broken_stairs1.png');
 
     //Temporalmente para probar la barra de carga
     for (var i = 0; i < 0; i++) {
-      this.load.image('archivo_innecesario'+i, 'player.png');
+      this.load.image('archivo_innecesario' + i, 'player.png');
     }
 
     //Nos suscribimos a eventos sobre la carga de archivos
     this.load.on('progress', function (value) {
-      console.log(value);
       progressBar.clear();
       progressBar.fillStyle(0xffffff, 1);
       progressBar.fillRect(width / 2 - 150, height / 2 + 10, 300 * value, 30);
@@ -100,12 +95,10 @@ export default class Boot extends Phaser.Scene {
     });
 
     this.load.on('fileprogress', function (file) {
-      console.log(file.src);
       assetText.setText('Loading asset: ' + file.key);
     });
 
     this.load.on('complete', function () {
-      console.log('complete');
       progressBar.destroy();
       progressBox.destroy();
       loadingText.destroy();

@@ -36,5 +36,17 @@ export default class Select extends Phaser.Scene {
                 this.scene.start('title');
         });
         backButton.setShadow(2, 2, "#333333", 2, false, true);
+
+        let debugButton = this.add.text(width * 0.8, height * 0.8, 'Debug',
+            {
+                fontFamily: 'Caveat',
+                fontSize: 30,
+                color: '#ffffff'
+            }).setInteractive();
+            debugButton.setOrigin(0, 0.5);
+            debugButton.on('pointerdown', pointer => {
+                this.scene.start('debug');
+        });
+        debugButton.setShadow(2, 2, "#333333", 2, false, true);
     }
 }
