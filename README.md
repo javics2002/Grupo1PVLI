@@ -143,4 +143,5 @@ Por defecto la selección de niveles comenzará en el nivel 1, pudiendo avanzar 
 
 ### Enlaces Importantes
 Página del juego https://javics2002.github.io/Grupo1PVLI/
+
 Pivotal Tracker https://www.pivotaltracker.com/n/projects/2534253
