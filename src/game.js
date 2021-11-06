@@ -4,6 +4,7 @@ import Platform from './platform.js';
 import Level from './scene.js';
 import Debug from './debug.js';
 import Title from './title.js';
+import Select from './levelSelect.js';
 
 const initGame = () => {
 /**
@@ -20,7 +21,7 @@ let config = {
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    scene: [Boot, Level, End, Debug, Title],
+    scene: [Boot, Level, End, Debug, Title, Select],
     physics: { 
         default: 'arcade', 
         arcade: { 
