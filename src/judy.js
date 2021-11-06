@@ -1,0 +1,3 @@
+let fallSpeed;
+Fall()
+Celebrate()

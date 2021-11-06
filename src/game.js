@@ -1,6 +1,6 @@
 import Boot from './boot.js';
 import Title from './title.js';
-import Select from './levelSelect.js';
+import Select from './level_select.js';
 import Debug from './debug.js';
 import End from './end.js';
 
