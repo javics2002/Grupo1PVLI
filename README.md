@@ -141,3 +141,6 @@ Por defecto la selección de niveles comenzará en el nivel 1, pudiendo avanzar 
 ### UML
 ![image](https://user-images.githubusercontent.com/61164466/140552477-6b9920ea-4238-4182-aaf9-0732b9a80f58.png)
 
+### Enlaces Importantes
+Página del juego https://javics2002.github.io/Grupo1PVLI/
+Pivotal Tracker https://www.pivotaltracker.com/n/projects/2534253
