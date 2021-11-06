@@ -86,7 +86,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('brokenStair', 'broken_stairs1.png')
 
     //Temporalmente para probar la barra de carga
-    for (var i = 0; i < 500; i++) {
+    for (var i = 0; i < 0; i++) {
       this.load.image('archivo_innecesario'+i, 'player.png');
     }
 
