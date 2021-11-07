@@ -4,7 +4,7 @@
  * una nueva estrella en otra posición, si el juego no ha terminado.
  * @extends Phaser.GameObjects.Sprite
  */
-export default class StairFragment extends Phaser.GameObjects.Sprite {
+export default class StairFragment extends Phaser.Physics.Matter.Sprite {
   
   /**
    * Constructor de Star
@@ -14,9 +14,9 @@ export default class StairFragment extends Phaser.GameObjects.Sprite {
    * @param {number} y coordenada y
    */
   constructor(scene, base, x, y) {
-    super(scene, x, y, 'brokenStair');
+    super(scene.matter.world, x, y, 'brokenStair');
     this.scene.add.existing(this);
-    this.scene.matter.add.existing(this, true);
+  
     this.y -= this.height;
     this.base = base;
   

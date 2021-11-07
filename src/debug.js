@@ -36,9 +36,6 @@ export default class Debug extends Phaser.Scene {
     new Platform(this, this.player, this.bases, 300, 630 + floorGap * 2 - 320, 'platform');
     
     this.cameras.main.setBounds(0,0,1280, floors * 500 + 220);
-    this.physics.world.bounds.width = 1280;
-    this.physics.world.bounds.height = floors * 500 + 220;
-
     this.cameras.main.startFollow(this.player);
       this.spawn();
       

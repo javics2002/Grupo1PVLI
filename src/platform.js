@@ -4,7 +4,7 @@ import Base from './base.js';
  * Cada plataforma es responsable de crear la base que aparece sobre ella y en la 
  * que, durante el juego, puede aparecer una estrella
  */
-export default class Platform extends Phaser.GameObjects.Sprite {
+export default class Platform extends Phaser.Physics.Matter.Sprite {
   
   /**
    * Constructor de la Plataforma
@@ -16,9 +16,8 @@ export default class Platform extends Phaser.GameObjects.Sprite {
    * @param {Phaser.Image} img Imagen que utilizará la platforma para darse forma. Recuerda instanciarla en el boot.js
    */
   constructor(scene, player, baseGroup, x, y, img) {
-    super(scene, x, y, img);
+    super(scene.matter.world, x, y, img);
     this.scene.add.existing(this);
-    this.scene.matter.add.existing(this, true);
     new Base(scene, this, x, y, baseGroup);
   }
 }

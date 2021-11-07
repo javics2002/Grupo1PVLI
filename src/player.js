@@ -18,15 +18,17 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.scene.add.existing(this);
     // Queremos que el jugador no se salga de los límites del mundo
     
-    this.speed = 300;
+    this.speed = 3;
 
-    this.jumpSpeed = -1200;
+    this.jumpSpeed = -12;
     // Coyote Time
     this.coyoteTime = 100;
     this.coyoteCounter = 0;
     // Jump Buffer
     this.jumpBufferLength = 100;
     this.jumpBufferCounter;
+    // Check que permite ver si el jugador está en el suelo
+    this.onGround = false;
     // Esta label es la UI en la que pondremos la puntuación del jugador
     this.label = this.scene.add.text(10, 10, "");
     this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -76,7 +78,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       else this.propE.visible = false;
       
     // Coyote Time
-    if (this.body.onFloor()){
+    if (this.onGround){
       this.coyoteCounter = this.coyoteTime;
     }
     else {
@@ -84,6 +86,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     }
 
     // Jump Buffer
+    // TO-DO: Cambiar todas las referencias a velocidad por vectores de Matter
+
     if (Phaser.Input.Keyboard.JustDown(this.cursors.up)){
       this.jumpBufferCounter = this.jumpBufferLength;
     }
