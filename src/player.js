@@ -11,13 +11,15 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
    * @param {Phaser.Scene} scene Escena a la que pertenece el jugador
    * @param {number} x Coordenada X
    * @param {number} y Coordenada Y
+   * @param {Phaser.GameObjects.Group} platformGroup Grupo al que pertenecen las plataformas
    */
-  constructor(scene, x, y) {
+  constructor(scene, x, y, platformGroup) {
     super(scene.matter.world, x, y, 'player');
+    let pointer = this;
     this.score = 0;
     this.scene.add.existing(this);
     // Queremos que el jugador no se salga de los límites del mundo
-    
+    let playerTouchingGround = false;
     this.speed = 3;
 
     this.jumpSpeed = -12;
@@ -34,15 +36,17 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.updateScore();
       
-      
-      
-      //escaleras
-      this.brokenStair = false;
-      
-      this.propE = new S(this.scene,    x, y - this.height/2);
-      //this.propE = this.scene.add.image(x, y - this.height/2,"brokenStair");
-      this.propE.y -= this.propE.height/2;
-      this.propE.depth = 6
+    this.scene.matter.world.on("collisionactive", (pointer, platformGroup) => {
+      playerTouchingGround = true;
+  }); 
+    
+    //escaleras
+    this.brokenStair = false;
+    
+    this.propE = new S(this.scene,    x, y - this.height/2);
+    //this.propE = this.scene.add.image(x, y - this.height/2,"brokenStair");
+    this.propE.y -= this.propE.height/2;
+    this.propE.depth = 6
       
   }
 
@@ -78,7 +82,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       else this.propE.visible = false;
       
     // Coyote Time
-    if (this.onGround){
+    if (this.playerTouchingGround){
       this.coyoteCounter = this.coyoteTime;
     }
     else {
@@ -96,23 +100,23 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     }
 
     if (this.jumpBufferCounter >= 0 && this.coyoteCounter > 0) {
-      this.body.setVelocityY(this.jumpSpeed);
+      this.setVelocityY(this.jumpSpeed);
     }
     if (this.cursors.up.isDown && this.body.velocity.y < 0){
-      this.body.setVelocityY(this.body.velocity.y * 0.9);
+      this.setVelocityY(this.body.velocity.y * 0.9);
     }
-    if (!this.body.onFloor() && this.body.velocity.y < 0 && !this.cursors.up.isDown){
-      this.body.setVelocityY(this.body.velocity.y * 0.6);
+    if (!this.playerTouchingGround && this.body.velocity.y < 0 && !this.cursors.up.isDown){
+      this.setVelocityY(this.body.velocity.y * 0.6);
     }
 
     if (this.cursors.left.isDown) {
-      this.body.setVelocityX(-this.speed);
+      this.setVelocityX(-this.speed);
     }
     else if (this.cursors.right.isDown) {
-      this.body.setVelocityX(this.speed);
+      this.setVelocityX(this.speed);
     }
     else {
-      this.body.setVelocityX(0);
+      this.setVelocityX(0);
     }
 
     if(this.y < 630)

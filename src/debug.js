@@ -27,6 +27,8 @@ export default class Debug extends Phaser.Scene {
     let floors = 3;
 
     this.matter.world.setBounds(0,0,1280, floors * 500 + 220);
+
+   
     
     this.player = new Player(this, 200, 580 + floorGap * (floors - 1));
     for(let i = 0; i< floors; i++)
@@ -37,8 +39,9 @@ export default class Debug extends Phaser.Scene {
     
     this.cameras.main.setBounds(0,0,1280, floors * 500 + 220);
     this.cameras.main.startFollow(this.player);
-      this.spawn();
       
+     
+      this.spawn();
   }
 
   //Metodo de ganar

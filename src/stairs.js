@@ -31,7 +31,7 @@ export default class StairFragment extends Phaser.Physics.Matter.Sprite {
     // IMPORTANTE: Si no ponemos esta instrucción y el sprite está animado
     // no se podrá ejecutar la animación del sprite. 
     super.preUpdate();
-    if (this.scene.physics.overlap(this.scene.player, this)) {
+    if (this.scene.matter.overlap(this.scene.player, this)) {
         // Delegamos en la escena para decidir qué hacer al 
         // haber cogido una estrella
         
