@@ -18,11 +18,12 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     let pointer = this;
     this.score = 0;
     this.scene.add.existing(this);
+    this.setFixedRotation(true);
     // Queremos que el jugador no se salga de los límites del mundo
     let playerTouchingGround = false;
     this.speed = 3;
 
-    this.jumpSpeed = -12;
+    this.jumpSpeed = -1200;
     // Coyote Time
     this.coyoteTime = 100;
     this.coyoteCounter = 0;
@@ -74,9 +75,6 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
    */
   preUpdate(t,dt) {
     super.preUpdate(t,dt);
-      
-    
-      
       if(this.brokenStair)
           this.propE.visible = true;
       else this.propE.visible = false;
