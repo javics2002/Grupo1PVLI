@@ -16,7 +16,8 @@ export default class Platform extends Phaser.Physics.Matter.Sprite {
    * @param {Phaser.Image} img Imagen que utilizará la platforma para darse forma. Recuerda instanciarla en el boot.js
    * @param {boolean} hasBase Determina si la plataforma se creará con un objeto Base 
   */
-  constructor(scene, baseGroup, hasBase, x, y, img) {
+  constructor(scene, platformGroup, baseGroup, hasBase, x, y, img) {
+    platformGroup.add(this);
     super(scene.matter.world, x, y, img);
     this.scene.add.existing(this);
     this.setIgnoreGravity(true);

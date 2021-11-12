@@ -23,6 +23,7 @@ export default class Debug extends Phaser.Scene {
   create() {
     this.stars = 10;
     this.bases = this.add.group();
+    this.platforms = this.add.group();
     let floorGap = 500;
     let floors = 3;
 
@@ -30,12 +31,12 @@ export default class Debug extends Phaser.Scene {
 
    
     
-    this.player = new Player(this, 200, 580 + floorGap * (floors - 1));
+    this.player = new Player(this, 200, 580 + floorGap * (floors - 1), this.platforms);
     for(let i = 0; i< floors; i++)
-      new Platform(this, this.bases, false, 640, 630 + floorGap * i, 'longplatform');
+      new Platform(this,this.platforms, this.bases, false, 640, 630 + floorGap * i, 'longplatform');
     
-    new Platform(this, this.bases, true, 700, 630 + floorGap * 2 - 160, 'platform');
-    new Platform(this, this.bases, false, 300, 630 + floorGap * 2 - 320, 'platform');
+    new Platform(this, this.platforms, this.bases, true, 700, 630 + floorGap * 2 - 160, 'platform');
+    new Platform(this, this.platforms, this.bases, false, 300, 630 + floorGap * 2 - 320, 'platform');
     
     this.cameras.main.setBounds(0,0,1280, floors * 500 + 220);
     this.cameras.main.startFollow(this.player);
