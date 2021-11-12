@@ -9,15 +9,6 @@ export default class Title extends Phaser.Scene {
     super({ key: 'title' });
   }
 
-
-
-  /**
-   * 
-   */
-  preload() {
-
-  }
-
   /**
    * 
    */
