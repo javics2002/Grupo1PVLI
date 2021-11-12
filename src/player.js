@@ -21,6 +21,10 @@ export default class Player extends Phaser.GameObjects.Sprite {
     this.body.setCollideWorldBounds();
     this.speed = 300;
 
+    this.wKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    this.aKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    this.dKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
     this.jumpSpeed = -1200;
     // Coyote Time
     this.coyoteTime = 100;
@@ -85,7 +89,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     // Jump Buffer
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.up)){
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.up) || Phaser.Input.Keyboard.JustDown(this.wKey) || Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
       this.jumpBufferCounter = this.jumpBufferLength;
     }
     else {
@@ -95,17 +99,17 @@ export default class Player extends Phaser.GameObjects.Sprite {
     if (this.jumpBufferCounter >= 0 && this.coyoteCounter > 0) {
       this.body.setVelocityY(this.jumpSpeed);
     }
-    if (this.cursors.up.isDown && this.body.velocity.y < 0){
+    if ((this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown) && this.body.velocity.y < 0){
       this.body.setVelocityY(this.body.velocity.y * 0.9);
     }
-    if (!this.body.onFloor() && this.body.velocity.y < 0 && !this.cursors.up.isDown){
+    if (!this.body.onFloor() && this.body.velocity.y < 0 && !(this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown)){
       this.body.setVelocityY(this.body.velocity.y * 0.6);
     }
 
-    if (this.cursors.left.isDown) {
+    if (this.cursors.left.isDown || this.aKey.isDown) {
       this.body.setVelocityX(-this.speed);
     }
-    else if (this.cursors.right.isDown) {
+    else if (this.cursors.right.isDown || this.dKey.isDown) {
       this.body.setVelocityX(this.speed);
     }
     else {
