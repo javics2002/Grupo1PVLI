@@ -4,7 +4,7 @@
  * una nueva estrella en otra posición, si el juego no ha terminado.
  * @extends Phaser.GameObjects.Sprite
  */
-export default class StairFragment extends Phaser.GameObjects.Sprite {
+export default class StairFragment extends Phaser.Physics.Matter.Sprite {
   
   /**
    * Constructor de Star
@@ -14,9 +14,9 @@ export default class StairFragment extends Phaser.GameObjects.Sprite {
    * @param {number} y coordenada y
    */
   constructor(scene, base, x, y) {
-    super(scene, x, y, 'brokenStair');
+    super(scene.matter.world, x, y, 'brokenStair');
     this.scene.add.existing(this);
-    this.scene.physics.add.existing(this, true);
+  
     this.y -= this.height;
     this.base = base;
   
@@ -31,7 +31,7 @@ export default class StairFragment extends Phaser.GameObjects.Sprite {
     // IMPORTANTE: Si no ponemos esta instrucción y el sprite está animado
     // no se podrá ejecutar la animación del sprite. 
     super.preUpdate();
-    if (this.scene.physics.overlap(this.scene.player, this)) {
+    if (this.scene.matter.overlap(this.scene.player, this)) {
         // Delegamos en la escena para decidir qué hacer al 
         // haber cogido una estrella
         

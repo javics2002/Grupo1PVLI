@@ -3,7 +3,7 @@ import S from './S.js'
  * Clase que representa el jugador del juego. El jugador se mueve por el mundo usando los cursores.
  * También almacena la puntuación o número de estrellas que ha recogido hasta el momento.
  */
-export default class Player extends Phaser.GameObjects.Sprite {
+export default class Player extends Phaser.Physics.Matter.Sprite {
   
   /**
    * Constructor del jugador
@@ -12,12 +12,14 @@ export default class Player extends Phaser.GameObjects.Sprite {
    * @param {number} y Coordenada Y
    */
   constructor(scene, x, y) {
-    super(scene, x, y, 'player');
+    super(scene.matter.world, x, y, 'player');
+    let pointer = this;
+    this.score = 0;
     this.scene.add.existing(this);
-    this.scene.physics.add.existing(this);
+    this.setFixedRotation(true);
     // Queremos que el jugador no se salga de los límites del mundo
-    this.body.setCollideWorldBounds();
-    this.speed = 300;
+    let playerTouchingGround = false;
+    this.speed = 3;
 
     this.wKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     this.aKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -30,17 +32,24 @@ export default class Player extends Phaser.GameObjects.Sprite {
     // Jump Buffer
     this.jumpBufferLength = 100;
     this.jumpBufferCounter;
-
-    //Input
+    // Check que permite ver si el jugador está en el suelo
+    this.onGround = false;
+    // Esta label es la UI en la que pondremos la puntuación del jugador
+    this.label = this.scene.add.text(10, 10, "");
     this.cursors = this.scene.input.keyboard.createCursorKeys();
-    
-      //escaleras
-      this.brokenStair = false;
+  
       
-      this.propE = new S(this.scene,    x, y - this.height/2);
-      //this.propE = this.scene.add.image(x, y - this.height/2,"brokenStair");
-      this.propE.y -= this.propE.height/2;
-      this.propE.depth = 6
+    this.scene.matter.world.on("collisionactive", (pointer, platformGroup) => {
+      playerTouchingGround = true;
+  }); 
+    
+    //escaleras
+    this.brokenStair = false;
+    
+    this.propE = new S(this.scene,    x, y - this.height/2);
+    //this.propE = this.scene.add.image(x, y - this.height/2,"brokenStair");
+    this.propE.y -= this.propE.height/2;
+    this.propE.depth = 6
       
   }
 
@@ -52,13 +61,12 @@ export default class Player extends Phaser.GameObjects.Sprite {
    */
   preUpdate(t,dt) {
     super.preUpdate(t,dt);
-      
       if(this.brokenStair)
           this.propE.visible = true;
       else this.propE.visible = false;
       
     // Coyote Time
-    if (this.body.onFloor()){
+    if (this.playerTouchingGround){
       this.coyoteCounter = this.coyoteTime;
     }
     else {
@@ -66,6 +74,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     // Jump Buffer
+
     if (Phaser.Input.Keyboard.JustDown(this.cursors.up) || Phaser.Input.Keyboard.JustDown(this.wKey) || Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
       this.jumpBufferCounter = this.jumpBufferLength;
     }
@@ -74,8 +83,9 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     if (this.jumpBufferCounter >= 0 && this.coyoteCounter > 0) {
-      this.body.setVelocityY(this.jumpSpeed);
+      this.setVelocityY(this.jumpSpeed);
     }
+
     if ((this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown) && this.body.velocity.y < 0){
       this.body.setVelocityY(this.body.velocity.y * 0.9);
     }
@@ -90,7 +100,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
       this.body.setVelocityX(this.speed);
     }
     else {
-      this.body.setVelocityX(0);
+      this.setVelocityX(0);
     }
 
     //Condicion de ganar

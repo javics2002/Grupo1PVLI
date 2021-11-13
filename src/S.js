@@ -1,6 +1,10 @@
-export default class S extends Phaser.GameObjects.Sprite {
+
+
+
+
+export default class S extends Phaser.Physics.Matter.Sprite {
   constructor(scene, x, y ) {
-    super(scene, x, y, "brokenStair");
+    super(scene.matter.world, x, y, "brokenStair");
     scene.add.existing(this);
     
   }
