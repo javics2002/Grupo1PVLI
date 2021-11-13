@@ -1,4 +1,3 @@
-import Star from './star.js';
 import S from './S.js'
 /**
  * Clase que representa el jugador del juego. El jugador se mueve por el mundo usando los cursores.
@@ -13,7 +12,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
    * @param {number} y Coordenada Y
    * @param {Phaser.GameObjects.Group} platformGroup Grupo al que pertenecen las plataformas
    */
-  constructor(scene, x, y, platformGroup) {
+  constructor(scene, x, y) {
     super(scene.matter.world, x, y, 'player');
     let pointer = this;
     this.score = 0;
@@ -49,22 +48,6 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.propE.y -= this.propE.height/2;
     this.propE.depth = 6
       
-  }
-
-  /**
-   * El jugador ha recogido una estrella por lo que este método añade un punto y
-   * actualiza la UI con la puntuación actual.
-   */
-  point() {
-    this.score++;
-    this.updateScore();
-  }
-  
-  /**
-   * Actualiza la UI con la puntuación actual
-   */
-  updateScore() {
-    this.label.text = 'Score: ' + this.score;
   }
 
   /**
@@ -117,12 +100,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       this.setVelocityX(0);
     }
 
+    //Condicion de ganar
     if(this.y < 630)
       this.scene.win();
-
-
-      this.propE.x = this.x;
-      this.propE.y = this.y-(this.propE.height*2);
   }
-  
 }
