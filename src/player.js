@@ -87,17 +87,17 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     }
 
     if ((this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown) && this.body.velocity.y < 0){
-      this.body.setVelocityY(this.body.velocity.y * 0.9);
+      this.setVelocityY(this.body.velocity.y * 0.9);
     }
-    if (!this.body.onFloor() && this.body.velocity.y < 0 && !(this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown)){
-      this.body.setVelocityY(this.body.velocity.y * 0.6);
+    if (!this.playerTouchingGround && this.body.velocity.y < 0 && !(this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown)){
+      this.setVelocityY(this.body.velocity.y * 0.6);
     }
 
     if (this.cursors.left.isDown || this.aKey.isDown) {
-      this.body.setVelocityX(-this.speed);
+      this.setVelocityX(-this.speed);
     }
     else if (this.cursors.right.isDown || this.dKey.isDown) {
-      this.body.setVelocityX(this.speed);
+      this.setVelocityX(this.speed);
     }
     else {
       this.setVelocityX(0);
