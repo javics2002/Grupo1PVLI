@@ -1,7 +1,6 @@
 import S from './S.js'
 /**
- * Clase que representa el jugador del juego. El jugador se mueve por el mundo usando los cursores.
- * También almacena la puntuación o número de estrellas que ha recogido hasta el momento.
+ * El jugador. Se moverá y saltará usando los controles.
  */
 export default class Player extends Phaser.Physics.Matter.Sprite {
   
@@ -51,12 +50,13 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.propE.y -= this.propE.height/2;
     this.propE.depth = 6
       
+      //Cuerdas
+      this.hanged = false;
+
   }
 
   /**
-   * Métodos preUpdate de Phaser. En este caso solo se encarga del movimiento del jugador.
-   * Como se puede ver, no se tratan las colisiones con las estrellas, ya que estas colisiones 
-   * ya son gestionadas por la estrella (no gestionar las colisiones dos veces)
+   * Métodos preUpdate de Phaser. Se encarga del movimiento del jugador y de comprobar su altura.
    * @override
    */
   preUpdate(t,dt) {
@@ -89,6 +89,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     if ((this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown) && this.body.velocity.y < 0){
       this.setVelocityY(this.body.velocity.y * 0.9);
     }
+
     if (!this.playerTouchingGround && this.body.velocity.y < 0 && !(this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown)){
       this.setVelocityY(this.body.velocity.y * 0.6);
     }
