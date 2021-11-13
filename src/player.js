@@ -21,6 +21,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     let playerTouchingGround = false;
     this.speed = 3;
 
+    this.wKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    this.aKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    this.dKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
     this.jumpSpeed = -1200;
     // Coyote Time
     this.coyoteTime = 100;
@@ -70,9 +74,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     }
 
     // Jump Buffer
-    // TO-DO: Cambiar todas las referencias a velocidad por vectores de Matter
 
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.up)){
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.up) || Phaser.Input.Keyboard.JustDown(this.wKey) || Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
       this.jumpBufferCounter = this.jumpBufferLength;
     }
     else {
@@ -82,18 +85,19 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     if (this.jumpBufferCounter >= 0 && this.coyoteCounter > 0) {
       this.setVelocityY(this.jumpSpeed);
     }
-    if (this.cursors.up.isDown && this.body.velocity.y < 0){
-      this.setVelocityY(this.body.velocity.y * 0.9);
+
+    if ((this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown) && this.body.velocity.y < 0){
+      this.body.setVelocityY(this.body.velocity.y * 0.9);
     }
-    if (!this.playerTouchingGround && this.body.velocity.y < 0 && !this.cursors.up.isDown){
-      this.setVelocityY(this.body.velocity.y * 0.6);
+    if (!this.body.onFloor() && this.body.velocity.y < 0 && !(this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown)){
+      this.body.setVelocityY(this.body.velocity.y * 0.6);
     }
 
-    if (this.cursors.left.isDown) {
-      this.setVelocityX(-this.speed);
+    if (this.cursors.left.isDown || this.aKey.isDown) {
+      this.body.setVelocityX(-this.speed);
     }
-    else if (this.cursors.right.isDown) {
-      this.setVelocityX(this.speed);
+    else if (this.cursors.right.isDown || this.dKey.isDown) {
+      this.body.setVelocityX(this.speed);
     }
     else {
       this.setVelocityX(0);
