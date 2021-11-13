@@ -10,7 +10,6 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
    * @param {Phaser.Scene} scene Escena a la que pertenece el jugador
    * @param {number} x Coordenada X
    * @param {number} y Coordenada Y
-   * @param {Phaser.GameObjects.Group} platformGroup Grupo al que pertenecen las plataformas
    */
   constructor(scene, x, y) {
     super(scene.matter.world, x, y, 'player');
@@ -34,7 +33,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     // Esta label es la UI en la que pondremos la puntuación del jugador
     this.label = this.scene.add.text(10, 10, "");
     this.cursors = this.scene.input.keyboard.createCursorKeys();
-    this.updateScore();
+  
       
     this.scene.matter.world.on("collisionactive", (pointer, platformGroup) => {
       playerTouchingGround = true;

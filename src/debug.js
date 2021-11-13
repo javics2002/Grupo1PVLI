@@ -28,7 +28,7 @@ export default class Debug extends Phaser.Scene {
 
    
     
-    this.player = new Player(this, 200, 580 + floorGap * (floors - 1), this.platforms);
+    this.player = new Player(this, 200, 580 + floorGap * (floors - 1));
     for(let i = 0; i< floors; i++)
       ;
     
@@ -36,7 +36,7 @@ export default class Debug extends Phaser.Scene {
     this.cameras.main.startFollow(this.player);
       
      
-      this.spawn();
+  
   }
 
   //Metodo de ganar
