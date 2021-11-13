@@ -137,7 +137,3 @@ Por defecto la selección de niveles comenzará en el nivel 1, pudiendo avanzar 
 - Vertigo (Alfred Hitchcock, 1958): Ambientación
 - Donkey Kong (1981): Jugabilidad
 - Cuphead, cortos de Oswald The Lucky Rabbit y de Mickey Mouse: Estilo artístico
-
-### UML
-![image](https://user-images.githubusercontent.com/61164466/140552477-6b9920ea-4238-4182-aaf9-0732b9a80f58.png)
-

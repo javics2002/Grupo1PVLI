@@ -1,3 +1,0 @@
-let fallSpeed;
-Fall()
-Celebrate()
