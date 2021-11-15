@@ -18,13 +18,13 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.setFixedRotation(true);
     // Queremos que el jugador no se salga de los límites del mundo
     let playerTouchingGround = false;
-    this.speed = 3;
+    this.speed = 5;
 
     this.wKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     this.aKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.dKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
-    this.jumpSpeed = -12;
+    this.jumpSpeed = -17;
     // Coyote Time
     this.coyoteTime = 100;
     this.coyoteCounter = 0;
@@ -66,7 +66,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       else this.propE.visible = false;
       
     // Coyote Time
-    if (true){
+    if (this.playerTouchingGround){
       this.coyoteCounter = this.coyoteTime;
     }
     else {
@@ -84,6 +84,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
     if (this.jumpBufferCounter >= 0 && this.coyoteCounter > 0) {
       this.setVelocityY(this.jumpSpeed);
+      this.setAngle(0);
       console.log('jump!');
     }
 
@@ -97,12 +98,15 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
     if (this.cursors.left.isDown || this.aKey.isDown) {
       this.setVelocityX(-this.speed);
+      this.setAngle(0);
     }
     else if (this.cursors.right.isDown || this.dKey.isDown) {
       this.setVelocityX(this.speed);
+      this.setAngle(0);
     }
     else {
       this.setVelocityX(0);
+      this.setAngle(0);
     }
 
     //Condicion de ganar
