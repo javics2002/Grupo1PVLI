@@ -79,6 +79,8 @@ export default class Boot extends Phaser.Scene {
 
     //Cargamos todos los sprites
     this.load.image('player', 'player.png');
+    this.load.image('rope', 'rope.png');
+    this.load.image('pivot', 'rope_pivot.png');
     this.load.image('brokenStair', 'broken_stairs1.png');
 
     //Temporalmente para probar la barra de carga
