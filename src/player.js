@@ -25,7 +25,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.aKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.dKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
-    this.jumpSpeed = -1200;
+    this.jumpSpeed = -12;
     // Coyote Time
     this.coyoteTime = 100;
     this.coyoteCounter = 0;
@@ -66,7 +66,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       else this.propE.visible = false;
       
     // Coyote Time
-    if (this.playerTouchingGround){
+    if (true){
       this.coyoteCounter = this.coyoteTime;
     }
     else {
@@ -84,6 +84,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
     if (this.jumpBufferCounter >= 0 && this.coyoteCounter > 0) {
       this.setVelocityY(this.jumpSpeed);
+      console.log('jump!');
     }
 
     if ((this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown) && this.body.velocity.y < 0){

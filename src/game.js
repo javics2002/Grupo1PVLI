@@ -2,6 +2,7 @@ import Boot from './boot.js';
 import Title from './title.js';
 import Select from './level_select.js';
 import Debug from './debug.js';
+import Tower1 from './tower1.js';
 import End from './end.js';
 
 const initGame = () => {
@@ -19,7 +20,7 @@ let config = {
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    scene: [Boot, End, Debug, Title, Select],
+    scene: [Boot, End, Debug, Title, Select, Tower1],
     physics: { 
         default: 'matter', 
         matter: { 
