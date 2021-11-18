@@ -1,3 +1,4 @@
+import Box from './box.js';
 import Player from './player.js';
 import Rope from './rope.js';
 
@@ -36,7 +37,9 @@ export default class Debug extends Phaser.Scene {
 
     this.cameras.main.setBounds(0, 0, 1280, floors * 500 + 220);
     this.cameras.main.startFollow(this.player);
-
+    
+    new Box(this, 300, 580 + floorGap * (floors - 1), 'smallbox');
+    new Box(this, 300, 480 + floorGap * (floors - 1), 'smallbox');
     const ropes = this.matter.world.nextCategory();
     this.rope1 = new Rope(this, 600, 500 + floorGap * (floors - 1), 3, 2, 60);
     //this.matter.add.constraint(this.rope1, this.world);
