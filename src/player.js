@@ -1,4 +1,4 @@
-import S from './S.js'
+import S from './BrokenStairs.js'
 /**
  * El jugador. Se moverá y saltará usando los controles.
  */
@@ -16,36 +16,50 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.score = 0;
     this.scene.add.existing(this);
     this.setFixedRotation(true);
-    // Queremos que el jugador no se salga de los límites del mundo
+    
+    let playerGroup = this.scene.matter.world.nextGroup(true);
+    let platformGroup = this.scene.matter.world.nextGroup();
+    this.setCollisionGroup(playerGroup);
     let playerTouchingGround = false;
     this.speed = 5;
 
+    // Teclas Input: Cursors incluye flechas y espacio
+    this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.wKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     this.aKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.dKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
     this.jumpSpeed = -17;
+
+    this.bottomSensor = Phaser.Physics.Matter.Matter.Bodies.rectangle(this.x + this.width / 2, this.y + this.height, this.width / 2, 15, { isSensor: true });
+    // this.bottomSensor.setCollisionGroup(platformGroup);
     // Coyote Time
     this.coyoteTime = 100;
     this.coyoteCounter = 0;
     // Jump Buffer
     this.jumpBufferLength = 100;
     this.jumpBufferCounter;
-    // Check que permite ver si el jugador está en el suelo
-    this.onGround = false;
     // Esta label es la UI en la que pondremos la puntuación del jugador
     this.label = this.scene.add.text(10, 10, "");
-    this.cursors = this.scene.input.keyboard.createCursorKeys();
   
       
-    this.scene.matter.world.on("collisionactive", (pointer, platformGroup) => {
-      playerTouchingGround = true;
+    this.scene.matter.world.on("collisionactive", function (event) {
+      for (let i = 0; i < event.pairs.length; i++){
+
+        let bodyA = event.pairs[i].bodyA;
+        let bodyB = event.pairs[i].bodyB;
+      
+        // Punto de interrupción: Comprobar bodyAs y bodyBs, ¿Se registran?
+        if (bodyA === this.bottomSensor || bodyB === this.bottomSensor){
+          playerTouchingGround = true;
+        }
+      }
   }); 
     
     //escaleras
     this.brokenStair = false;
     
-    this.propE = new S(this.scene,    x, y - this.height/2);
+    this.propE = new S(this.scene, x, y - this.height/2);
     //this.propE = this.scene.add.image(x, y - this.height/2,"brokenStair");
     this.propE.y -= this.propE.height/2;
     this.propE.depth = 6
@@ -64,7 +78,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       if(this.brokenStair)
           this.propE.visible = true;
       else this.propE.visible = false;
-      
+
+
     // Coyote Time
     if (this.playerTouchingGround){
       this.coyoteCounter = this.coyoteTime;
@@ -83,8 +98,11 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     }
 
     if (this.jumpBufferCounter >= 0 && this.coyoteCounter > 0) {
+      this,playerTouchingGround = false;
       this.setVelocityY(this.jumpSpeed);
       this.setAngle(0);
+      this.bottomSensor.x = this.x;
+      this.bottomSensor.y = this.y;
       console.log('jump!');
     }
 
@@ -108,6 +126,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       this.setVelocityX(0);
       this.setAngle(0);
     }
+
+    this.bottomSensor.x = this.x;
+    this.bottomSensor.y = this.y + this.height * 2;
 
     //Condicion de ganar
     if(this.y < 630)
