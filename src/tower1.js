@@ -13,14 +13,21 @@ export default class Tower1 extends Phaser.Scene {
      * 
      */
     create() {
+      
+
       let width = this.cameras.main.width;
       let height = this.cameras.main.height;
 
+      this.matter.world.setBounds(0, 0, 1280, 1720);
+
       this.player = new Player(this, 200, 1580);
+      this.matter.add.gameObject(this.player);
 
       this.timer = 0;
       this.defeatTime = 60;
 
+      this.cameras.main.setBounds(0, 0, 1280, 1720);
+      this.cameras.main.startFollow(this.player);
 
       // Botón volver a SelectScreen
       this.backButton = this.add.sprite(width * 0.05, height * 0.05, 'exit_icon').setInteractive();
@@ -39,6 +46,9 @@ export default class Tower1 extends Phaser.Scene {
       })
       levelNameText.setOrigin(0, 0);
 
+      levelNameText.setScrollFactor(0);
+
+
       this.timerText = this.add.text(width - width * 0.15, height * 0.12, this.timer.toString(),
       {
           fontFamily: 'Caveat',
@@ -47,6 +57,8 @@ export default class Tower1 extends Phaser.Scene {
           align: 'right'
       })
       this.timerText.setOrigin(0, 0);
+
+      this.timerText.setScrollFactor(0);
 
 
       // Dos decimales
@@ -57,9 +69,11 @@ export default class Tower1 extends Phaser.Scene {
           fontFamily: 'Caveat',
           fontSize: 30,
           color: '#ff0000',
-          align: 'right',
+          align: 'right'
       })
-      this.timerText.setOrigin(0, 0);
+      this.defeatTimeText.setOrigin(0, 0);
+
+    this.defeatTimeText.setScrollFactor(0);
     }
 
     update(t,dt) {
@@ -70,8 +84,19 @@ export default class Tower1 extends Phaser.Scene {
         this.timerString = this.timer.toFixed(2);
         this.timerText.setText(this.timerString);
 
+
         if (this.timer > this.defeatTime){
-          this.scene.start('tower1');
+          this.lose();
         }
     }
+
+    win()
+    {
+      this.scene.start('tower2');
+    }
+
+    lose(){
+      this.scene.start('tower1');
+    }
+
   }

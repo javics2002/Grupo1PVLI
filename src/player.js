@@ -81,7 +81,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
 
     // Coyote Time
-    if (this.playerTouchingGround){
+    if (true){
       this.coyoteCounter = this.coyoteTime;
     }
     else {
@@ -98,7 +98,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     }
 
     if (this.jumpBufferCounter >= 0 && this.coyoteCounter > 0) {
-      this,playerTouchingGround = false;
+      // this,playerTouchingGround = false;
       this.setVelocityY(this.jumpSpeed);
       this.setAngle(0);
       this.bottomSensor.x = this.x;
