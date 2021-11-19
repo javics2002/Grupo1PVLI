@@ -1,4 +1,5 @@
 /**
+ * TODO Cambiar los comentarios de este scrit, sigue haciendo referencia a Star
  * Clase para los objetos estrella que el jugador ha de recoger
  * Una estrella aparece sobre una base. Cuando el jugador la recoge, se crea 
  * una nueva estrella en otra posición, si el juego no ha terminado.
