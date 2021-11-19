@@ -2,25 +2,21 @@
  * Pantalla principal
  */
 export default class Title extends Phaser.Scene {
-  /**
-   * Constructor de la escena
-   */
   constructor() {
     super({ key: 'title' });
   }
 
-  /**
-   * 
-   */
   create() {
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;
 
+    //Texto del título
     let titleText = this.add.text(width * 0.1, height * 0.3, 'VERTIGO TOWER',
       { fontFamily: 'Vertigon', fontSize: 60, color: '#e07a66' });
     titleText.setOrigin(0, 0);
     titleText.setShadow(2, 2, "#333333", 2, false, true);
 
+    //Botón de PLAY
     let playButton = this.add.text(width * 0.3, height * 0.6, 'Play ',
       {
         fontFamily: 'Caveat',

@@ -1,33 +1,53 @@
+import Node from "./node.js"
+
 /**
- * Cuerda que se balancea de un lado a otro. Scottie
+ * Cuerda que Scottie agarra para balancearse. 
+ * Esta formada por un pivote y varios nodos.
  */
 export default class Rope extends Phaser.Physics.Matter.Sprite {
-    /**
-     * Constructora de la cuerda
-     * @param {Phaser.Scene} scene Escena a la que pertenece el jugador
-     * @param {number} x Coordenada X
-     * @param {number} y Coordenada Y
-     * @param {integer} length Longitud de la cuerda en tiles
-     * @param {number} period Tiempo que tarda en volver al mismo punto del recorrido
-     * @param {number} angle Amplitud máxima de apertura
-     */
-    constructor(scene, x, y, length, period, angle){
-        super(scene.matter.world, x, y, 'pivot');
-        this.length = length;
-        this.period = period;
-        this.angle = angle;
-
-        this.scene.add.existing(this);
-
-        
-        //this.setAngularVelocity(period);
-    }
-
-    /**
-   * Métodos preUpdate de Phaser. Se encarga del balanceo de la cuerda.
-   * @override
+  /**
+   * Constructora de la cuerda
+   * @param {Phaser.Scene} scene Escena a la que pertenece el jugador
+   * @param {number} x Coordenada X del pivote
+   * @param {number} y Coordenada Y del pivote
+   * @param {integer} length Número de nodos que cuelgan del pivote
    */
-  preUpdate(t,dt) {
-    super.preUpdate(t,dt);
+  constructor(scene, x, y, length) {
+    super(scene.matter.world, x, y, 'pivot');
+    this.setStatic(true);
+
+    this.scene.add.existing(this);
+    let nodes = new Array(length);
+    console.log(typeof(nodes));
+    for(let i = 0; i < length; i++)
+    {
+      nodes[i] = new Node(scene, x, y + 10 * i);
+      console.log(typeof(nodes[i]));
+      let options = {
+        bodyA: this,
+        bodyB: nodes[i],
+        length: 30,
+        stiffness: 0.4
+      };
+      if (i > 0)
+      {
+        options = {
+          bodyA: nodes[i - 1],
+          bodyB: nodes[i],
+          length: 32,
+          stiffness: 0.4
+        };
+      }
+        
+      this.scene.matter.add.constraint(options.bodyA,options.bodyB,options.length,options.stiffness);
+    }
+  }
+
+  /**
+ * Métodos preUpdate de Phaser.
+ * @override
+ */
+  preUpdate(t, dt) {
+    super.preUpdate(t, dt);
   }
 }
