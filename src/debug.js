@@ -28,7 +28,7 @@ export default class Debug extends Phaser.Scene {
 
     this.player = new Player(this, 200, 580 + floorGap * (floors - 1));
     this.matter.add.gameObject(this.player);
-    for(let i = 0; i< floors; i++)
+    for (let i = 0; i < floors; i++)
       ;
 
     this.cameras.main.setBounds(0, 0, 1280, floors * 500 + 220);
@@ -40,23 +40,28 @@ export default class Debug extends Phaser.Scene {
     const ropes = this.matter.world.nextCategory();
     this.rope1 = new Rope(this, 600, 500 + floorGap * (floors - 1), 7);
     this.rope1.setCollisionCategory(ropes);
-    
-    /*
-    this.matter.world.on('collisionstart', 
-    (hang, player, ropes) => {
-      //Scottie se agarra a la cuerda
-      this.matter.add.constraint(player,
-        ropes,
-        0, // distancia
-        0.5 // rigidez de la unión
-        );
-    });
-    */
+
+    this.matter.world.on('collisionstart',
+      (event, player, ropes) => {
+        if (player.gameObject !== null && ropes.gameObject !== null && player.gameObject.texture !== null && ropes.gameObject.texture !== null){
+          console.log((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player"));
+          if ((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player")) {
+            //Scottie se agarra a la cuerda
+            
+            this.matter.add.constraint(player,
+              ropes,
+              0, // distancia
+              0.5 // rigidez de la unión
+            );
+
+            //this.player.hangStart();
+          }
+        }
+      });
   }
 
   //Metodo de ganar
-  win()
-  {
+  win() {
     this.scene.start('end');
   }
 }

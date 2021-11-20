@@ -18,7 +18,6 @@ export default class Rope extends Phaser.Physics.Matter.Sprite {
 
     this.scene.add.existing(this);
     let nodes = new Array(length);
-    console.log(typeof(nodes));
     for(let i = 0; i < length; i++)
     {
       nodes[i] = new Node(scene, x, y + 10 * i);
