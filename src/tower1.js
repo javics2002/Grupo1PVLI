@@ -32,6 +32,7 @@ export default class Tower1 extends Phaser.Scene {
       // Botón volver a SelectScreen
       this.backButton = this.add.sprite(width * 0.05, height * 0.05, 'exit_icon').setInteractive();
       this.backButton.setOrigin(0, 0);
+      this.backButton.setScrollFactor(0);
 
       this.backButton.on('pointerdown', function(event) {
         this.scene.scene.start('select');
@@ -92,6 +93,7 @@ export default class Tower1 extends Phaser.Scene {
 
     win()
     {
+      this.game.levelsInfo[1].record = this.timerString;
       this.scene.start('tower2');
     }
 

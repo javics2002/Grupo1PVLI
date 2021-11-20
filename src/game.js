@@ -5,37 +5,61 @@ import Debug from './debug.js';
 import Tower1 from './tower1.js';
 import End from './end.js';
 import Tower2 from './tower2.js';
-import Tower3 from './tower3.js';
-import Tower4 from './tower4.js';
-import Tower5 from './tower5.js';
 
 const initGame = () => {
-/**
- * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
- * la clase Game de Phaser, encargada de crear e iniciar el juego.
- */
-let config = {
-    type: Phaser.AUTO,
-    width:  1280,
-    height: 720,
-    resolution: window.devicePixelRatio,
-    scale: {
-        // mode: Phaser.Scale.FIT,  
-        autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
-    },
-    pixelArt: true,
-    scene: [Boot, End, Debug, Title, Select, Tower1, Tower2, Tower3, Tower4, Tower5],
-    physics: { 
-        default: 'matter', 
-        matter: { 
-            gravity: { y: 2 }, 
-            debug: false 
-        } 
+    /**
+     * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
+     * la clase Game de Phaser, encargada de crear e iniciar el juego.
+     */
+    let config = {
+        type: Phaser.AUTO,
+        width:  1280,
+        height: 720,
+        resolution: window.devicePixelRatio,
+        scale: {
+            // mode: Phaser.Scale.FIT,  
+            autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
+        },
+        pixelArt: true,
+        scene: [Boot, End, Debug, Title, Select, Tower1, Tower2 ],
+            //Tower3, Tower4, Tower5],
+        physics: { 
+            default: 'matter', 
+            matter: { 
+                gravity: { y: 2 }, 
+                debug: false 
+            } 
+        }
+    };
+
+    let game = new Phaser.Game(config);
+
+    game.levelsInfo = [];
+
+    // Número de nivel actual. 0 es uno de los menús
+    game.levelsInfo[0] = 0;
+
+    game.levelsInfo[1] = {
+        record: 0,
+        winHeight: 600
     }
-};
-
-
-new Phaser.Game(config);
+    game.levelsInfo[2] = {
+        record: 0,
+        winHeight: 600
+    }
+    game.levelsInfo[3] = {
+        record: 0,
+        winHeight: 600
+    }
+    game.levelsInfo[4] = {
+        record: 0,
+        winHeight: 600
+    }
+    game.levelsInfo[5] = {
+        record: 0,
+        winHeight: 600
+    }
+ 
 }
 
 //Código de Iván para cargar la fuente usada en la pantalla de carga.
@@ -56,30 +80,3 @@ script.onload = function () {
 script.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js';
 
 document.head.appendChild(script);
-
-let levelsInfo = {
-
-    currentLevel: 0,
-
-    tower1: {
-        record: 0,
-        winHeight: 600
-    },
-    tower2: {
-        record: 0,
-        winHeight: 600
-    },
-    tower3: {
-        record: 0,
-        winHeight: 600
-    },
-    tower4: {
-        record: 0,
-        winHeight: 600
-    },
-    tower5: {
-        record: 0,
-        winHeight: 600
-    }
-
-}

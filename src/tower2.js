@@ -36,6 +36,7 @@ export default class Tower2 extends Phaser.Scene {
       this.backButton.on('pointerdown', function(event) {
         this.scene.scene.start('select');
       });
+      this.backButton.setScrollFactor(0);
 
 
       let levelNameText = this.add.text(width - width * 0.15, height * 0.05, 'Tower 2',
