@@ -14,10 +14,25 @@ export default class Debug extends Phaser.Scene {
     super({ key: 'debug' });
   }
 
+  preload() {
+    const config = {
+      mute: false,
+      volume: 1,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: true,
+      delay: 0,
+    };
+    this.cuphead = this.sound.add('cuphead', config);
+  }
+
   /**
    * Creación de los elementos de la escena principal de juego
    */
   create() {
+    let width = this.cameras.main.width;
+    let height = this.cameras.main.height;
 
     let floorGap = 500;
     let floors = 3;
@@ -43,11 +58,11 @@ export default class Debug extends Phaser.Scene {
 
     this.matter.world.on('collisionstart',
       (event, player, ropes) => {
-        if (player.gameObject !== null && ropes.gameObject !== null && player.gameObject.texture !== null && ropes.gameObject.texture !== null){
+        if (player.gameObject !== null && ropes.gameObject !== null && player.gameObject.texture !== null && ropes.gameObject.texture !== null) {
           console.log((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player"));
           if ((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player")) {
             //Scottie se agarra a la cuerda
-            
+
             this.matter.add.constraint(player,
               ropes,
               0, // distancia
@@ -58,6 +73,21 @@ export default class Debug extends Phaser.Scene {
           }
         }
       });
+
+    this.cuphead.play();
+
+    let muteButton = this.add.text(width * 0.5, height * 0.2, 'Mute',
+      {
+        fontFamily: 'Caveat',
+        fontSize: 30,
+        color: '#ffffff'
+      }).setInteractive();
+    muteButton.setOrigin(0, 0.5);
+    muteButton.setScrollFactor(0);
+    muteButton.on('pointerdown', pointer => {
+      this.cuphead.setMute(!this.cuphead.mute);
+    });
+    muteButton.setShadow(2, 2, "#333333", 2, false, true);
   }
 
   //Metodo de ganar

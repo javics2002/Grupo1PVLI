@@ -6,6 +6,19 @@ export default class Select extends Phaser.Scene {
         super({ key: 'select' });
     }
 
+    preload() {
+        const config = {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0,
+        };
+        this.vertigo = this.sound.add('vertigo', this.config);
+    }
+
     create() {
         let width = this.cameras.main.width;
         let height = this.cameras.main.height;
@@ -19,19 +32,19 @@ export default class Select extends Phaser.Scene {
                     fontSize: 50,
                     color: '#ffffff'
                 }).setInteractive();
-                levelButtons[i].setOrigin(0, 0.5);
-                levelButtons[i].on('pointerdown', pointer => {
-                    this.scene.start('tower' + (i + 1));
-                });
+            levelButtons[i].setOrigin(0, 0.5);
+            levelButtons[i].on('pointerdown', pointer => {
+                this.scene.start('tower' + (i + 1));
+            });
             levelButtons[i].setShadow(2, 2, "#333333", 2, false, true);
 
 
             recordText[i] = this.add.text(width * (0.1 + i * 0.17), height * 0.3, this.game.levelsInfo[i + 1].record,
-            {
-            fontFamily: 'Caveat',
-            fontSize: 30,
-            color: '#ffffff'
-            })
+                {
+                    fontFamily: 'Caveat',
+                    fontSize: 30,
+                    color: '#ffffff'
+                })
 
         }
 
@@ -41,11 +54,23 @@ export default class Select extends Phaser.Scene {
                 fontSize: 30,
                 color: '#ffffff'
             }).setInteractive();
-            backButton.setOrigin(0, 0.5);
-            backButton.on('pointerdown', pointer => {
-                this.scene.start('title');
+        backButton.setOrigin(0, 0.5);
+        backButton.on('pointerdown', pointer => {
+            this.scene.start('title');
         });
         backButton.setShadow(2, 2, "#333333", 2, false, true);
+
+        let muteButton = this.add.text(width * 0.5, height * 0.8, 'Mute',
+            {
+                fontFamily: 'Caveat',
+                fontSize: 30,
+                color: '#ffffff'
+            }).setInteractive();
+        muteButton.setOrigin(0, 0.5);
+        muteButton.on('pointerdown', pointer => {
+            this.vertigo.setMute(!this.vertigo.mute);
+        });
+        muteButton.setShadow(2, 2, "#333333", 2, false, true);
 
         let debugButton = this.add.text(width * 0.8, height * 0.8, 'Debug',
             {
@@ -53,10 +78,14 @@ export default class Select extends Phaser.Scene {
                 fontSize: 30,
                 color: '#ffffff'
             }).setInteractive();
-            debugButton.setOrigin(0, 0.5);
-            debugButton.on('pointerdown', pointer => {
-                this.scene.start('debug');
+        debugButton.setOrigin(0, 0.5);
+        debugButton.on('pointerdown', pointer => {
+            this.vertigo.stop();
+            this.scene.start('debug');
         });
         debugButton.setShadow(2, 2, "#333333", 2, false, true);
+
+
+        this.vertigo.play();
     }
 }

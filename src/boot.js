@@ -81,6 +81,11 @@ export default class Boot extends Phaser.Scene {
     this.load.image('smallbox','box.png');
     this.load.image('exit_icon', 'exiticon.png');
 
+    //Cargamos la música
+    this.load.setPath('assets/music/');
+    this.load.audio('vertigo', 'vertigo.mp3');
+    this.load.audio('cuphead', 'cuphead.mp3');
+
     //Temporalmente para probar la barra de carga
     for (var i = 0; i < 0; i++) {
       this.load.image('archivo_innecesario' + i, 'player.png');
