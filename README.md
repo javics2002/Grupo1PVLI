@@ -139,7 +139,8 @@ Por defecto la selección de niveles comenzará en el nivel 1, pudiendo avanzar 
 - Cuphead, cortos de Oswald The Lucky Rabbit y de Mickey Mouse: Estilo artístico
 
 ### UML
-![image](https://user-images.githubusercontent.com/61164466/140552477-6b9920ea-4238-4182-aaf9-0732b9a80f58.png)
+![image]![unknown](https://user-images.githubusercontent.com/61164466/142723621-71fdf626-5701-4834-bde2-13ad6b47e9f3.png)
+
 
 ### Enlaces Importantes
 Página del juego https://javics2002.github.io/Grupo1PVLI/
