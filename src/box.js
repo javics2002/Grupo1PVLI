@@ -9,7 +9,6 @@ export default class Box extends Phaser.Physics.Matter.Sprite {
     constructor(scene, x, y, img){
         super(scene.matter.world, x, y, img);
         this.scene.add.existing(this);
-        scene.matter.add.gameObject(this);
         this.setFixedRotation();
     }
 }

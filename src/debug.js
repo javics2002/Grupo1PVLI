@@ -42,7 +42,6 @@ export default class Debug extends Phaser.Scene {
 
 
     this.player = new Player(this, 200, 580 + floorGap * (floors - 1));
-    this.matter.add.gameObject(this.player);
     for (let i = 0; i < floors; i++)
       ;
 
