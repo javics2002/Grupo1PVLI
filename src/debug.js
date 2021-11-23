@@ -1,5 +1,6 @@
 import Box from './box.js';
 import Player from './player.js';
+import Shadow from './shadow.js';
 import Rope from './rope.js';
 
 /**
@@ -39,6 +40,8 @@ export default class Debug extends Phaser.Scene {
 
     this.matter.world.setBounds(0, 0, 1280, floors * 500 + 220);
 
+    this.shadow = new Shadow(this, 200, 580 + floorGap * (floors - 1), 10);
+
 
 
     this.player = new Player(this, 200, 580 + floorGap * (floors - 1));
@@ -58,7 +61,6 @@ export default class Debug extends Phaser.Scene {
     this.matter.world.on('collisionstart',
       (event, player, ropes) => {
         if (player.gameObject !== null && ropes.gameObject !== null && player.gameObject.texture !== null && ropes.gameObject.texture !== null) {
-          console.log((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player"));
           if ((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player")) {
             //Scottie se agarra a la cuerda
 
