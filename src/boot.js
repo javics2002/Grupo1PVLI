@@ -80,6 +80,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('brokenStair', 'broken_stairs1.png');
     this.load.image('smallbox','box.png');
     this.load.image('exit_icon', 'exiticon.png');
+    this.load.image('shadow', 'shadow.png')
 
     //Cargamos la música
     this.load.setPath('assets/music/');
