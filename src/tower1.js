@@ -8,8 +8,6 @@ export default class Tower1 extends Tower {
   create()
   {
     super.create();
-
-    const ropes = this.matter.world.nextCategory();
     this.cameraRanges = [{"max": 860, "min": 0},
     {"max": 1720, "min": 861}]
   }
