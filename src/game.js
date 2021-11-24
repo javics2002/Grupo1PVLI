@@ -3,8 +3,11 @@ import Title from './title.js';
 import Select from './level_select.js';
 import Debug from './debug.js';
 import Tower1 from './tower1.js';
-import End from './end.js';
 import Tower2 from './tower2.js';
+import Tower3 from './tower3.js';
+import Tower4 from './tower4.js';
+import Tower5 from './tower5.js';
+import End from './end.js';
 
 const initGame = () => {
     /**
@@ -21,13 +24,13 @@ const initGame = () => {
             autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
         },
         pixelArt: true,
-        scene: [Boot, End, Debug, Title, Select, Tower1, Tower2 ],
+        scene: [Boot, End, Debug, Title, Select, Tower1, Tower2, Tower3, Tower4, Tower5 ],
             //Tower3, Tower4, Tower5],
         physics: { 
             default: 'matter', 
             matter: { 
                 gravity: { y: 2 }, 
-                debug: true
+                debug: false
             } 
         }
     };
@@ -60,6 +63,15 @@ const initGame = () => {
         winHeight: 600
     }
  
+    game.audioConfig = {
+        mute: false,
+        volume: 1,
+        rate: 1,
+        detune: 0,
+        seek: 0,
+        loop: true,
+        delay: 0,
+      };
 }
 
 //Código de Iván para cargar la fuente usada en la pantalla de carga.

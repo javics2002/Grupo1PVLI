@@ -7,16 +7,7 @@ export default class Select extends Phaser.Scene {
     }
 
     preload() {
-        const config = {
-            mute: false,
-            volume: 1,
-            rate: 1,
-            detune: 0,
-            seek: 0,
-            loop: true,
-            delay: 0,
-        };
-        this.vertigo = this.sound.add('vertigo', this.config);
+        this.vertigo = this.sound.add('vertigo', this.game.audioConfig);
     }
 
     create() {
@@ -35,7 +26,7 @@ export default class Select extends Phaser.Scene {
             levelButtons[i].setOrigin(0, 0.5);
             levelButtons[i].on('pointerdown', pointer => {
                 this.vertigo.stop();
-                this.scene.start('tower' + (i + 1));
+                this.scene.start('Tower ' + (i + 1));
             });
             levelButtons[i].setShadow(2, 2, "#333333", 2, false, true);
 
@@ -57,6 +48,7 @@ export default class Select extends Phaser.Scene {
             }).setInteractive();
         backButton.setOrigin(0, 0.5);
         backButton.on('pointerdown', pointer => {
+            this.vertigo.stop();
             this.scene.start('title');
         });
         backButton.setShadow(2, 2, "#333333", 2, false, true);
@@ -69,6 +61,7 @@ export default class Select extends Phaser.Scene {
             }).setInteractive();
         muteButton.setOrigin(0, 0.5);
         muteButton.on('pointerdown', pointer => {
+            this.game.audioConfig.mute = !this.game.audioConfig.mute;
             this.vertigo.setMute(!this.vertigo.mute);
         });
         muteButton.setShadow(2, 2, "#333333", 2, false, true);
@@ -82,7 +75,7 @@ export default class Select extends Phaser.Scene {
         debugButton.setOrigin(0, 0.5);
         debugButton.on('pointerdown', pointer => {
             this.vertigo.stop();
-            this.scene.start('debug');
+            this.scene.start('Debug');
         });
         debugButton.setShadow(2, 2, "#333333", 2, false, true);
 

@@ -7,21 +7,23 @@ import Node from "./node.js"
 export default class Rope extends Phaser.Physics.Matter.Sprite {
   /**
    * Constructora de la cuerda
-   * @param {Phaser.Scene} scene Escena a la que pertenece el jugador
+   * @param {Tower} scene Escena a la que pertenece el jugador
    * @param {number} x Coordenada X del pivote
    * @param {number} y Coordenada Y del pivote
    * @param {integer} length Número de nodos que cuelgan del pivote
+   * @param {integer} id Identificador
    */
-  constructor(scene, x, y, length) {
+  constructor(scene, x, y, length, id) {
     super(scene.matter.world, x, y, 'pivot');
     this.setStatic(true);
     this.setSensor(true);
+    this.id = id;
 
     this.scene.add.existing(this);
     let nodes = new Array(length);
     for(let i = 0; i < length; i++)
     {
-      nodes[i] = new Node(scene, x, y + 10 * i);
+      nodes[i] = new Node(scene, x, y + 10 * i, id);
       console.log(typeof(nodes[i]));
       let options = {
         bodyA: this,

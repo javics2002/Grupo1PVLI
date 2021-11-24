@@ -4,14 +4,16 @@
  export default class Node extends Phaser.Physics.Matter.Sprite {
     /**
      * Constructora de la cuerda
-     * @param {Phaser.Scene} scene Escena a la que pertenece el jugador
+     * @param {Tower} scene Escena a la que pertenece el jugador
      * @param {number} x Coordenada X
      * @param {number} y Coordenada Y
+     * @param {integer} id Identificador de a qué cuerda pertenezco
      */
-    constructor(scene, x, y) {
+    constructor(scene, x, y, id) {
         super(scene.matter.world, x, y, 'rope');
         this.setSensor(true);
         this.scene.add.existing(this);
+        this.id = id;
       }
   
     /**

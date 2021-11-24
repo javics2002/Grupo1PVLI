@@ -6,7 +6,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
   /**
    * Constructor del jugador
-   * @param {Phaser.Scene} scene Escena a la que pertenece el jugador
+   * @param {Tower} scene Escena a la que pertenece el jugador
    * @param {number} x Coordenada X
    * @param {number} y Coordenada Y
    */
@@ -83,10 +83,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
     if (this.hanged) 
     {
-      if(this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown)
+      if(Phaser.Input.Keyboard.JustDown(this.cursors.up) || Phaser.Input.Keyboard.JustDown(this.wKey) || Phaser.Input.Keyboard.JustDown(this.cursors.space))
       {
-        this.scene.freePlayer();
         this.hanged = false;
+        this.scene.freePlayer();
       }
       else
       {
@@ -123,7 +123,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         this.setAngle(0);
         this.bottomSensor.x = this.x;
         this.bottomSensor.y = this.y;
-        console.log('jump!');
+        //console.log('jump!');
       }
 
       if ((this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown) && this.body.velocity.y < 0) {
@@ -150,9 +150,6 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       this.bottomSensor.x = this.x;
       this.bottomSensor.y = this.y + this.height * 2;
     }
-    //Condicion de ganar
-    if (this.y < 630)
-      this.scene.win();
   }
 
   hangStart() {
