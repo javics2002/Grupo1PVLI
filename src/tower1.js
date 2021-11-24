@@ -5,14 +5,18 @@ import Tower from './tower.js';
 export default class Tower1 extends Tower {
   constructor() {
     super('tower1', 20, 2, 18);
-  }
+    
+    }
+
+
 
   create() {
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;
 
     this.matter.world.setBounds(0, 0, 1280, 1720);
-
+    this.cameraRanges = [{"max": 860, "min": 0},
+    {"max": 1720, "min": 861}]
     this.player = new Player(this, 200, 1580);
     this.matter.add.gameObject(this.player);
 
@@ -20,6 +24,8 @@ export default class Tower1 extends Tower {
 
     this.timer = 0;
 
+    
+    
     this.cameras.main.setBounds(0, 0, 1280, 1720);
     this.cameras.main.startFollow(this.player);
 
@@ -72,6 +78,8 @@ export default class Tower1 extends Tower {
   }
 
   update(t, dt) {
+
+    
     super.update(t, dt);
     this.timer = this.timer + dt / 1000;
 
@@ -79,6 +87,12 @@ export default class Tower1 extends Tower {
     this.timerString = this.timer.toFixed(2);
     this.timerText.setText(this.timerString);
 
+    this.cameraRanges.forEach(element => {
+      if(this.player.y >= element.min && this.player.y < element.max){
+          this.cameras.main.setBounds(0, element.min, 1280, element.max + element.min);
+          this.cameras.main.startFollow(this.player);
+      }
+    });
 
     if (this.timer > this.defeatTime) {
       this.lose();
