@@ -10,8 +10,9 @@
      */
     constructor(scene, x, y) {
         super(scene.matter.world, x, y, 'rope');
+        this.setSensor(true);
         this.scene.add.existing(this);
-    }
+      }
   
     /**
    * Métodos preUpdate de Phaser. Se encarga del balanceo de la cuerda.

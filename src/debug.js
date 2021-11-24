@@ -2,17 +2,18 @@ import Box from './box.js';
 import Player from './player.js';
 import Shadow from './shadow.js';
 import Rope from './rope.js';
+import Tower from './tower.js';
 
 /**
  * Escena de pruebas.
  * @extends Phaser.Scene
  */
-export default class Debug extends Phaser.Scene {
+export default class Debug extends Tower {
   /**
    * Constructor de la escena
    */
   constructor() {
-    super({ key: 'debug' });
+    super('debug', 20, 2, 18);
   }
 
   preload() {
@@ -42,8 +43,6 @@ export default class Debug extends Phaser.Scene {
 
     this.shadow = new Shadow(this, 200, 580 + floorGap * (floors - 1), 10);
 
-
-
     this.player = new Player(this, 200, 580 + floorGap * (floors - 1));
     for (let i = 0; i < floors; i++)
       ;
@@ -58,19 +57,23 @@ export default class Debug extends Phaser.Scene {
     this.rope1 = new Rope(this, 600, 500 + floorGap * (floors - 1), 7);
     this.rope1.setCollisionCategory(ropes);
 
+    this.ropeConstraint = undefined;
+
     this.matter.world.on('collisionstart',
       (event, player, ropes) => {
         if (player.gameObject !== null && ropes.gameObject !== null && player.gameObject.texture !== null && ropes.gameObject.texture !== null) {
           if ((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player")) {
             //Scottie se agarra a la cuerda
-
-            this.matter.add.constraint(player,
-              ropes,
-              0, // distancia
-              0.5 // rigidez de la unión
-            );
-
-            //this.player.hangStart();
+            if(this.ropeConstraint === undefined)
+            {
+              this.ropeConstraint = this.matter.add.constraint(player,
+                ropes,
+                0, // distancia
+                0.5 // rigidez de la unión
+              );
+  
+              this.player.hangStart();
+            }
           }
         }
       });
@@ -94,5 +97,11 @@ export default class Debug extends Phaser.Scene {
   //Metodo de ganar
   win() {
     this.scene.start('end');
+  }
+
+  freePlayer()
+  {
+    this.matter.world.removeConstraint(this.ropeConstraint);
+    this.ropeConstraint = undefined;
   }
 }

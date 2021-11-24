@@ -15,6 +15,7 @@ export default class Rope extends Phaser.Physics.Matter.Sprite {
   constructor(scene, x, y, length) {
     super(scene.matter.world, x, y, 'pivot');
     this.setStatic(true);
+    this.setSensor(true);
 
     this.scene.add.existing(this);
     let nodes = new Array(length);
