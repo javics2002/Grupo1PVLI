@@ -145,6 +145,15 @@ export default class Tower extends Phaser.Scene {
     this.defeatTimeText.setOrigin(0, 0);
 
     this.defeatTimeText.setScrollFactor(0);
+
+    //Flechas de marca para la sombra
+    this.upArrow = this.add.sprite(this.shadow.x, 32, "up_arrow");
+    this.upArrow.setScrollFactor(0);
+    this.upArrow.setOrigin(0.5, 0);
+    this.upArrow.setTint(0Xf3463a);
+    this.downArrow = this.add.sprite(this.shadow.x, height - 32, "down_arrow");
+    this.downArrow.setScrollFactor(0);
+    this.downArrow.setOrigin(0.5, 1);
   }
 
   update(t, dt) {
@@ -155,15 +164,22 @@ export default class Tower extends Phaser.Scene {
     this.timerString = this.timer.toFixed(2);
     this.timerText.setText(this.timerString);
 
-    if (this.timer > this.defeatTime) {
+    //Actualizar flechas de la sombra
+    if(this.cameras.main.scrollY + this.cameras.main.height < this.shadow.y)
+      this.downArrow.setVisible(true);
+    else
+      this.downArrow.setVisible(false);
+    if(this.cameras.main.scrollY > this.shadow.y)
+      this.upArrow.setVisible(true);
+    else
+      this.upArrow.setVisible(false);
+
+    if (this.timer > this.defeatTime)
       this.lose();
-    }
 
     //Condicion de ganar
     if (this.player.y < this.tileSize * (this.floorHeight + this.margin))
       this.win();
-
-      console.log(this.canGrabLastRope);
   }
 
   //Metodo de ganar
