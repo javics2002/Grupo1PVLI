@@ -44,6 +44,43 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.label = this.scene.add.text(10, 10, "");
 
 
+    this.canClimb = false;
+
+
+      function getRootBody (body) {
+        if (body.parent === body) { return body; }
+        while (body.parent !== body) {
+          body = body.parent;
+        }
+        return body;
+      }
+  
+      this.scene.matter.world.on('collisionactive', function (event) {
+        for (let i = 0; i < event.pairs.length; i++) {
+          const { bodyA, bodyB } = event.pairs[i];
+          const player = bodyA.label === 'player' ? bodyA : bodyB;
+          const tile = bodyA.label === 'player' ? bodyB : bodyA;
+          if (tile.isSensor) {
+            const mainBody = getRootBody(tile);
+            const { gameObject } = mainBody;
+            // console.log(gameObject.tile);
+            // console.log(player);
+           // gameObject.tile.tint = 0x00FFFF;
+            this.canClimb = true;
+           
+          
+            if(gameObject.tile.properties.type === 'fragment'){
+              this.brokenStair = true;
+              gameObject.tile.tint = 0x00FFFF;
+            }
+          }
+          //else player.canClimb = false;
+        }
+      });
+
+
+
+
     this.scene.matter.world.on("collisionactive", function (event) {
       for (let i = 0; i < event.pairs.length; i++) {
 
@@ -56,6 +93,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         }
       }
     });
+
+  
 
     //escaleras
     this.brokenStair = false;
@@ -76,6 +115,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
    */
   preUpdate(t, dt) {
     super.preUpdate(t, dt);
+    
+    
     if (this.brokenStair)
       this.propE.visible = true;
     else this.propE.visible = false;
@@ -126,9 +167,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         //console.log('jump!');
       }
 
-      if ((this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown) && this.body.velocity.y < 0) {
+      if ((this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown) && this.body.velocity.y < 0 && !this.canClimb) {
         this.setVelocityY(this.body.velocity.y * 0.9);
       }
+    
 
       if (!this.playerTouchingGround && this.body.velocity.y < 0 && !(this.cursors.up.isDown || this.wKey.isDown || this.cursors.space.isDown)) {
         this.setVelocityY(this.body.velocity.y * 0.6);

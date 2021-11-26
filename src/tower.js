@@ -50,7 +50,7 @@ export default class Tower extends Phaser.Scene {
     
     const coll = map.createLayer('Tower',tileset);
     const stairs = map.createLayer('Interactuable',tileset);
-
+    
     coll.setCollisionByProperty({collides: true})
     stairs.setCollisionByProperty({collides:true})
     
@@ -60,28 +60,28 @@ export default class Tower extends Phaser.Scene {
     stairs.forEachTile(function (tile) {
       // If your ladder tiles have a complex body made up of different parts, you'll need to iterate through
       // each part. If it's a simple rectangle, it will only have 1 part which is a reference to itself
-      if (tile.properties.type === 'ladder') {
+      if (tile.properties.type === 'ladder' ) {
       tile.physics.matterBody.body.parts.forEach((part) => {
         part.isSensor = true;
-      });
+      });      
+    }
+    else if ( tile.properties.type === 'fragment') {
+      tile.physics.matterBody.body.parts.forEach((part) => {
+        part.isSensor = true;
+      });      
     }
     });
 
-    
-
+   
 
 
 
     this.shadow = new Shadow(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize, this.defeatTime);
 // (this.floors + 1) * this.floorHeight * this.tileSize
-    this.player = new Player(this, 400,(this.floors + 1) * this.floorHeight * this.tileSize);
+    this.player = new Player(this, 400,(this.floors + 1) * this.floorHeight * this.tileSize, coll, { restitution: 1, label: 'player' });
     for (let i = 0; i < this.floors; i++)
       ;
-
-
-
-
-
+    
 
 
     this.timer = 0;
