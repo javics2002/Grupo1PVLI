@@ -2,7 +2,7 @@ import Tower from './tower.js';
 
 export default class Tower2 extends Tower {
   constructor() {
-    super('tower2', 40, 4, 18, 'torre2');
+    super('Tower 2', 40, 4, 18, 'torre2');
   }
   create(){
     super.create();
