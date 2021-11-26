@@ -8,9 +8,9 @@ export default class Tower extends Phaser.Scene {
    * @param {integer} floors Número de plantas de la torre, sin contar el campanario
    * @param {integer} floorHeight Número de tiles que mide un piso
    */
-  constructor(key, defeatTime, floors, floorHeight) {
+  constructor(key, defeatTime, floors, floorHeight,keyTile) {
     super({ key: key });
-
+    this.keyTile = keyTile;
     this.key = key;
     this.defeatTime = defeatTime;
     this.floors = floors;
@@ -29,17 +29,60 @@ export default class Tower extends Phaser.Scene {
   /**
    * Creación de los elementos de la escena principal de juego
    */
+  /**
+   * Constructor de la escena
+   * @param {string} key Nombre de la torre
+   * @param {number} defeatTime Tiempo límite para completar el nivel
+   * @param {integer} floors Número de plantas de la torre, sin contar el campanario
+   * @param {integer} floorHeight Número de tiles que mide un piso
+   */
   create() {
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;
 
+
     this.matter.world.setBounds(0, 0, 1280, (this.floors + 1) * this.floorHeight * this.tileSize + 2 *this.margin * this.tileSize);
 
-    this.shadow = new Shadow(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize, this.defeatTime);
 
-    this.player = new Player(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize);
+
+    const map = this.make.tilemap({key : this.keyTile});
+    const tileset = map.addTilesetImage(this.keyTile,'tiles');
+    
+    const coll = map.createLayer('Tower',tileset);
+    const stairs = map.createLayer('Interactuable',tileset);
+
+    coll.setCollisionByProperty({collides: true})
+    stairs.setCollisionByProperty({collides:true})
+    
+    this.matter.world.convertTilemapLayer(coll);
+    this.matter.world.convertTilemapLayer(stairs);
+
+    stairs.forEachTile(function (tile) {
+      // If your ladder tiles have a complex body made up of different parts, you'll need to iterate through
+      // each part. If it's a simple rectangle, it will only have 1 part which is a reference to itself
+      if (tile.properties.type === 'ladder') {
+      tile.physics.matterBody.body.parts.forEach((part) => {
+        part.isSensor = true;
+      });
+    }
+    });
+
+    
+
+
+
+
+    this.shadow = new Shadow(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize, this.defeatTime);
+// (this.floors + 1) * this.floorHeight * this.tileSize
+    this.player = new Player(this, 400,(this.floors + 1) * this.floorHeight * this.tileSize);
     for (let i = 0; i < this.floors; i++)
       ;
+
+
+
+
+
+
 
     this.timer = 0;
     this.cameras.main.setBounds(0, 0, 1280, (this.floors + 1) * this.floorHeight * 32 + 32 * 4);
@@ -50,6 +93,7 @@ export default class Tower extends Phaser.Scene {
     //Agarrarse a la cuerda
     this.matter.world.on('collisionstart',
       (event, player, ropes) => {
+        if(ropes.gameObject.body.label != 'Rectangle Body'){
         if (player.gameObject !== null && ropes.gameObject !== null && player.gameObject.texture !== null && ropes.gameObject.texture !== null) {
           if ((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player")) {
             //Scottie se agarra a la cuerda
@@ -80,6 +124,7 @@ export default class Tower extends Phaser.Scene {
               }
             }
           }
+        }
         }
       });
 

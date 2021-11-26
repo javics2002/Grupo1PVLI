@@ -4,9 +4,9 @@
 h1 {
   
   font-family: 'Satisfy', cursive;  
-  font-size: 100px;
+  font-size: 50px;
   display: inline-block;  
-  padding-top: 3%;  
+  padding-top: 1.5%;  
   width: 100%;
   text-align : center;
   
@@ -114,6 +114,6 @@ canvas{
   border-width:3vh;
   
   border-style: solid;
-  border-radius: 20px;
+  border-radius: 0px;
 }
 

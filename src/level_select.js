@@ -26,7 +26,7 @@ export default class Select extends Phaser.Scene {
             levelButtons[i].setOrigin(0, 0.5);
             levelButtons[i].on('pointerdown', pointer => {
                 this.vertigo.stop();
-                this.scene.start('Tower ' + (i + 1));
+                this.scene.start('tower' + (i + 1));
             });
             levelButtons[i].setShadow(2, 2, "#333333", 2, false, true);
 

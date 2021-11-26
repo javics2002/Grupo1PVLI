@@ -70,6 +70,15 @@ export default class Boot extends Phaser.Scene {
     });
     assetText.setOrigin(0.5, 0.5);
 
+    //cargo los tiles
+    this.load.image('tiles', '../assets/map/atlas.png');
+    this.load.tilemapTiledJSON('torre1', '../assets/map/torre_1.json');
+    this.load.tilemapTiledJSON('torre2', '../assets/map/torre_2.json');
+    this.load.tilemapTiledJSON('torre3', '../assets/map/torre_3.json');
+    this.load.tilemapTiledJSON('torre4', '../assets/map/torre_4.json');
+    this.load.tilemapTiledJSON('torre5', '../assets/map/torre_5.json');
+
+
     // Con setPath podemos establecer el prefijo que se añadirá a todos los load que aparecen a continuación
     this.load.setPath('assets/sprites/');
 
