@@ -158,7 +158,7 @@
                          "value":true
                         }, 
                         {
-                         "name":"typr",
+                         "name":"type",
                          "type":"string",
                          "value":"fragment"
                         }]
