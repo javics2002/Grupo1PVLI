@@ -231,6 +231,10 @@ export default class Tower extends Phaser.Scene {
   win() {
     this.cuphead.stop();
     let towerNumber = parseInt(this.key[6]);
+    //Actualiza Record
+    if (this.game.levelsInfo[towerNumber].record === 0 || Number.parseFloat(this.game.levelsInfo[towerNumber].record) > Number.parseFloat(this.timerString))
+      this.game.levelsInfo[towerNumber].record = this.timerString;
+
     if(towerNumber < 5)
     {
       console.log('Tower ' + (towerNumber + 1));
