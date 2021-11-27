@@ -19,7 +19,7 @@ export default class Shadow extends Phaser.GameObjects.Sprite {
 
         let tween = this.scene.tweens.add({
             targets: [this],
-            y: this.scene.floorHeight,
+            y: (this.scene.floorHeight + this.scene.margin) * this.scene.tileSize,
             duration: this.time * 1000//,
             //ease: 'Sine.easeOut'
         });
