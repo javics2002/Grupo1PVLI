@@ -206,6 +206,9 @@ export default class Tower extends Phaser.Scene {
     this.downArrow = this.add.sprite(this.shadow.x, height - 32, "down_arrow");
     this.downArrow.setScrollFactor(0);
     this.downArrow.setOrigin(0.5, 1);
+
+    //Reseteamos el haber llegado a la cima
+    this.reachedTop = false;
   }
 
   update(t, dt) {
@@ -243,6 +246,9 @@ export default class Tower extends Phaser.Scene {
     this.tower.stop();
 
     this.shadow.stop();
+
+    //Desactivar movimiento del jugador
+    //Desactivar boton de salir al menu
 
     //Empieza cinematica
     this.winMusic.play("winPart");
