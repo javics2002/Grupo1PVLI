@@ -17,18 +17,23 @@ export default class Shadow extends Phaser.GameObjects.Sprite {
         
         this.time = time;
 
-        let tween = this.scene.tweens.add({
+        this.tween = this.scene.tweens.add({
             targets: [this],
             y: (this.scene.floorHeight + this.scene.margin) * this.scene.tileSize,
             duration: this.time * 1000//,
             //ease: 'Sine.easeOut'
         });
 
-        tween.on('stop', this.kill);
+        this.tween.on('stop', this.kill);
     }
 
     kill()
     {
         console.log('La sombra ha llegado arriba');
+    }
+
+    stop()
+    {
+        this.tween.pause();
     }
 }

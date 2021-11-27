@@ -18,14 +18,13 @@ const initGame = () => {
         type: Phaser.AUTO,
         width:  1280,
         height: 720,
-        resolution: window.devicePixelRatio,
+        //resolution: window.devicePixelRatio,
         scale: {
-            // mode: Phaser.Scale.FIT,  
-            autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
+            mode: Phaser.Scale.FIT,  
+            autoCenter: Phaser.Scale.CENTER_BOTH
         },
         pixelArt: true,
         scene: [Boot, End, Debug, Title, Select, Tower1, Tower2, Tower3, Tower4, Tower5 ],
-            //Tower3, Tower4, Tower5],
         physics: { 
             default: 'matter', 
             matter: { 

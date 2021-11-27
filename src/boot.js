@@ -71,13 +71,20 @@ export default class Boot extends Phaser.Scene {
     assetText.setOrigin(0.5, 0.5);
 
     //cargo los tiles
-    this.load.image('tiles', '../assets/map/atlas.png');
-    this.load.tilemapTiledJSON('torre1', '../assets/map/torre_1.json');
-    this.load.tilemapTiledJSON('torre2', '../assets/map/torre_2.json');
-    this.load.tilemapTiledJSON('torre3', '../assets/map/torre_3.json');
-    this.load.tilemapTiledJSON('torre4', '../assets/map/torre_4.json');
-    this.load.tilemapTiledJSON('torre5', '../assets/map/torre_5.json');
+    this.load.setPath('assets/map/');
+    this.load.image('tiles', 'atlas.png');
+    this.load.tilemapTiledJSON('torre1', 'torre_1.json');
+    this.load.tilemapTiledJSON('torre2', 'torre_2.json');
+    this.load.tilemapTiledJSON('torre3', 'torre_3.json');
+    this.load.tilemapTiledJSON('torre4', 'torre_4.json');
+    this.load.tilemapTiledJSON('torre5', 'torre_5.json');
 
+    //Preview de las torres
+    this.load.image('tower1preview', 'torre_1.png');
+    this.load.image('tower2preview', 'torre_2.png');
+    this.load.image('tower3preview', 'torre_3.png');
+    this.load.image('tower4preview', 'torre_4.png');
+    this.load.image('tower5preview', 'torre_5.png');
 
     // Con setPath podemos establecer el prefijo que se añadirá a todos los load que aparecen a continuación
     this.load.setPath('assets/sprites/');
@@ -96,7 +103,8 @@ export default class Boot extends Phaser.Scene {
     //Cargamos la música
     this.load.setPath('assets/music/');
     this.load.audio('vertigo', 'vertigo.mp3');
-    this.load.audio('cuphead', 'cuphead.mp3');
+    this.load.audio('tower', 'tower.mp3');
+    this.load.audio('win', 'win.mp3');
 
     //Temporalmente para probar la barra de carga
     for (var i = 0; i < 0; i++) {
