@@ -17,10 +17,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.speed = .5;
 
     //Salto
-    this.jumpForce = -20;
-    this.fallMultiplier = .1;
+    this.jumpSpeed = -1.5;
+    this.fallMultiplier = .05;
     this.lowJumpMultiplier = .3;
-    this.jumpHeight = 5 * this.scene.tileSize;
+    this.jumpHeight = 7 * this.scene.tileSize;
     this.isJumping = false;
 
     // Coyote Time: podemos saltar en el aire un poco después de salirnos de una plataforma
@@ -151,34 +151,47 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         this.setVelocityX(this.speed * dt);
       else if (this.left())
         this.setVelocityX(-this.speed * dt);
+      else
+        this.setVelocityX(0);
 
       //Salto
       if ((this.jump() && !this.jumpDown || this.jumpBufferCounter >= 0) /*&& this.coyoteCounter*/ > 0 && !this.isJumping) {
-        
-          this.jumpDown = true;
-          this.jumpInitialHeight = this.y;
-          this.isJumping = true;
-          this.setVelocityY(this.jumpForce);
-        
+        this.jumpDown = true;
+        this.jumpInitialHeight = this.y;
+        this.isJumping = true;
+        this.setVelocityY(this.jumpSpeed * dt);
       }
-      //Añade una fuerza complementaria hacia abajo al llegar al tope de altura y al seguir cayendo
-      if (this.isJumping && (this.body.velocity.y < -0.1 && this.jumpInitialHeight - this.y > this.jumpHeight || this.body.velocity.y > 0.1 ))
-        this.setVelocityY(this.body.velocity.y + this.fallMultiplier * dt);
-      //Si cancelamos el salto aplica otra fuerza hacia abajo
-      else if (this.isJumping && this.body.velocity.y < -0.1 && !this.jump())
-        this.setVelocityY(this.body.velocity.y + this.lowJumpMultiplier * dt);
+      if (this.isJumping && this.jump() && this.body.velocity.y < -1 && this.jumpInitialHeight - this.y < this.jumpHeight) 
+        this.setVelocityY(this.jumpSpeed * (1.1 - (this.jumpInitialHeight - this.y)/this.jumpHeight) * dt);
+      else if (this.isJumping && this.body.velocity.y > -0.1)
+        this.setVelocityY(this.body.velocity.y - this.fallMultiplier * dt);
+
+        //Intentos fallidos de salto que borraré cuando veais si os gusta
+        /*
+      else if(this.isJumping && this.body.velocity.y < -0.1 && this.jumpInitialHeight - this.y >= this.jumpHeight)
+        this.setVelocityY(this.body.velocity.y + this.fallMultiplier);
+      else if(this.isJumping && this.body.velocity.y > 0.1);
+        //this.setVelocityY(this.body.velocity.y * 1.1);
       /*
-      if (this.isJumping && this.jumpInitialHeight - this.y > this.jumpHeight) {
-        //Hemos llegado a la altura máxima
-        this.applyForce({ x: 0, y: 0.001 });
-      }
-      else if (this.isJumping && !this.jump()) {
-        //Aplicamos fuerza para cancelar el salto
-        this.applyForce({ x: 0, y: 0.01 });
-      }*/
+            //Añade una fuerza complementaria hacia abajo al llegar al tope de altura y al seguir cayendo
+            if (this.isJumping && (this.body.velocity.y < -0.1 && this.jumpInitialHeight - this.y > this.jumpHeight || this.body.velocity.y > 0.1 ))
+              this.setVelocityY(this.body.velocity.y + this.fallMultiplier * dt);
+            //Si cancelamos el salto aplica otra fuerza hacia abajo
+            else if (this.isJumping && this.body.velocity.y < -0.1 && !this.jump())
+              this.setVelocityY(this.body.velocity.y + this.lowJumpMultiplier * dt);
+            /*
+            if (this.isJumping && this.jumpInitialHeight - this.y > this.jumpHeight) {
+              //Hemos llegado a la altura máxima
+              this.applyForce({ x: 0, y: 0.001 });
+            }
+            else if (this.isJumping && !this.jump()) {
+              //Aplicamos fuerza para cancelar el salto
+              this.applyForce({ x: 0, y: 0.01 });
+            }*/
       if (!this.jump() && this.jumpDown) {
         //Soltamos el boton
         this.jumpDown = false;
+        console.log("Termino salto");
       }
 
 /*
