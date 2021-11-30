@@ -18,28 +18,28 @@ export default class Tower extends Phaser.Scene {
     this.floorHeight = floorHeight;
     this.tileSize = 32;
     this.margin = 2;
-    this.lastRopeId = -1;
-    this.canGrabLastRope = false;
-    this.grabLastRopeTime = 100;
-    this.reachedTop = false;
+    this._lastRopeId = -1;
+    this._canGrabLastRope = false;
+    this._grabLastRopeTime = 100;
+    this._reachedTop = false;
 
     //La sombrá llegará a Judy cuando la música "tower" llegue a estos segundos
-    this.loseMusicTime = 320;
-    this.startMusicTime = this.loseMusicTime - (this.defeatTime * 1.5);
+    this._loseMusicTime = 320;
+    this._startMusicTime = this._loseMusicTime - (this.defeatTime * 1.5);
 
     this.musicMarker = {
       name: this.key,
-      start: this.startMusicTime,
+      start: this._startMusicTime,
       duration: this.defeatTime * 1.5 + 5
     };
   }
 
   preload() {
     //Cargamos la musica
-    this.tower = this.sound.add('tower', this.audioConfig);
+    this.music = this.sound.add('tower', this.audioConfig);
     this.winMusic = this.sound.add('win', this.audioConfig);
 
-    this.tower.addMarker(this.musicMarker);
+    this.music.addMarker(this.musicMarker);
     this.winMusic.addMarker({
       name: "winPart",
       start: 268,
@@ -48,7 +48,7 @@ export default class Tower extends Phaser.Scene {
   }
   
   /**
-   * Creación de los elementos de la escena principal de juego
+   * Creación de los elementos comunes a todas las torres
    */
   create() {
     //Tamaño del mapa
@@ -85,13 +85,14 @@ export default class Tower extends Phaser.Scene {
       }
     });
 
-    this.shadow = new Shadow(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize, this.defeatTime);
-    // (this.floors + 1) * this.floorHeight * this.tileSize
+    //Personajes
     this.player = new Player(this, 400, (this.floors + 1) * this.floorHeight * this.tileSize, coll, { restitution: 1, label: 'player' });
-    for (let i = 0; i < this.floors; i++)
-      ;
+    this.shadow = new Shadow(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize, this.defeatTime);
 
+    //Timer
     this.timer = 0;
+
+    //Camara
     this.cameras.main.setBounds(0, 0, 1280, (this.floors + 1) * this.floorHeight * 32 + 32 * 4);
     this.cameras.main.startFollow(this.player);
 
@@ -101,7 +102,7 @@ export default class Tower extends Phaser.Scene {
     this.matter.world.on('collisionstart',
       (event, player, ropes) => {
         if (ropes.gameObject.body.label != 'Rectangle Body') {
-          if (player.gameObject !== null && ropes.gameObject !== null && player.gameObject.texture !== null && ropes.gameObject.texture !== null) {
+          if (player.gameObject !== null && ropes.gameObject !== null && player.gameObject.texture !== undefined && ropes.gameObject.texture !== undefined) {
             if ((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player")) {
               //Scottie se agarra a la cuerda
               //Corrijo nombres de variables
@@ -114,17 +115,17 @@ export default class Tower extends Phaser.Scene {
               if (this.ropeConstraint === undefined) {
                 //Para permitir el salto de una cuerda a otra, 
                 //evitaremos engancharnos a otros nodos de la cuerda que acabamos de soltar
-                if (this.lastRopeId !== ropes.gameObject.id || this.canGrabLastRope) {
+                if (this._lastRopeId !== ropes.gameObject.id || this._canGrabLastRope) {
                   this.ropeConstraint = this.matter.add.constraint(player,
                     ropes,
                     0, // distancia
                     0.5 // rigidez de la unión
                   );
 
-                  this.canGrabLastRope = false;
+                  this._canGrabLastRope = false;
 
                   console.log("engancho una cuerda");
-                  this.lastRopeId = ropes.gameObject.id;
+                  this._lastRopeId = ropes.gameObject.id;
                   this.player.hangStart();
                 }
               }
@@ -134,9 +135,10 @@ export default class Tower extends Phaser.Scene {
       });
 
     //Música
-    this.tower.play(this.key);
-    this.tower.setRate(1.5);
+    this.music.play(this.key);
+    this.music.setRate(1.5);
 
+    //UI
     let muteButton = this.add.text(width * 0.5, height * 0.2, 'Mute',
       {
         fontFamily: 'Caveat',
@@ -147,7 +149,7 @@ export default class Tower extends Phaser.Scene {
     muteButton.setScrollFactor(0);
     muteButton.on('pointerdown', pointer => {
       this.game.audioConfig.mute = !this.game.audioConfig.mute;
-      this.tower.setMute(!this.tower.mute);
+      this.music.setMute(!this.music.mute);
     });
     muteButton.setShadow(2, 2, "#333333", 2, false, true);
 
@@ -157,7 +159,7 @@ export default class Tower extends Phaser.Scene {
     this.backButton.setScrollFactor(0);
 
     this.backButton.on('pointerdown', function (event) {
-      this.scene.tower.stop();
+      this.scene.music.stop();
       this.scene.scene.start('select');
     });
 
@@ -168,9 +170,7 @@ export default class Tower extends Phaser.Scene {
         color: '#ffffff'
       })
     levelNameText.setOrigin(0, 0);
-
     levelNameText.setScrollFactor(0);
-
 
     this.timerText = this.add.text(width - width * 0.15, height * 0.12, this.timer.toString(),
       {
@@ -180,9 +180,7 @@ export default class Tower extends Phaser.Scene {
         align: 'right'
       })
     this.timerText.setOrigin(0, 0);
-
     this.timerText.setScrollFactor(0);
-
 
     // Dos decimales
     this.defeatTimeString = this.defeatTime.toFixed(2);
@@ -195,7 +193,6 @@ export default class Tower extends Phaser.Scene {
         align: 'right'
       })
     this.defeatTimeText.setOrigin(0, 0);
-
     this.defeatTimeText.setScrollFactor(0);
 
     //Flechas de marca para la sombra
@@ -208,12 +205,13 @@ export default class Tower extends Phaser.Scene {
     this.downArrow.setOrigin(0.5, 1);
 
     //Reseteamos el haber llegado a la cima
-    this.reachedTop = false;
+    this._reachedTop = false;
   }
 
   update(t, dt) {
     super.update(t, dt);
-    if(!this.reachedTop)
+
+    if(!this._reachedTop)
     {
       this.timer = this.timer + dt / 1000;
 
@@ -226,25 +224,26 @@ export default class Tower extends Phaser.Scene {
     }
 
     //Actualizar flechas de la sombra
-    if (!this.reachedTop && this.cameras.main.scrollY + this.cameras.main.height < this.shadow.y)
+    if (!this._reachedTop && this.cameras.main.scrollY + this.cameras.main.height < this.shadow.y)
       this.downArrow.setVisible(true);
     else
       this.downArrow.setVisible(false);
-    if (!this.reachedTop && this.cameras.main.scrollY > this.shadow.y)
+    if (!this._reachedTop && this.cameras.main.scrollY > this.shadow.y)
       this.upArrow.setVisible(true);
     else
       this.upArrow.setVisible(false);
 
     //Condicion de ganar
-    if (!this.reachedTop && this.player.y < this.tileSize * (this.floorHeight + this.margin))
+    if (!this._reachedTop && this.player.y < this.tileSize * (this.floorHeight + this.margin))
       this.win();
   }
 
   //Metodo de ganar
   win() {
-    this.reachedTop = true;
-    this.tower.stop();
+    this._reachedTop = true;
 
+    //Paramos la musica y la sombra
+    this.music.stop();
     this.shadow.stop();
 
     //Desactivar movimiento del jugador
@@ -262,8 +261,10 @@ export default class Tower extends Phaser.Scene {
   nextTower()
   {
     let towerNumber = parseInt(this.scene.key[6]);
+
     //Actualiza Record
-    if (this.scene.game.levelsInfo[towerNumber].record === 0 || Number.parseFloat(this.scene.game.levelsInfo[towerNumber].record) > Number.parseFloat(this.scene.timerString))
+    if (this.scene.game.levelsInfo[towerNumber].record === 0 || 
+      Number.parseFloat(this.scene.game.levelsInfo[towerNumber].record) > Number.parseFloat(this.scene.timerString))
       this.scene.game.levelsInfo[towerNumber].record = this.scene.timerString;
 
     if (towerNumber < 5) {
@@ -277,19 +278,24 @@ export default class Tower extends Phaser.Scene {
   }
 
   lose() {
-    this.tower.stop();
+    this.music.stop();
     this.scene.start(this.key);
   }
 
+  /**
+   * Libera al jugador de la restricción con la cuerda
+   */
   freePlayer() {
-    console.log("suelto un nodo");
     this.matter.world.removeConstraint(this.ropeConstraint);
     this.ropeConstraint = undefined;
-    setTimeout(this.canGrabRopeAgain, this.grabLastRopeTime, this);
+    setTimeout(this.canGrabRopeAgain, this._grabLastRopeTime, this);
   }
 
+  /**
+   * Cuando se llame a esta funcion, el jugador podra volver a agarrar la última cuerda que agarró
+   * @param {Phaser.Scene} self Referencia a this para acceder a la variable
+   */
   canGrabRopeAgain(self) {
     self.canGrabLastRope = true;
-    console.log("Ya puedo agarrar la ultima cuerda");
   }
 }
