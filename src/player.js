@@ -28,7 +28,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.coyoteCounter = 0;
     // Jump Buffer: podemos pulsar el botón de salto antes de tocar el suelo y saltar automáticamente en cuando lo toquemos
     this.jumpBufferLength = 100;
-    this.jumpBufferCounter;
+    this.jumpBufferCounter = 0;
 
     //?
     this.canClimb = false;
@@ -91,6 +91,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         // Punto de interrupción: Comprobar bodyAs y bodyBs, ¿Se registran?
         if (bodyA === this.bottomSensor || bodyB === this.bottomSensor) {
           this.isJumping = false;
+          this.coyoteCounter = this.coyoteTime;
         }
       }
     });
@@ -155,75 +156,38 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         this.setVelocityX(0);
 
       //Salto
-      if ((this.jump() && !this.jumpDown || this.jumpBufferCounter >= 0) /*&& this.coyoteCounter*/ > 0 && !this.isJumping) {
+      if ((this.jump() && !this.jumpDown || this.jumpBufferCounter > 0) && this.coyoteCounter > 0 && !this.isJumping) {
         this.jumpDown = true;
         this.jumpInitialHeight = this.y;
         this.isJumping = true;
         this.setVelocityY(this.jumpSpeed * dt);
+
+        //Si se ha saltado por el buffer, lo reseteamos
+        if(this.jumpBufferCounter > 0)
+          this.jumpBufferCounter = 0;
       }
+
+      //Jump Buffer. Si ya estamos saltando, guardamos la pulsación en el buffer
+      else if(this.jump() && !this.jumpDown && this.isJumping && this.jumpBufferCounter <= 0)
+        this.jumpBufferCounter = this.jumpBufferLength;
+
+      //Se aplica la una velocidad ascendente hasta llegar a la altura. Sera menor cuanto más nos acerquemos a ella
       if (this.isJumping && this.jump() && this.body.velocity.y < -1 && this.jumpInitialHeight - this.y < this.jumpHeight) 
         this.setVelocityY(this.jumpSpeed * (1.1 - (this.jumpInitialHeight - this.y)/this.jumpHeight) * dt);
+
+      //Velocidad de caida
       else if (this.isJumping && this.body.velocity.y > -0.1)
         this.setVelocityY(this.body.velocity.y - this.fallMultiplier * dt);
 
-        //Intentos fallidos de salto que borraré cuando veais si os gusta
-        /*
-      else if(this.isJumping && this.body.velocity.y < -0.1 && this.jumpInitialHeight - this.y >= this.jumpHeight)
-        this.setVelocityY(this.body.velocity.y + this.fallMultiplier);
-      else if(this.isJumping && this.body.velocity.y > 0.1);
-        //this.setVelocityY(this.body.velocity.y * 1.1);
-      /*
-            //Añade una fuerza complementaria hacia abajo al llegar al tope de altura y al seguir cayendo
-            if (this.isJumping && (this.body.velocity.y < -0.1 && this.jumpInitialHeight - this.y > this.jumpHeight || this.body.velocity.y > 0.1 ))
-              this.setVelocityY(this.body.velocity.y + this.fallMultiplier * dt);
-            //Si cancelamos el salto aplica otra fuerza hacia abajo
-            else if (this.isJumping && this.body.velocity.y < -0.1 && !this.jump())
-              this.setVelocityY(this.body.velocity.y + this.lowJumpMultiplier * dt);
-            /*
-            if (this.isJumping && this.jumpInitialHeight - this.y > this.jumpHeight) {
-              //Hemos llegado a la altura máxima
-              this.applyForce({ x: 0, y: 0.001 });
-            }
-            else if (this.isJumping && !this.jump()) {
-              //Aplicamos fuerza para cancelar el salto
-              this.applyForce({ x: 0, y: 0.01 });
-            }*/
+      //Solo 1 salto por pulsación
       if (!this.jump() && this.jumpDown) {
-        //Soltamos el boton
+        //Soltamos el boton y por tanto se cancela la aplicación de velocidad ascendente
         this.jumpDown = false;
-        console.log("Termino salto");
       }
 
-/*
-      if ((this.cursorsArrows.up.isDown || this.wKey.isDown || this.cursorsArrows.space.isDown) && this.body.velocity.y < 0 && !this.canClimb) {
-        this.setVelocityY(this.body.velocity.y * 0.9);
-      }
-
-
-      if (!this.playerTouchingGround && this.body.velocity.y < 0 && !(this.cursorsArrows.up.isDown || this.wKey.isDown || this.cursorsArrows.space.isDown)) {
-        this.setVelocityY(this.body.velocity.y * 0.6);
-      }
-*/
-      // Coyote Time
-      /*
-      if (true) {
-        this.coyoteCounter = this.coyoteTime;
-      }
-      else {
-        this.coyoteCounter = this.coyoteCounter - dt;
-      }*/
-
-      // Jump Buffer
-/*
-      if (Phaser.Input.Keyboard.JustDown(this.cursorsArrows.up) || Phaser.Input.Keyboard.JustDown(this.wKey) || Phaser.Input.Keyboard.JustDown(this.cursorsArrows.space)) {
-        this.jumpBufferCounter = this.jumpBufferLength;
-      }
-      else {
-        this.jumpBufferCounter = this.jumpBufferCounter - dt;
-      }
-
-      this.bottomSensor.x = this.x;
-      this.bottomSensor.y = this.y + this.height * 2*/;
+      //Timers
+      this.coyoteCounter -= dt;
+      this.jumpBufferCounter -= dt;
     }
 
     //Controles agarrado a una cuerda
