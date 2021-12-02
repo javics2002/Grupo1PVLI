@@ -8,8 +8,9 @@ export default class Tower1 extends Tower {
   create()
   {
     super.create();
-    this.cameraRanges = [{"max": 1200, "min": 0},
-    {"max": 2400, "min":1201}]
+    this.cameraRanges = [{"max": 1721, "min": 1145},
+    {"max": 1146, "min":636},
+    {"max": 635, "min":0}]
 
     
   }
