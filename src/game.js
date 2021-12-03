@@ -42,23 +42,23 @@ const initGame = () => {
     game.levelsInfo[0] = 0;
 
     game.levelsInfo[1] = {
-        record: 0,
+        record: parseFloat(localStorage.getItem('Tower1')) || 0,
         winHeight: 600
     }
     game.levelsInfo[2] = {
-        record: 0,
+        record: parseFloat(localStorage.getItem('Tower2')) || 0,
         winHeight: 600
     }
     game.levelsInfo[3] = {
-        record: 0,
+        record: parseFloat(localStorage.getItem('Tower3')) || 0,
         winHeight: 600
     }
     game.levelsInfo[4] = {
-        record: 0,
+        record: parseFloat(localStorage.getItem('Tower4')) || 0,
         winHeight: 600
     }
     game.levelsInfo[5] = {
-        record: 0,
+        record: parseFloat(localStorage.getItem('Tower5')) || 0,
         winHeight: 600
     }
  
