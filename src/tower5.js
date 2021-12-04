@@ -18,7 +18,7 @@ export default class Tower5 extends Tower {
     
     this.cameraRanges.forEach(element => {
       if(this.player.y >= element.min && this.player.y < element.max){
-          this.cameras.main.setBounds(0, element.min, 1280, element.max + element.min);
+          this.cameras.main.setBounds(0, element.min, 1280, element.max - element.min);
           this.cameras.main.startFollow(this.player);
       }
     });
