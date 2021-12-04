@@ -17,10 +17,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.speed = .5;
 
     //Salto
-    this.jumpSpeed = -1.5;
-    this.fallMultiplier = .05;
-    this.lowJumpMultiplier = .3;
-    this.jumpHeight = 7 * this.scene.tileSize;
+    this.jumpForce = -.11;
+    this.lowJumpMultiplier = .01;
     this.isJumping = false;
 
     // Coyote Time: podemos saltar en el aire un poco después de salirnos de una plataforma
@@ -136,6 +134,14 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     //this.propE = this.scene.add.image(x, y - this.height/2,"brokenStair");
     //this.propE.y -= this.propE.height / 2;
     //this.propE.depth = 6
+
+    //Cargamos los sonidos que produce el jugador
+    this.fix_stairs = scene.sound.add('fix_stairs');
+    this.jumpSound = scene.sound.add('jump');
+    this.ladder1 = scene.sound.add('ladder1');
+    this.ladder2 = scene.sound.add('ladder2');
+    this.pick_up = scene.sound.add('pick_up');
+    this.push_box = scene.sound.add('push_box');
   }
 
   /**
@@ -160,7 +166,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         this.jumpDown = true;
         this.jumpInitialHeight = this.y;
         this.isJumping = true;
-        this.setVelocityY(this.jumpSpeed * dt);
+        this.applyForce({ x: 0, y: this.jumpForce });
+        this.jumpSound.play();
 
         //Si se ha saltado por el buffer, lo reseteamos
         if(this.jumpBufferCounter > 0)
@@ -171,13 +178,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       else if(this.jump() && !this.jumpDown && this.isJumping && this.jumpBufferCounter <= 0)
         this.jumpBufferCounter = this.jumpBufferLength;
 
-      //Se aplica la una velocidad ascendente hasta llegar a la altura. Sera menor cuanto más nos acerquemos a ella
-      if (this.isJumping && this.jump() && this.body.velocity.y < -1 && this.jumpInitialHeight - this.y < this.jumpHeight) 
-        this.setVelocityY(this.jumpSpeed * (1.1 - (this.jumpInitialHeight - this.y)/this.jumpHeight) * dt);
-
-      //Velocidad de caida
-      else if (this.isJumping && this.body.velocity.y > -0.1)
-        this.setVelocityY(this.body.velocity.y - this.fallMultiplier * dt);
+      //Si cancelamos el salto aplica otra fuerza hacia abajo
+      if (this.isJumping && this.body.velocity.y < -0.1 && !this.jump())
+        this.applyForce({ x: 0, y: this.lowJumpMultiplier });
 
       //Solo 1 salto por pulsación
       if (!this.jump() && this.jumpDown) {

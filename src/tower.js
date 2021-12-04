@@ -36,8 +36,8 @@ export default class Tower extends Phaser.Scene {
 
   preload() {
     //Cargamos la musica
-    this.music = this.sound.add('tower', this.audioConfig);
-    this.winMusic = this.sound.add('win', this.audioConfig);
+    this.music = this.sound.add('tower', this.game.audioConfig);
+    this.winMusic = this.sound.add('win', this.game.audioConfig);
 
     this.music.addMarker(this.musicMarker);
     this.winMusic.addMarker({
@@ -45,6 +45,12 @@ export default class Tower extends Phaser.Scene {
       start: 268,
       duration: 7.5
     })
+
+    //Cargamos los sonidos
+    this.help_me = this.sound.add('help_me');
+    this.fall = this.sound.add('fall');
+    this.scream = this.sound.add('scream');
+    this.thump = this.sound.add('thump');
   }
   
   /**

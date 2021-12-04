@@ -106,6 +106,19 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('tower', 'tower.mp3');
     this.load.audio('win', 'win.mp3');
 
+    //Cargamos los sonidos
+    this.load.setPath('assets/sounds/');
+    this.load.audio('fall', 'fall.mp3');
+    this.load.audio('fix_stairs', 'fix_stairs.wav');
+    this.load.audio('help_me', 'help_me.mp3');
+    this.load.audio('jump', 'jump.wav');
+    this.load.audio('ladder1', 'ladder1.mp3');
+    this.load.audio('ladder2', 'ladder2.mp3');
+    this.load.audio('pick_up', 'pick_up.wav');
+    this.load.audio('push_box', 'push_box.mp3');
+    this.load.audio('scream', 'scream.mp3');
+    this.load.audio('thump', 'thump.mp3');
+
     //Temporalmente para probar la barra de carga
     for (var i = 0; i < 0; i++) {
       this.load.image('archivo_innecesario' + i, 'player.png');
