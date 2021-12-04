@@ -1,5 +1,7 @@
 import Player from './player.js';
 import Shadow from './shadow.js';
+import Box from './box.js'
+import Rope from './rope.js';
 export default class Tower extends Phaser.Scene {
   /**
    * Constructor de la escena
@@ -63,6 +65,32 @@ export default class Tower extends Phaser.Scene {
 
     const coll = map.createLayer('Tower', tileset);
     const stairs = map.createLayer('Interactuable', tileset);
+    //const boxes = map.createLayer('cajas',tileset);
+    //console.log(boxes);
+    
+    if(map.getObjectLayer('cajas')!= null){
+    for (const objeto of map.getObjectLayer('cajas').objects) { 
+        new Box(this, objeto.x, objeto.y, 'smallbox')      
+        }
+    }
+//   for (const objeto of map.getObjectLayer('cuerdas').objects) {
+ 
+//       new Rope(this, objeto.x, objeto.y, 'player', 2 ,1)
+    
+// }
+
+
+    // map.createFromTiles(boxes).map(go=>{
+
+    //   go.x;
+    //   go.y;
+
+    //   const box = 
+    // });
+
+
+
+
 
     coll.setCollisionByProperty({ collides: true })
     stairs.setCollisionByProperty({ collides: true })
