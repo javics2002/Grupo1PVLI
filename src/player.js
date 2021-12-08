@@ -121,7 +121,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
           if (gameObject.tile.properties.type === 'fragment') {
             this.brokenStair = true;
-            gameObject.tile.tint = 0x00FFFF;
+            gameObject.tile.visible = false;
           }
         }
         //else player.canClimb = false;

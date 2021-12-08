@@ -73,6 +73,15 @@ export default class Tower extends Phaser.Scene {
         new Box(this, objeto.x, objeto.y, 'smallbox')      
         }
     }
+
+    
+    if(map.getObjectLayer('cuerdas')!= null){
+      for (const objeto of map.getObjectLayer('cuerdas').objects) { 
+          new Rope(this, objeto.x, objeto.y, objeto.properties[1].value,objeto.properties[0].value )              
+          }
+      }
+
+     
 //   for (const objeto of map.getObjectLayer('cuerdas').objects) {
  
 //       new Rope(this, objeto.x, objeto.y, 'player', 2 ,1)
@@ -115,6 +124,8 @@ export default class Tower extends Phaser.Scene {
 
     //Personajes
     this.player = new Player(this, 400, (this.floors + 1) * this.floorHeight * this.tileSize, coll, { restitution: 1, label: 'player' });
+
+    
     this.shadow = new Shadow(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize, this.defeatTime);
 
     //Timer
