@@ -5,6 +5,7 @@ export default class Tower4 extends Tower {
     super('Tower 4', 120, 8, 18,'torre4');
   }
   create(){
+    this.isCinematicFinished = false;
     super.create();
     this.cameraRanges = [{"max": 5170, "min": 4600},
     {"max": 4599, "min": 4020},
@@ -13,15 +14,34 @@ export default class Tower4 extends Tower {
     {"max": 2294, "min":1150},
     {"max": 1149, "min":640},
     {"max": 639, "min":0}]
+
+    // Ocurre animación. Llama a judyAnimationEndCallback
+
+    // *** Esto va dentro de judyAnimationEndCallback
+    this.cameras.main.setScroll(0, 0); 
+    this.cameras.main.pan(0,4870, 1000, "Sine.easeInOut", true, this.panEndCallback);
+    // ***
   }
+
+  panEndCallback(camera = null, progress = 0){
+    console.log("Se ha llamado al callback final"); // para debug
+    if(progress === 1){
+      // se inicia el timer
+      console.log("Se llama al finalizado de la fx"); // para debug
+    this.isCinematicFinished = true;
+    }
+  }
+
   update(t, dt) {
     super.update(t, dt);
-    
+    if(this.isCinematicFinished === true)
+    {
     this.cameraRanges.forEach(element => {
       if(this.player.y >= element.min && this.player.y < element.max){
           this.cameras.main.setBounds(0, element.min, 1280, element.max - element.min);
           this.cameras.main.startFollow(this.player);
       }
     });
+    }
   }
 }
