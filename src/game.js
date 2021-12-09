@@ -28,7 +28,7 @@ const initGame = () => {
         physics: { 
             default: 'matter', 
             matter: { 
-                gravity: { y: 2 }, 
+                gravity: { y: .5 }, 
                 debug: true
             } 
         }

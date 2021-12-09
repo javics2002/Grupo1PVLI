@@ -68,18 +68,20 @@ export default class Tower extends Phaser.Scene {
     //const boxes = map.createLayer('cajas',tileset);
     //console.log(boxes);
     
+
+    // Creacion cajas desde el JSON
     if(map.getObjectLayer('cajas')!= null){
     for (const objeto of map.getObjectLayer('cajas').objects) { 
         new Box(this, objeto.x, objeto.y, 'smallbox')      
         }
     }
 
-    
-    if(map.getObjectLayer('cuerdas')!= null){
-      for (const objeto of map.getObjectLayer('cuerdas').objects) { 
-          new Rope(this, objeto.x, objeto.y, objeto.properties[1].value,objeto.properties[0].value )              
-          }
-      }
+    // Creacion cuerdas desde el JSON
+    // if(map.getObjectLayer('cuerdas')!= null){
+    //   for (const objeto of map.getObjectLayer('cuerdas').objects) { 
+    //       new Rope(this, objeto.x, objeto.y, objeto.properties[1].value,objeto.properties[0].value )              
+    //       }
+    //   }
 
      
 //   for (const objeto of map.getObjectLayer('cuerdas').objects) {

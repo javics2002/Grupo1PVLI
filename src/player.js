@@ -17,10 +17,14 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.speed = .5;
 
     //Salto
-    this.jumpSpeed = -1.5;
-    this.fallMultiplier = .05;
-    this.lowJumpMultiplier = .3;
-    this.jumpHeight = 7 * this.scene.tileSize;
+    // this.jumpSpeed = -1.5;
+    // this.fallMultiplier = .05;
+    // this.lowJumpMultiplier = .3;
+    // this.jumpHeight = 7 * this.scene.tileSize;
+
+    this.jumpForce = -.11;
+    this.lowJumpMultiplier = .01;
+
     this.isJumping = false;
 
     // Coyote Time: podemos saltar en el aire un poco después de salirnos de una plataforma
@@ -75,12 +79,20 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.bottomSensor = bodies.rectangle(this.x, this.y + this.height / 2, this.width / 2, 15, { isSensor: true });
     this.leftSensor = bodies.rectangle(this.x - this.width / 2, this.y, 15, this.height / 2, { isSensor: true });
     this.rightSensor = bodies.rectangle(this.x + this.width / 2, this.y, 15, this.height / 2, { isSensor: true });
+    this.setExistingBody(bodies.rectangle(this.x, this.y, this.width, this.height, { chamfer: { radius: 10 } }),true);
     let compoundBody = Phaser.Physics.Matter.Matter.Body.create({
       parts: [this.body, this.bottomSensor, this.leftSensor, this.rightSensor],
       restitution: 0.05 //Para no engancharse a las paredes
     });
 
     this.setExistingBody(compoundBody);
+    this.setFixedRotation();
+
+    scene.matter.world.on("beforeupdate", this.resetTouching, this);
+
+
+    
+    this.isTouching = { left: false, right: false};
 
     this.scene.matter.world.on("collisionactive", (event) => {
       for (let i = 0; i < event.pairs.length; i++) {
@@ -92,6 +104,12 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         if (bodyA === this.bottomSensor || bodyB === this.bottomSensor) {
           this.isJumping = false;
           this.coyoteCounter = this.coyoteTime;
+        }
+        if (bodyA === this.leftSensor || bodyB === this.leftSensor ) {
+          this.isTouching.left = true;
+        }
+        else if (bodyA === this.rightSensor || bodyB === this.rightSensor){
+          this.isTouching.right = true;
         }
       }
     });
@@ -128,6 +146,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       }
     });
 
+
     //escaleras
     this.brokenStair = false;
 
@@ -137,7 +156,11 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     //this.propE.y -= this.propE.height / 2;
     //this.propE.depth = 6
   }
-
+  resetTouching() {
+    this.isTouching.left = false;
+    this.isTouching.right = false;
+    this.isTouching.ground = false;
+  }
   /**
    * Métodos preUpdate de Phaser. Se encarga del control del jugador
    * @override
@@ -148,9 +171,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     //Controles
     if (!this.hanged) {
       //Momiento horizontal
-      if (this.right())
+      if (this.right() && !this.isTouching.right)
         this.setVelocityX(this.speed * dt);
-      else if (this.left())
+      else if (this.left()&& !this.isTouching.left)
         this.setVelocityX(-this.speed * dt);
       else
         this.setVelocityX(0);
@@ -160,7 +183,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         this.jumpDown = true;
         this.jumpInitialHeight = this.y;
         this.isJumping = true;
-        this.setVelocityY(this.jumpSpeed * dt);
+        //this.setVelocityY(this.jumpSpeed * dt);
+        this.applyForce({ x: 0, y: this.jumpForce });
+        //this.jumpSound.play();
 
         //Si se ha saltado por el buffer, lo reseteamos
         if(this.jumpBufferCounter > 0)
@@ -171,13 +196,16 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       else if(this.jump() && !this.jumpDown && this.isJumping && this.jumpBufferCounter <= 0)
         this.jumpBufferCounter = this.jumpBufferLength;
 
-      //Se aplica la una velocidad ascendente hasta llegar a la altura. Sera menor cuanto más nos acerquemos a ella
-      if (this.isJumping && this.jump() && this.body.velocity.y < -1 && this.jumpInitialHeight - this.y < this.jumpHeight) 
-        this.setVelocityY(this.jumpSpeed * (1.1 - (this.jumpInitialHeight - this.y)/this.jumpHeight) * dt);
+      // //Se aplica la una velocidad ascendente hasta llegar a la altura. Sera menor cuanto más nos acerquemos a ella
+      // if (this.isJumping && this.jump() && this.body.velocity.y < -1 && this.jumpInitialHeight - this.y < this.jumpHeight) 
+      //   this.setVelocityY(this.jumpSpeed * (1.1 - (this.jumpInitialHeight - this.y)/this.jumpHeight) * dt);
 
-      //Velocidad de caida
-      else if (this.isJumping && this.body.velocity.y > -0.1)
-        this.setVelocityY(this.body.velocity.y - this.fallMultiplier * dt);
+      // //Velocidad de caida
+      // else if (this.isJumping && this.body.velocity.y > -0.1)
+      //   this.setVelocityY(this.body.velocity.y - this.fallMultiplier * dt);
+
+      if (this.isJumping && this.body.velocity.y < -0.1 && !this.jump())
+        this.applyForce({ x: 0, y: this.lowJumpMultiplier });
 
       //Solo 1 salto por pulsación
       if (!this.jump() && this.jumpDown) {
