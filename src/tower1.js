@@ -1,4 +1,3 @@
-import CameraManager from './cameramanager.js';
 import Tower from './tower.js';
 
 export default class Tower1 extends Tower {
@@ -23,8 +22,16 @@ export default class Tower1 extends Tower {
       // La animación de Judy iría aquí, cuando esté programada hay que hacer un callback distinto para el panDownwards
       console.log("El panning anterior ha terminado");
       // no consigo que funcione el segundo pan, si ves esto es que el jueves no me ha dado tiempo a acabarlo
-      camera.pan(0,1721, 1000, "Sine.easeInOut");
-      this.isCinematicFinished = true;
+      this.cameras.main.pan(0,1500, 1000, "Sine.easeInOut", true, this.cinematicEndCallback);
+      
+    }
+  }
+
+  cinematicEndCallback(progress = 0){
+    console.log("Se ha llamado al callback final");
+    if(progress === 1){
+      console.log("Se llama al finalizado de la fx");
+    this.isCinematicFinished = true;
     }
   }
 
