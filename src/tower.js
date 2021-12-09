@@ -247,6 +247,25 @@ export default class Tower extends Phaser.Scene {
 
     //Reseteamos el haber llegado a la cima
     this._reachedTop = false;
+
+    
+    this.shareBut = this.add.image(this.sys.game.canvas.width/2, 100, 'share')
+    this.shareBut.scale = 0.2;
+    this.shareBut.setInteractive();
+    this.shareBut.on('pointerup' , this.clickshareScore, this);
+    this.shareBut.setVisible(false);
+    //this.txtShare = new Text(this, this.player.x , this.player.y, 'Share My Score', 'standard');
+
+    //this.txtShare = this.add.text( this.player.x , this.player.y, 'Share My Score' ,{ fontFamily: 'Vertigon', fontSize: 60, color: '#e07a66' });
+  }
+
+  clickshareScore(){
+    //this.events.emit('clickShareScore');
+    let text = 'ola';
+    let url = 'http://twitter.com/intent/tweet';
+    url += '?text=' +text;
+
+    window.open(url,'_blank')
   }
 
   update(t, dt) {
@@ -282,6 +301,8 @@ export default class Tower extends Phaser.Scene {
   //Metodo de ganar
   win() {
     this._reachedTop = true;
+
+      this.shareBut.setVisible(true);
 
     //Paramos la musica y la sombra
     this.music.stop();

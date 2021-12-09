@@ -105,12 +105,12 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
           this.isJumping = false;
           this.coyoteCounter = this.coyoteTime;
         }
-        if (bodyA === this.leftSensor || bodyB === this.leftSensor ) {
-          this.isTouching.left = true;
-        }
-        else if (bodyA === this.rightSensor || bodyB === this.rightSensor){
-          this.isTouching.right = true;
-        }
+        // if (bodyA === this.leftSensor || bodyB === this.leftSensor ) {
+        //   this.isTouching.left = true;
+        // }
+        // else if (bodyA === this.rightSensor || bodyB === this.rightSensor){
+        //   this.isTouching.right = true;
+        // }
       }
     });
     // this.bottomSensor.setCollisionGroup(platformGroup);
