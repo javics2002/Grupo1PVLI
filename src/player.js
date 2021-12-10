@@ -100,17 +100,24 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         let bodyA = event.pairs[i].bodyA;
         let bodyB = event.pairs[i].bodyB;
 
+        const player = bodyA.label === 'player' ? bodyA : bodyB;
+        const tile = bodyA.label === 'player' ? bodyB : bodyA;
+        const mainBody = getRootBody(tile);
+          const { gameObject } = mainBody;
+         
         // Punto de interrupción: Comprobar bodyAs y bodyBs, ¿Se registran?
         if (bodyA === this.bottomSensor || bodyB === this.bottomSensor) {
           this.isJumping = false;
           this.coyoteCounter = this.coyoteTime;
         }
+        if(gameObject.tile != null && !tile.isSensor){
         if (bodyA === this.leftSensor || bodyB === this.leftSensor ) {
           this.isTouching.left = true;
-        }
+        }          
         else if (bodyA === this.rightSensor || bodyB === this.rightSensor){
           this.isTouching.right = true;
         }
+      }
       }
     });
     // this.bottomSensor.setCollisionGroup(platformGroup);

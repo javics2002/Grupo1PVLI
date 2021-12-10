@@ -104,20 +104,20 @@ export default class Tower extends Phaser.Scene {
 
 
     coll.setCollisionByProperty({ collides: true })
-    stairs.setCollisionByProperty({ collides: true })
+    //stairs.setCollisionByProperty({ collides: true })
 
     this.matter.world.convertTilemapLayer(coll);
-    this.matter.world.convertTilemapLayer(stairs);
+    //this.matter.world.convertTilemapLayer(stairs);
 
     stairs.forEachTile(function (tile) {
       // If your ladder tiles have a complex body made up of different parts, you'll need to iterate through
       // each part. If it's a simple rectangle, it will only have 1 part which is a reference to itself
-      if (tile.properties.type === 'ladder') {
-        tile.physics.matterBody.body.parts.forEach((part) => {
-          part.isSensor = true;
-        });
-      }
-      else if (tile.properties.type === 'fragment') {
+      // if (tile.properties.type === 'ladder') {
+      //   tile.physics.matterBody.body.parts.forEach((part) => {
+      //     part.isSensor = true;
+      //   });
+      // }
+     if (tile.properties.type === 'fragment') {
         tile.physics.matterBody.body.parts.forEach((part) => {
           part.isSensor = true;
         });
@@ -142,7 +142,7 @@ export default class Tower extends Phaser.Scene {
     //Agarrarse a la cuerda
     this.matter.world.on('collisionstart',
       (event, player, ropes) => {
-        if (ropes.gameObject.body.label != 'Rectangle Body') {
+        if (ropes.gameObject != null && ropes.gameObject.body.label != 'Rectangle Body') {
           if (player.gameObject !== null && ropes.gameObject !== null && player.gameObject.texture !== undefined && ropes.gameObject.texture !== undefined) {
             if ((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player")) {
               //Scottie se agarra a la cuerda
