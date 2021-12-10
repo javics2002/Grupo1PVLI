@@ -17,7 +17,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.speed = .5;
 
     //Salto
-    this.jumpForce = -.01582;
+    this.jumpForce = -.11;
     this.lowJumpMultiplier = .01;
     this.isJumping = false;
 
@@ -150,7 +150,6 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
    */
   preUpdate(t, dt) {
     super.preUpdate(t, dt);
-    console.log(dt);
 
     //Controles
     if (!this.hanged) {
@@ -166,8 +165,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       if ((this.jump() && !this.jumpDown || this.jumpBufferCounter > 0) && this.coyoteCounter > 0 && !this.isJumping) {
         this.jumpDown = true;
         this.isJumping = true;
-        this.applyForce({ x: 0, y: this.jumpForce * dt  });
-        console.log(this.body.velocity.y);
+        this.applyForce({ x: 0, y: this.jumpForce });
         this.jumpSound.play();
 
         //Si se ha saltado por el buffer, lo reseteamos
