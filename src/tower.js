@@ -76,6 +76,23 @@ export default class Tower extends Phaser.Scene {
         }
     }
 
+    if(map.getObjectLayer('escaleras')!= null){
+      for (const objeto of map.getObjectLayer('escaleras').objects) { 
+          //new Sensor(this, objeto.x, objeto.y, 'smallbox')    
+          //objeto.isSensor= true;  
+          let rec = this.matter.add.rectangle(objeto.x+objeto.width/2, objeto.y+objeto.height/2, objeto.width, objeto.height);
+          rec.isStatic = true;
+          rec.isSensor  = true;
+          //Phaser.Physics.Matter.Matter.Bodies.rectangle(objeto.x, objeto.y , objeto.height, objeto.width);
+          // let compoundBody = Phaser.Physics.Matter.Matter.Body.create({
+          //   parts: [this.sens],
+          //   restitution: 0.05 //Para no engancharse a las paredes
+          // });
+      
+          // this.setExistingBody(compoundBody);  
+        }
+      }
+
     // Creacion cuerdas desde el JSON
     // if(map.getObjectLayer('cuerdas')!= null){
     //   for (const objeto of map.getObjectLayer('cuerdas').objects) { 

@@ -110,7 +110,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
           this.isJumping = false;
           this.coyoteCounter = this.coyoteTime;
         }
-        if(gameObject.tile != null && !tile.isSensor){
+        
+        if(gameObject!= null && gameObject.tile != null && !tile.isSensor){
         if (bodyA === this.leftSensor || bodyB === this.leftSensor ) {
           this.isTouching.left = true;
         }          
@@ -144,7 +145,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
           this.canClimb = true;
 
 
-          if (gameObject.tile.properties.type === 'fragment') {
+          if (gameObject != null&& gameObject.tile.properties.type === 'fragment') {
             this.brokenStair = true;
             gameObject.tile.visible = false;
           }
