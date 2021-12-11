@@ -52,11 +52,14 @@ export default class Tower extends Phaser.Scene {
     this.scream = this.sound.add('scream');
     this.thump = this.sound.add('thump');
   }
-  
+
   /**
    * Creación de los elementos comunes a todas las torres
    */
   create() {
+    this.frameTime = 0;
+    this.matter.world.autoUpdate = false;
+
     //Tamaño del mapa
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;
@@ -217,31 +220,37 @@ export default class Tower extends Phaser.Scene {
   update(t, dt) {
     super.update(t, dt);
 
-    if(!this._reachedTop)
-    {
-      this.timer = this.timer + dt / 1000;
+    this.frameTime += dt;
+    if (this.frameTime > 16.5) {
+      this.frameTime -= 16.5;
 
-      // Dos decimales
-      this.timerString = this.timer.toFixed(2);
-      this.timerText.setText(this.timerString);
+      if (!this._reachedTop) {
+        this.timer = this.timer + dt / 1000;
 
-      if (this.timer > this.defeatTime)
-      this.lose();
+        // Dos decimales
+        this.timerString = this.timer.toFixed(2);
+        this.timerText.setText(this.timerString);
+
+        if (this.timer > this.defeatTime)
+          this.lose();
+      }
+
+      //Actualizar flechas de la sombra
+      if (!this._reachedTop && this.cameras.main.scrollY + this.cameras.main.height < this.shadow.y)
+        this.downArrow.setVisible(true);
+      else
+        this.downArrow.setVisible(false);
+      if (!this._reachedTop && this.cameras.main.scrollY > this.shadow.y)
+        this.upArrow.setVisible(true);
+      else
+        this.upArrow.setVisible(false);
+
+      //Condicion de ganar
+      if (!this._reachedTop && this.player.y < this.tileSize * (this.floorHeight + this.margin))
+        this.win();
+
+      this.matter.world.step();
     }
-
-    //Actualizar flechas de la sombra
-    if (!this._reachedTop && this.cameras.main.scrollY + this.cameras.main.height < this.shadow.y)
-      this.downArrow.setVisible(true);
-    else
-      this.downArrow.setVisible(false);
-    if (!this._reachedTop && this.cameras.main.scrollY > this.shadow.y)
-      this.upArrow.setVisible(true);
-    else
-      this.upArrow.setVisible(false);
-
-    //Condicion de ganar
-    if (!this._reachedTop && this.player.y < this.tileSize * (this.floorHeight + this.margin))
-      this.win();
   }
 
   //Metodo de ganar
@@ -264,23 +273,21 @@ export default class Tower extends Phaser.Scene {
     this.winMusic.once("complete", this.nextTower);
   }
 
-  nextTower()
-  {
+  nextTower() {
     let towerNumber = parseInt(this.scene.key[6]);
 
     //Actualiza Record
-    if (this.scene.game.levelsInfo[towerNumber].record === 0 || 
-      Number.parseFloat(this.scene.game.levelsInfo[towerNumber].record) > Number.parseFloat(this.scene.timerString)){
+    if (this.scene.game.levelsInfo[towerNumber].record === 0 ||
+      Number.parseFloat(this.scene.game.levelsInfo[towerNumber].record) > Number.parseFloat(this.scene.timerString)) {
       this.scene.game.levelsInfo[towerNumber].record = this.scene.timerString;
-      localStorage.setItem('Tower' + towerNumber,this.scene.timerString);
-      }
+      localStorage.setItem('Tower' + towerNumber, this.scene.timerString);
+    }
 
     if (towerNumber < 5) {
       console.log('Tower ' + (towerNumber + 1));
       this.scene.scene.start('Tower ' + (towerNumber + 1));
     }
-    else
-    {
+    else {
       this.scene.scene.start('select');
     }
   }
