@@ -27,6 +27,16 @@
                  "name":"",
                  "properties":[
                         {
+                         "name":"pX",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"pY",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
                          "name":"reparada",
                          "type":"bool",
                          "value":true
@@ -44,6 +54,16 @@
                  "name":"",
                  "properties":[
                         {
+                         "name":"pX",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"pY",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
                          "name":"reparada",
                          "type":"bool",
                          "value":true
@@ -52,7 +72,7 @@
                  "type":"",
                  "visible":true,
                  "width":64,
-                 "x":352.666666666667,
+                 "x":350.666666666667,
                  "y":607.333333333333
                 }],
          "opacity":1,

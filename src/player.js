@@ -1,3 +1,4 @@
+
 import S from './BrokenStairs.js'
 /**
  * El jugador. Se moverá y saltará usando los controles.
@@ -44,6 +45,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     //Cuerdas
     this.hanged = false;
     this.ropeForce = 0.01;
+
+this.puedeReparar = true;
 
     //Física
     this.setFixedRotation(true);
@@ -103,15 +106,36 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         const player = bodyA.label === 'player' ? bodyA : bodyB;
         const tile = bodyA.label === 'player' ? bodyB : bodyA;
         const mainBody = getRootBody(tile);
-          const { gameObject } = mainBody;
+        const { gameObject } = mainBody;
          
         // Punto de interrupción: Comprobar bodyAs y bodyBs, ¿Se registran?
-        if (bodyA === this.bottomSensor || bodyB === this.bottomSensor) {
+        if (bodyA === this.bottomSensor || bodyB === this.bottomSensor && tile.label !== 'escalera') {
           this.isJumping = false;
           this.coyoteCounter = this.coyoteTime;
         }
-        
-        if(gameObject!= null && gameObject.tile != null && !tile.isSensor){
+        if((bodyA === this.leftSensor&& bodyB.label === 'escalera' || bodyB === this.leftSensor&& bodyA.label === 'escalera' 
+        || bodyA === this.rightSensor&& bodyB.label === 'escalera' || bodyB === this.rightSensor&& bodyA.label === 'escalera')
+        ){
+         if(tile.reparada)
+          this.canClimb = true;
+        else if(this.puedeReparar){
+            scene.mapA.replaceByIndex(3,7,scene.mapA.getTileAt(tile.pX/scene.tileSize,tile.pY/scene.tileSize));
+            scene.mapA.replaceByIndex(4,8);
+            scene.mapA.replaceByIndex(5,7);
+            scene.mapA.replaceByIndex(6,8);
+            tile.reparada = true;
+            this.puedeReparar = false;
+          }
+        }
+
+        if((bodyA === this.leftSensor&& bodyB.label === 'fragmento' || bodyB === this.leftSensor&& bodyA.label === 'fragmento' 
+        || bodyA === this.rightSensor&& bodyB.label === 'fragmento' || bodyB === this.rightSensor&& bodyA.label === 'fragmento')
+       ){
+         
+          this.puedeReparar = true;
+        }
+       
+        if(gameObject!= null && gameObject.tile != null ){
         if (bodyA === this.leftSensor || bodyB === this.leftSensor ) {
           this.isTouching.left = true;
         }          
@@ -131,28 +155,28 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       return body;
     }
 
-    this.scene.matter.world.on('collisionactive', function (event) {
-      for (let i = 0; i < event.pairs.length; i++) {
-        const { bodyA, bodyB } = event.pairs[i];
-        const player = bodyA.label === 'player' ? bodyA : bodyB;
-        const tile = bodyA.label === 'player' ? bodyB : bodyA;
-        if (tile.isSensor) {
-          const mainBody = getRootBody(tile);
-          const { gameObject } = mainBody;
-          // console.log(gameObject.tile);
-          // console.log(player);
-          // gameObject.tile.tint = 0x00FFFF;
-          this.canClimb = true;
+    // this.scene.matter.world.on('collisionactive', function (event) {
+    //   for (let i = 0; i < event.pairs.length; i++) {
+    //     const { bodyA, bodyB } = event.pairs[i];
+    //     const player = bodyA.label === 'player' ? bodyA : bodyB;
+    //     const tile = bodyA.label === 'player' ? bodyB : bodyA;
+    //     if (tile.isSensor) {
+    //       const mainBody = getRootBody(tile);
+    //       const { gameObject } = mainBody;
+    //       // console.log(gameObject.tile);
+    //       // console.log(player);
+    //       // gameObject.tile.tint = 0x00FFFF;
+    //       this.canClimb = true;
 
 
-          if (gameObject != null&& gameObject.tile.properties.type === 'fragment') {
-            this.brokenStair = true;
-            gameObject.tile.visible = false;
-          }
-        }
-        //else player.canClimb = false;
-      }
-    });
+    //       if (gameObject != null&& gameObject.tile.properties.type === 'fragment') {
+    //         this.brokenStair = true;
+    //         gameObject.tile.visible = false;
+    //       }
+    //     }
+    //     //else player.canClimb = false;
+    //   }
+    // });
 
 
     //escaleras
@@ -168,12 +192,14 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.isTouching.left = false;
     this.isTouching.right = false;
     this.isTouching.ground = false;
+    this.canClimb = false;
   }
   /**
    * Métodos preUpdate de Phaser. Se encarga del control del jugador
    * @override
    */
   preUpdate(t, dt) {
+  
     super.preUpdate(t, dt);
 
     //Controles
@@ -186,6 +212,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       else
         this.setVelocityX(0);
 
+        if(!this.canClimb){
       //Salto
       if ((this.jump() && !this.jumpDown || this.jumpBufferCounter > 0) && this.coyoteCounter > 0 && !this.isJumping) {
         this.jumpDown = true;
@@ -220,6 +247,19 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         //Soltamos el boton y por tanto se cancela la aplicación de velocidad ascendente
         this.jumpDown = false;
       }
+    }
+    else {
+      if(this.jump()){
+        this.setVelocityY(-5);
+      }
+      else if(this.down()){
+        this.setVelocityY(7);
+      }
+      else{
+        this.setVelocityY(0);
+      }
+      
+    }
 
       //Timers
       this.coyoteCounter -= dt;

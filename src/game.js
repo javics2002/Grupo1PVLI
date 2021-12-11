@@ -33,14 +33,23 @@ const initGame = () => {
         physics: { 
             default: 'matter', 
             matter: { 
-                gravity: { y: .5 }, 
+                gravity: { y: .2 }, 
                 debug: true
-            } 
+                
+                
+            } ,
+            
+            
         }
+        
     };
-
+    
+    
+    
+    
     let game = new Phaser.Game(config);
-
+   
+   
     game.levelsInfo = [];
 
     // Número de nivel actual. 0 es uno de los menús
