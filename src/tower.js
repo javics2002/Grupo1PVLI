@@ -22,6 +22,7 @@ export default class Tower extends Phaser.Scene {
     this._canGrabLastRope = false;
     this._grabLastRopeTime = 100;
     this._reachedTop = false;
+    this.hasTimerStarted = false;
 
     //La sombrá llegará a Judy cuando la música "tower" llegue a estos segundos
     this._loseMusicTime = 320;
@@ -224,7 +225,7 @@ export default class Tower extends Phaser.Scene {
     if (this.frameTime > 16.5) {
       this.frameTime -= 16.5;
 
-      if (!this._reachedTop) {
+      if (!this._reachedTop && this.hasTimerStarted) {
         this.timer = this.timer + dt / 1000;
 
         // Dos decimales

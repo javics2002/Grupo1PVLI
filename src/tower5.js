@@ -3,11 +3,11 @@ import Tower from './tower.js';
 export default class Tower5 extends Tower {
   constructor() {
     super('Tower 5', 200, 10, 18,'torre5');
+    this.isCinematicFinished = false;
   }
 
   create(){
     super.create();
-    this.isCinematicFinished = false;
     this.cameraRanges = [{"max": 6340, "min": 2870},
     {"max": 2869, "min": 1720},
     {"max": 1719, "min":641},
@@ -27,6 +27,7 @@ export default class Tower5 extends Tower {
     console.log("Se ha llamado al callback final"); // para debug
     if(progress === 1){
       // se inicia el timer
+      this.hasTimerStarted = true;
       console.log("Se llama al finalizado de la fx"); // para debug
     this.isCinematicFinished = true;
     }
