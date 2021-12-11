@@ -144,27 +144,20 @@ export default class Tower extends Phaser.Scene {
         }
       });
 
-    //Música
-    this.music.play(this.key);
-    this.music.setRate(1.5);
-
     //UI
-    let muteButton = this.add.text(width * 0.5, height * 0.2, 'Mute',
-      {
-        fontFamily: 'Caveat',
-        fontSize: 30,
-        color: '#ffffff'
-      }).setInteractive();
+    let mute = this.game.audioConfig.mute ? 'mute_on' : 'mute_off';
+    let muteButton = this.add.sprite(width * 0.05, height * 0.2, mute)
+      .setInteractive(new Phaser.Geom.Rectangle(16, 16, 32, 32), Phaser.Geom.Rectangle.Contains);
     muteButton.setOrigin(0, 0.5);
     muteButton.setScrollFactor(0);
     muteButton.on('pointerdown', pointer => {
       this.game.audioConfig.mute = !this.game.audioConfig.mute;
       this.music.setMute(!this.music.mute);
+      muteButton.setTexture(this.game.audioConfig.mute ? 'mute_on' : 'mute_off');
     });
-    muteButton.setShadow(2, 2, "#333333", 2, false, true);
 
     // Botón volver a SelectScreen
-    this.backButton = this.add.sprite(width * 0.05, height * 0.05, 'exit_icon').setInteractive();
+    this.backButton = this.add.sprite(width * 0.05, height * 0.08, 'exit_icon').setInteractive(new Phaser.Geom.Rectangle(25, 25, 50, 50), Phaser.Geom.Rectangle.Contains);
     this.backButton.setOrigin(0, 0);
     this.backButton.setScrollFactor(0);
 
@@ -195,7 +188,7 @@ export default class Tower extends Phaser.Scene {
     // Dos decimales
     this.defeatTimeString = this.defeatTime.toFixed(2);
 
-    this.defeatTimeText = this.add.text(width - width * 0.15, height * 0.17, this.defeatTimeString,
+    this.defeatTimeText = this.add.text(width - width * 0.15, height * 0.17, this.defeatTimeString + " ",
       {
         fontFamily: 'Caveat',
         fontSize: 30,
@@ -214,6 +207,11 @@ export default class Tower extends Phaser.Scene {
     this.downArrow.setScrollFactor(0);
     this.downArrow.setOrigin(0.5, 1);
 
+    //Música
+    this.music.play(this.key);
+    this.music.setRate(1.5);
+    this.music.setMute(this.game.audioConfig.mute);
+
     //Reseteamos el haber llegado a la cima
     this._reachedTop = false;
   }
@@ -230,7 +228,7 @@ export default class Tower extends Phaser.Scene {
 
         // Dos decimales
         this.timerString = this.timer.toFixed(2);
-        this.timerText.setText(this.timerString);
+        this.timerText.setText(this.timerString + " ");
 
         if (this.timer > this.defeatTime)
           this.lose();
@@ -257,6 +255,11 @@ export default class Tower extends Phaser.Scene {
   //Metodo de ganar
   win() {
     this._reachedTop = true;
+
+    //Eliminamos UI
+    this.backButton.destroy(true);
+    this.timerText.setColor("#D6D45A");
+    this.defeatTimeText.destroy(true);
 
     //Paramos la musica y la sombra
     this.music.stop();

@@ -99,6 +99,10 @@ export default class Boot extends Phaser.Scene {
     this.load.image('shadow', 'shadow.png');
     this.load.image('up_arrow', 'up_arrow.png');
     this.load.image('down_arrow', 'down_arrow.png');
+    this.load.image('mute_off', 'mute_off.png');
+    this.load.image('mute_on', 'mute_on.png');
+    this.load.image('enter_fullscreen', 'enter_fullscreen.png');
+    this.load.image('exit_fullscreen', 'exit_fullscreen.png');
 
     //Cargamos la música
     this.load.setPath('assets/music/');
