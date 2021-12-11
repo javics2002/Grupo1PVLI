@@ -17,7 +17,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.speed = .5;
 
     //Salto
-    this.jumpForce = -.11;
+    this.jumpForce = -.2;
     this.lowJumpMultiplier = .01;
     this.isJumping = false;
 

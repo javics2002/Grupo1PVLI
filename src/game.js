@@ -18,7 +18,7 @@ const initGame = () => {
         type: Phaser.AUTO,
         width:  1280,
         height: 720,
-        //resolution: window.devicePixelRatio,
+        fps: 60,
         scale: {
             mode: Phaser.Scale.FIT,  
             autoCenter: Phaser.Scale.CENTER_BOTH
@@ -28,8 +28,9 @@ const initGame = () => {
         physics: { 
             default: 'matter', 
             matter: { 
-                gravity: { y: .5 }, 
-                debug: true
+                gravity: { y: 2 }, 
+                debug: true,
+                runner: { isFixed: true, fps: 60 }
             } 
         }
     };
