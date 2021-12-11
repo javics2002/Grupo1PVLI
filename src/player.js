@@ -151,6 +151,16 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   preUpdate(t, dt) {
     super.preUpdate(t, dt);
 
+    //Pongo valores de 144Hz
+    
+    if(!this.fps144 && 1000 / dt > 130)
+    {
+      this.fps144 = true
+      this.jumpForce = -.11;
+      this.scene.matter.world.setGravity(0, .5);
+    }
+
+
     //Controles
     if (!this.hanged) {
       //Momiento horizontal
