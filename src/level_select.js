@@ -40,21 +40,6 @@ export default class Select extends Phaser.Scene {
             towerPreviews[i].setOrigin(.5, 1);
             towerPreviews[i].setScale(0.05);
 
-            //Récord
-            recordText[i] = this.add.text(90 + 100 + i * 224, 470,
-                "Record: " + this.game.levelsInfo[i + 1].record + " s",
-                {
-                    fontFamily: 'Caveat',
-                    fontSize: 18,
-                    color: '#D6D45A'
-                });
-            recordText[i].setOrigin(0.5, 0.5);
-            if (recordText[i].text === "Record: 0 s")
-            {
-                recordText[i].setColor('#838383');
-                recordText[i].text = "No data";
-            }
-
             //Botón de PLAY
             playButtons[i] = this.add.text(90 + 100 + i * 224, 530, " PLAY ",
                 {
@@ -68,6 +53,24 @@ export default class Select extends Phaser.Scene {
                 this.scene.start('Tower ' + (i + 1));
             });
             playButtons[i].setShadow(2, 2, "#f3463a", 2, false, true);
+
+            //Récord
+            recordText[i] = this.add.text(90 + 100 + i * 224, 470,
+                "Record: " + this.game.levelsInfo[i + 1].record + " s",
+                {
+                    fontFamily: 'Caveat',
+                    fontSize: 18,
+                    color: '#D6D45A'
+                });
+            recordText[i].setOrigin(0.5, 0.5);
+            if (recordText[i].text === "Record: 0 s")
+            {
+                recordText[i].setColor('#838383');
+                recordText[i].text = "No data";
+
+                //Es el último nivel accesible
+                break;
+            }
         }
 
         //Boton para volver a la pantalla de título
@@ -85,53 +88,34 @@ export default class Select extends Phaser.Scene {
         backButton.setShadow(2, 2, "#333333", 2, false, true);
 
         //Mute
-        let muteButton = this.add.text(width * 0.5, height - 50, ' Mute ',
-            {
-                fontFamily: 'Caveat',
-                fontSize: 30,
-                color: '#ffffff'
-            }).setInteractive();
-        muteButton.setOrigin(0.5, 1);
+        let mute = this.game.audioConfig.mute ? 'mute_on' : 'mute_off';
+        let muteButton = this.add.sprite(width - 150, height - 50, mute);
+        muteButton.setOrigin(1, 1);
+        muteButton.setInteractive(new Phaser.Geom.Rectangle(-16, -16, 32, 32), Phaser.Geom.Rectangle.Contains); //Correción de la hit area
         muteButton.on('pointerdown', pointer => {
             this.game.audioConfig.mute = !this.game.audioConfig.mute;
             this.vertigo.setMute(!this.vertigo.mute);
+            muteButton.setTexture(this.game.audioConfig.mute ? 'mute_on' : 'mute_off');
         });
-        muteButton.setShadow(2, 2, "#333333", 2, false, true);
 
         //Fullscreen
-        let fullscreenButton = this.add.text(width - 90, height - 50, 'Fullscreen',
-            {
-                fontFamily: 'Caveat',
-                fontSize: 30,
-                color: '#ffffff'
-            }).setInteractive();
+        let fullscreenButton = this.add.sprite(width - 90, height - 50, 
+            this.scale.isFullscreen ? 'exit_fullscreen' : 'enter_fullscreen')
+            .setInteractive(new Phaser.Geom.Rectangle(-16, -16, 32, 32), Phaser.Geom.Rectangle.Contains);
         fullscreenButton.setOrigin(1, 1);
         fullscreenButton.on('pointerdown', pointer => {
             if (this.scale.isFullscreen) 
-                this.scale.stopFullscreen();
-            else
-                this.scale.startFullscreen();
-        });
-        fullscreenButton.setShadow(2, 2, "#333333", 2, false, true);
-
-        /*
-        //Debug, no apto para release
-        let debugButton = this.add.text(width * 0.8, height * 0.8, 'Debug',
             {
-                fontFamily: 'Caveat',
-                fontSize: 30,
-                color: '#ffffff'
-            }).setInteractive();
-        debugButton.setOrigin(0, 0.5);
-        debugButton.on('pointerdown', pointer => {
-            this.vertigo.stop();
-            this.scene.start('Debug');
+                fullscreenButton.setTexture('enter_fullscreen');
+                this.scale.stopFullscreen();
+            }
+            else{
+                fullscreenButton.setTexture('exit_fullscreen');
+                this.scale.startFullscreen();
+            }
         });
-        debugButton.setShadow(2, 2, "#333333", 2, false, true);
-        */
 
         //Música
-        
         this.vertigo.play();
     }
 }
