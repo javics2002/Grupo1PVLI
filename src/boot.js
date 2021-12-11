@@ -104,6 +104,10 @@ export default class Boot extends Phaser.Scene {
     this.load.image('enter_fullscreen', 'enter_fullscreen.png');
     this.load.image('exit_fullscreen', 'exit_fullscreen.png');
 
+    //Cargamos animaciones
+    this.load.setPath('assets/animations/');
+    this.load.spritesheet('scottie_idle', 'scottie_idle.png', { frameWidth: 37, frameHeight: 62, margin: 1 });
+
     //Cargamos la música
     this.load.setPath('assets/music/');
     this.load.audio('vertigo', 'vertigo.mp3');

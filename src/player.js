@@ -11,7 +11,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
    * @param {number} y Coordenada Y
    */
   constructor(scene, x, y) {
-    super(scene.matter.world, x, y, 'player');
+    super(scene.matter.world, 17, 30, 'scottie_idle');
     this.scene.add.existing(this);
 
     this.speed = 6;
@@ -38,6 +38,18 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     //Cuerdas
     this.hanged = false;
     this.ropeForce = 0.01;
+
+    //Sensores. El de abajo detecta el suelo y los de los lados, cajas
+    let bodies = Phaser.Physics.Matter.Matter.Bodies;
+    this.bottomSensor = bodies.rectangle(this.x, this.y + this.height / 2, this.width / 2, 15, { isSensor: true });
+    this.leftSensor = bodies.rectangle(this.x - this.width / 2, this.y, 15, this.height / 2, { isSensor: true });
+    this.rightSensor = bodies.rectangle(this.x + this.width / 2, this.y, 15, this.height / 2, { isSensor: true });
+    let compoundBody = Phaser.Physics.Matter.Matter.Body.create({
+      parts: [this.body, this.bottomSensor, this.leftSensor, this.rightSensor],
+      restitution: 0.05 //Para no engancharse a las paredes
+    });
+    this.setExistingBody(compoundBody);
+    this.setPosition(x, y);
 
     //Física
     this.setFixedRotation(true);
@@ -67,18 +79,6 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         this.setCollisionGroup(playerGroup);
         let playerTouchingGround = false;
     */
-
-    //Sensores. El de abajo detecta el suelo y los de los lados, cajas
-    let bodies = Phaser.Physics.Matter.Matter.Bodies;
-    this.bottomSensor = bodies.rectangle(this.x, this.y + this.height / 2, this.width / 2, 15, { isSensor: true });
-    this.leftSensor = bodies.rectangle(this.x - this.width / 2, this.y, 15, this.height / 2, { isSensor: true });
-    this.rightSensor = bodies.rectangle(this.x + this.width / 2, this.y, 15, this.height / 2, { isSensor: true });
-    let compoundBody = Phaser.Physics.Matter.Matter.Body.create({
-      parts: [this.body, this.bottomSensor, this.leftSensor, this.rightSensor],
-      restitution: 0.05 //Para no engancharse a las paredes
-    });
-
-    this.setExistingBody(compoundBody);
 
     this.scene.matter.world.on("collisionactive", (event) => {
       for (let i = 0; i < event.pairs.length; i++) {
@@ -155,11 +155,25 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     if (!this.hanged) {
       //Momiento horizontal
       if (this.right())
+      {
+        this.idling = false;
         this.setVelocityX(this.speed);
+      }
       else if (this.left())
+      {
+        this.idling = false;
         this.setVelocityX(-this.speed);
+      }
       else
+      {
+        if(!this.isJumping && !this.idling)
+        {
+          this.play('scottie_idle');
+          this.idling = true;
+        }
+
         this.setVelocityX(0);
+      }
 
       //Salto
       if ((this.jump() && !this.jumpDown || this.jumpBufferCounter > 0) && this.coyoteCounter > 0 && !this.isJumping) {

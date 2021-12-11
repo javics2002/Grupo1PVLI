@@ -98,6 +98,14 @@ export default class Tower extends Phaser.Scene {
     this.player = new Player(this, 400, (this.floors + 1) * this.floorHeight * this.tileSize, coll, { restitution: 1, label: 'player' });
     this.shadow = new Shadow(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize, this.defeatTime);
 
+    //Animaciones
+    this.anims.create({
+      key: 'scottie_idle',
+      frames: this.anims.generateFrameNumbers('scottie_idle', { start: 0, end: 179 }),
+      frameRate: 24, // Velocidad de la animación
+      repeat: -1    // Animación en bucle
+    });
+
     //Timer
     this.timer = 0;
 
@@ -156,7 +164,8 @@ export default class Tower extends Phaser.Scene {
     });
 
     // Botón volver a SelectScreen
-    this.backButton = this.add.sprite(width * 0.05, height * 0.08, 'exit_icon').setInteractive(new Phaser.Geom.Rectangle(25, 25, 50, 50), Phaser.Geom.Rectangle.Contains);
+    this.backButton = this.add.sprite(width * 0.05, height * 0.08, 'exit_icon')
+      .setInteractive(new Phaser.Geom.Rectangle(25, 25, 50, 50), Phaser.Geom.Rectangle.Contains);
     this.backButton.setOrigin(0, 0);
     this.backButton.setScrollFactor(0);
 
@@ -218,20 +227,20 @@ export default class Tower extends Phaser.Scene {
   update(t, dt) {
     super.update(t, dt);
 
+    if (!this._reachedTop) {
+      this.timer = this.timer + dt / 1000;
+
+      // Dos decimales
+      this.timerString = this.timer.toFixed(2);
+      this.timerText.setText(this.timerString + " ");
+
+      if (this.timer > this.defeatTime)
+        this.lose();
+    }
+
     this.frameTime += dt;
     if (this.frameTime > 16.5) {
       this.frameTime -= 16.5;
-
-      if (!this._reachedTop) {
-        this.timer = this.timer + dt / 1000;
-
-        // Dos decimales
-        this.timerString = this.timer.toFixed(2);
-        this.timerText.setText(this.timerString + " ");
-
-        if (this.timer > this.defeatTime)
-          this.lose();
-      }
 
       //Actualizar flechas de la sombra
       if (!this._reachedTop && this.cameras.main.scrollY + this.cameras.main.height < this.shadow.y)
