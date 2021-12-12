@@ -156,23 +156,35 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       //Momiento horizontal
       if (this.right())
       {
-        this.idling = false;
         this.setVelocityX(this.speed);
+        this.setFlipX(false);
+
+        if(!this.isJumping && this.idling)
+        {
+          this.play('scottie_run');
+          this.idling = false;
+        }
       }
       else if (this.left())
       {
-        this.idling = false;
         this.setVelocityX(-this.speed);
+        this.setFlipX(true);
+        
+        if(!this.isJumping && this.idling)
+        {
+          this.play('scottie_run');
+          this.idling = false;
+        }
       }
       else
       {
+        this.setVelocityX(0);
+
         if(!this.isJumping && !this.idling)
         {
           this.play('scottie_idle');
           this.idling = true;
         }
-
-        this.setVelocityX(0);
       }
 
       //Salto

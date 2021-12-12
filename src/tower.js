@@ -102,9 +102,27 @@ export default class Tower extends Phaser.Scene {
     //Animaciones
     this.anims.create({
       key: 'scottie_idle',
-      frames: this.anims.generateFrameNumbers('scottie_idle', { start: 0, end: 179 }),
-      frameRate: 24, // Velocidad de la animación
-      repeat: -1    // Animación en bucle
+      frames: this.anims.generateFrameNumbers('scottie_idle', { start: 0, end: 152 }),
+      frameRate: 24,
+      repeat: -1
+    });
+    this.anims.create({
+      key: 'scottie_run',
+      frames: this.anims.generateFrameNumbers('scottie_run', { start: 0, end: 17 }),
+      frameRate: 24,
+      repeat: -1
+    });
+    this.anims.create({
+      key: 'scottie_idle_jump',
+      frames: this.anims.generateFrameNumbers('scottie_idle_jump', { start: 0, end: 3 }),
+      frameRate: 24,
+      repeat: -1
+    });
+    this.anims.create({
+      key: 'scottie_run_jump',
+      frames: this.anims.generateFrameNumbers('scottie_run_jump', { start: 0, end: 5 }),
+      frameRate: 24,
+      repeat: -1
     });
 
     //Timer

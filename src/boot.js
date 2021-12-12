@@ -90,11 +90,9 @@ export default class Boot extends Phaser.Scene {
     this.load.setPath('assets/sprites/');
 
     //Cargamos todos los sprites
-    this.load.image('player', 'player.png');
     this.load.image('rope', 'rope.png');
     this.load.image('pivot', 'rope_pivot.png');
-    this.load.image('brokenStair', 'broken_stairs1.png');
-    this.load.image('smallbox','box.png');
+    this.load.image('box','box.png');
     this.load.image('exit_icon', 'exiticon.png');
     this.load.image('shadow', 'shadow.png');
     this.load.image('up_arrow', 'up_arrow.png');
@@ -107,6 +105,9 @@ export default class Boot extends Phaser.Scene {
     //Cargamos animaciones
     this.load.setPath('assets/animations/');
     this.load.spritesheet('scottie_idle', 'scottie_idle.png', { frameWidth: 37, frameHeight: 62, margin: 1 });
+    this.load.spritesheet('scottie_run', 'scottie_run.png', { frameWidth: 56, frameHeight: 55, margin: 1 });
+    this.load.spritesheet('scottie_idle_jump', 'scottie_idle_jump.png', { frameWidth: 36, frameHeight: 58, margin: 1 });
+    this.load.spritesheet('scottie_run_jump', 'scottie_run_jump.png', { frameWidth: 45, frameHeight: 54, margin: 1 });
 
     //Cargamos la música
     this.load.setPath('assets/music/');
