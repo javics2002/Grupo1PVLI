@@ -21,12 +21,9 @@ export default class Rope extends Phaser.Physics.Matter.Sprite {
 
     this.scene.add.existing(this);
     let nodes = new Array(length);
-    console.log(length);
     for(let i = 0; i < length; i++)
     {
-     
       nodes[i] = new Node(scene, x, y + 10 * i, id);
-      console.log(typeof(nodes[i]));
       let options = {
         bodyA: this,
         bodyB: nodes[i],
@@ -43,7 +40,7 @@ export default class Rope extends Phaser.Physics.Matter.Sprite {
         };
       }
         
-      this.scene.matter.add.constraint(options.bodyA,options.bodyB,options.length,options.stiffness);
+      this.scene.matter.add.constraint(options.bodyA, options.bodyB, options.length, options.stiffness);
     }
   }
 

@@ -46,7 +46,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.hanged = false;
     this.ropeForce = 0.01;
 
-this.puedeReparar = true;
+    this.puedeReparar = true;
 
     //Física
     this.setFixedRotation(true);
@@ -92,8 +92,6 @@ this.puedeReparar = true;
     this.setFixedRotation();
 
     scene.matter.world.on("beforeupdate", this.resetTouching, this);
-
-
     
     this.isTouching = { left: false, right: false};
 
