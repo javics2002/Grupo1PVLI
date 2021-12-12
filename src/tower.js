@@ -176,7 +176,7 @@ export default class Tower extends Phaser.Scene {
       (event, player, ropes) => {
         if (ropes.gameObject != null && ropes.gameObject.body.label != 'Rectangle Body') {
           if (player.gameObject !== null && ropes.gameObject !== null && player.gameObject.texture !== undefined && ropes.gameObject.texture !== undefined) {
-            if ((player.gameObject.body.label == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.body.label == "player")) {
+            if ((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player")) {
               //Scottie se agarra a la cuerda
               //Corrijo nombres de variables
               if (player.gameObject.texture.key == "rope" && ropes.gameObject.body.label == "player") {

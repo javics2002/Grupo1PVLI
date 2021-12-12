@@ -23,11 +23,11 @@ export default class Rope extends Phaser.Physics.Matter.Sprite {
     let nodes = new Array(length);
     for(let i = 0; i < length; i++)
     {
-      nodes[i] = new Node(scene, x, y + 10 * i, id);
+      nodes[i] = new Node(scene, x, y + 33 * i, id);
       let options = {
         bodyA: this,
         bodyB: nodes[i],
-        length: 30,
+        length: 32,
         stiffness: 0.4
       };
       if (i > 0)
