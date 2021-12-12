@@ -209,6 +209,7 @@ this.puedeReparar = true;
 
     //Controles
     if (!this.hanged) {
+      if(this.isTouching.right || this.isTouching.left) this.setVelocityX(0);
       //Momiento horizontal
       if (this.right() && !this.isTouching.right)
         this.setVelocityX(this.speed * dt);
@@ -218,6 +219,7 @@ this.puedeReparar = true;
         this.setVelocityX(0);
 
         if(!this.canClimb){
+          this.setIgnoreGravity(false);
       //Salto
       if ((this.jump() && !this.jumpDown || this.jumpBufferCounter > 0) && this.coyoteCounter > 0 && !this.isJumping) {
         this.jumpDown = true;
@@ -262,6 +264,7 @@ this.puedeReparar = true;
       }
       else{
         this.setVelocityY(0);
+        this.setIgnoreGravity(true);
       }
       
     }

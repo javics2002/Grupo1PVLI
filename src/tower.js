@@ -122,22 +122,7 @@ export default class Tower extends Phaser.Scene {
           }
       }
 
-     
-//   for (const objeto of map.getObjectLayer('cuerdas').objects) {
- 
-//       new Rope(this, objeto.x, objeto.y, 'player', 2 ,1)
-    
-// }
-
-
-    // map.createFromTiles(boxes).map(go=>{
-
-    //   go.x;
-    //   go.y;
-
-    //   const box = 
-    // });
-
+   
 
 
 
@@ -148,13 +133,13 @@ export default class Tower extends Phaser.Scene {
     this.matter.world.convertTilemapLayer(coll);
     //this.matter.world.convertTilemapLayer(stairs);
 
-    stairs.forEachTile(function (tile) {
-        //If your ladder tiles have a complex body made up of different parts, you'll need to iterate through
-        //each part. If it's a simple rectangle, it will only have 1 part which is a reference to itself
-        if (tile.properties.type === 'ladder') {
-         console.log(tile.index)
-          };
-        });
+    // stairs.forEachTile(function (tile) {
+    //     //If your ladder tiles have a complex body made up of different parts, you'll need to iterate through
+    //     //each part. If it's a simple rectangle, it will only have 1 part which is a reference to itself
+    //     if (tile.properties.type === 'ladder') {
+    //      console.log(tile.index)
+    //       };
+    //     });
 
     // stairs.forEachTile(function (tile) {
     //   // If your ladder tiles have a complex body made up of different parts, you'll need to iterate through
