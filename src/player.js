@@ -116,13 +116,18 @@ this.puedeReparar = true;
         if((bodyA === this.leftSensor&& bodyB.label === 'escalera' || bodyB === this.leftSensor&& bodyA.label === 'escalera' 
         || bodyA === this.rightSensor&& bodyB.label === 'escalera' || bodyB === this.rightSensor&& bodyA.label === 'escalera')
         ){
-         if(tile.reparada)
+         if(tile.reparada){
           this.canClimb = true;
+         }
         else if(this.puedeReparar){
-            scene.mapA.replaceByIndex(3,7,scene.mapA.getTileAt(tile.pX/scene.tileSize,tile.pY/scene.tileSize));
-            scene.mapA.replaceByIndex(4,8);
-            scene.mapA.replaceByIndex(5,7);
-            scene.mapA.replaceByIndex(6,8);
+            scene.mapA.replaceByIndex(3,7,tile.pX,tile.pY,2,6);
+            scene.mapA.replaceByIndex(4,8,tile.pX,tile.pY,2,6);
+            scene.mapA.replaceByIndex(5,7,tile.pX,tile.pY,2,6);
+            scene.mapA.replaceByIndex(6,8,tile.pX,tile.pY,2,6);
+            // scene.mapA.replaceByIndex(3,7,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
+            // scene.mapA.replaceByIndex(4,8,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
+            // scene.mapA.replaceByIndex(5,7,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
+            // scene.mapA.replaceByIndex(6,8,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
             tile.reparada = true;
             this.puedeReparar = false;
           }

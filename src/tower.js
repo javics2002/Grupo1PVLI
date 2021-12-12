@@ -79,7 +79,7 @@ export default class Tower extends Phaser.Scene {
     // Creacion cajas desde el JSON
     if(map.getObjectLayer('cajas')!= null){
     for (const objeto of map.getObjectLayer('cajas').objects) { 
-        new Box(this, objeto.x, objeto.y, 'smallbox')     
+        new Box(this, objeto.x, objeto.y)     
         }
     }
     if(map.getObjectLayer('fragmentos')!= null){
@@ -87,7 +87,8 @@ export default class Tower extends Phaser.Scene {
           // let aux = new Frag(this, objeto.x, objeto.y, 'pivot',{label: 'fragmento'})  ;
           // aux.isSensor = true;
           //let rec = this.matter.add.image(objeto.x+objeto.width/2, objeto.y+objeto.height/2,"pivot",{label: 'fragmento'});
-          let rec = this.matter.add.image(objeto.x+objeto.width/2, objeto.y+objeto.height/2,"pivot",{label:'fragmento'});
+         let rec = this.matter.add.image(objeto.x+objeto.width/2, objeto.y+objeto.height/2,"pivot",{label:'fragmento'});
+         
          rec.setSensor(true);
          rec.setStatic(true);
           }
@@ -114,12 +115,12 @@ export default class Tower extends Phaser.Scene {
         }
       }
 
-    // Creacion cuerdas desde el JSON
-    // if(map.getObjectLayer('cuerdas')!= null){
-    //   for (const objeto of map.getObjectLayer('cuerdas').objects) { 
-    //       new Rope(this, objeto.x, objeto.y, objeto.properties[1].value,objeto.properties[0].value )              
-    //       }
-    //   }
+    //Creacion cuerdas desde el JSON
+    if(map.getObjectLayer('cuerdas')!= null){
+      for (const objeto of map.getObjectLayer('cuerdas').objects) { 
+          new Rope(this, objeto.x, objeto.y, objeto.properties[1].value,objeto.properties[0].value )              
+          }
+      }
 
      
 //   for (const objeto of map.getObjectLayer('cuerdas').objects) {
