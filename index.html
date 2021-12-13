@@ -9,13 +9,20 @@
     <script src="./lib/phaser.js"></script>
 
     <title>Vertigo Tower</title>
+
+    <style>
+      body {
+          background-image: url("assets/sprites/wall.png");
+          background-repeat:repeat;
+      }
+  </style>
 </head>
 <!-- <header>
     <a href="https://twitter.com/vertigo_tower">Twitter</a>
     <a href="https://github.com/javics2002/Grupo1PVLI">GitHub</a>
     <a href="https://www.pivotaltracker.com/n/projects/2534253">Pivotal Tracker</a>
 </header> -->
-
+<body>
 <header>
     
     <div class  = "container">
@@ -30,9 +37,58 @@
     </div>
   </nav>
 </header>
-<body>
+<div id= "juego">
      <h1></h1> 
+     <div id="GameContainer"></div>
     <script src="./src/game.js" type="module"></script>
-</body>
+  </div>
 
+  <div class = "barrita"></div>
+
+  
+
+    <div class = "atg">
+    
+        <span class = "text1">Resumen del juego</span>
+        <span class = "text2">
+          El objetivo es subir pisos del campanario para alcanzar a Judy antes de que caiga en un simple juego en red de plataformas 2D.<br>
+          Existen multiples interacciones dentro de la partida : <br>
+          <b>Subir escaleras</b>, al estar por encima de una y pulsar la tecla de salto.<br>
+          Empujar cajas, al andar contra ellas. Este movimiento es un 25% más lento que el movimiento sin carga.<br>
+          Agarrar trozos de escalera al contacto, que se usan para resolver puzles sencillos.<br>
+          Arreglar escaleras (tocándolas con el trozo de escalera cogido)<br>
+          Agarrarse a una cuerda, tocándola en el aire. La cuerda se balancea como un péndulo con las teclas de dirección cuando Scottie está agarrado en ella. Si no, se quedará quieta. El jugador se puede soltar saltando.<br>
+          <br>
+          Una vez alcances el piso superior, ganará automáticamente (salvando a Judy) y pudiendo pasar al siguiente nivel. Puedes repetir los niveles cuantas veces quieras para mejorar tus tiempos<br>
+          
+        </span>
+        <span>
+          <br><br>
+          <img src="assets/sprites/controles.png">
+          
+        </span>
+    </div>
+
+    <div class = "barrita"></div>
+
+    <div class = "atg">
+    
+      <span class = "text1">Créditos</span>
+      <span class = "text2">
+      Este videojuego ha sido creado como proyecto para la asignatura '<i>Programacion de Videojuegos en Lenguajes Interpretados</i>' en la Universidad Complutense de Madrid, de la mano de:
+      <ul id = "credits" class = "text3">
+        <li >Daniel Alonso Herranz</li>
+        <li >Pablo Arredondo Nowak</li>
+        <li >Jonathan Sebastián Andrade Gordillo</li>
+        <li >Javier Cano Salcedo</li>
+      </ul>
+      </span>
+  
+  </div>
+</body>
+<footer>
+  <div class="footer-container">
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Licencia Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a>          
+  </div>
+</footer>
 </html>

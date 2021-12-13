@@ -21,7 +21,12 @@ const initGame = () => {
         fps: 60,
         scale: {
             mode: Phaser.Scale.FIT,  
-            autoCenter: Phaser.Scale.CENTER_BOTH
+            autoCenter: Phaser.Scale.CENTER_BOTH,
+            parent: 'GameContainer',
+            max:{
+                width: 1400,
+                height: 800,
+              }
         },
         pixelArt: true,
         scene: [Boot, End, Debug, Title, Select, Tower1, Tower2, Tower3, Tower4, Tower5 ],
@@ -33,10 +38,15 @@ const initGame = () => {
                 runner: { isFixed: true, fps: 60 }
             } 
         }
+        
     };
-
+    
+    
+    
+    
     let game = new Phaser.Game(config);
-
+   
+   
     game.levelsInfo = [];
 
     // Número de nivel actual. 0 es uno de los menús
