@@ -207,7 +207,7 @@ export default class Tower extends Phaser.Scene {
             if ((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player")) {
               //Scottie se agarra a la cuerda
               //Corrijo nombres de variables
-              if (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player") {
+              if (player.gameObject.texture.key == "rope" && ropes.gameObject.body.label == "player") {
                 let aux = player;
                 player = ropes;
                 ropes = aux;
@@ -323,7 +323,7 @@ export default class Tower extends Phaser.Scene {
 
   clickshareScore(){
     //this.events.emit('clickShareScore');
-    let text = 'ola';
+    let text = '¡He rescatado a Judy en la torre ' + this.scene.key[6] + ' en solo ' + this.scene.scene.timerString + 's! ¿Podrás superarme en @vertigo_tower ? https://t.co/mv5sKRrnXh';
     let url = 'http://twitter.com/intent/tweet';
     url += '?text=' +text;
 

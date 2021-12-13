@@ -93,8 +93,6 @@ this.puedeReparar = false;
     this.setFixedRotation();
 
     scene.matter.world.on("beforeupdate", this.resetTouching, this);
-
-
     
     this.isTouching = { left: false, right: false};
 
