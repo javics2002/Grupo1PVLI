@@ -13,7 +13,9 @@ export default class Tower extends Phaser.Scene {
    * @param {integer} keyTile
    */
   constructor(key, defeatTime, floors, floorHeight, keyTile) {
-    super({ key: key });
+    super({
+      key: key
+    });
     this.keyTile = keyTile;
     this.key = key;
     this.defeatTime = defeatTime;
@@ -26,7 +28,123 @@ export default class Tower extends Phaser.Scene {
     this._grabLastRopeTime = 100;
     this._reachedTop = false;
     this.hasTimerStarted = false;
+  }
 
+  preload() {
+    this.loadMusic();
+  }
+
+  create() {
+    this.frameTime = 0;
+    this.matter.world.autoUpdate = false;
+
+    let width = this.cameras.main.width;
+    let height = this.cameras.main.height;
+
+    //Tamaño del mapa
+    this.matter.world.setBounds(0, 0, 1280, (this.floors + 1) * this.floorHeight * this.tileSize + 2 * this.margin * this.tileSize);
+
+    this.buildTower();
+
+    //Personajes
+    this.player = new Player(this, 400, (this.floors + 1) * this.floorHeight * this.tileSize);
+    this.shadow = new Shadow(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize, this.defeatTime);
+
+    //Animaciones
+    this.createAnimation('scottie_idle', 153);
+    this.createAnimation('scottie_run', 16);
+    this.createAnimation('scottie_run_jump', 4);
+    this.createAnimation('scottie_run_jump', 6);
+
+    //Timer
+    this.timer = 0;
+
+    //Camara
+    this.cameras.main.setBounds(0, 0, 1280, (this.floors + 1) * this.floorHeight * 32 + 32 * 4);
+    this.cameras.main.startFollow(this.player);
+
+    this.ropeConstraint = undefined;
+
+    //Agarrarse a la cuerda
+    this.onGrabRope();
+
+    //UI
+    // Botón de mute
+    let mute = this.game.audioConfig.mute ? 'mute_on' : 'mute_off';
+    this.interfaceButton(width * 0.05, height * 0.2, mute, 32, function () {
+      this.scene.game.audioConfig.mute = !this.scene.game.audioConfig.mute;
+      this.scene.music.setMute(!this.scene.music.mute);
+      this.setTexture(this.scene.game.audioConfig.mute ? 'mute_on' : 'mute_off');
+    });
+
+    // Botón volver a SelectScreen
+    this.backButton = this.interfaceButton(width * 0.05, height * 0.08, 'exit_icon', 50, function () {
+      this.scene.music.stop();
+      this.scene.scene.start('select');
+    });
+
+    // Texto del nombre de la escena: "Torre i"
+    let rigthMargin = width - width * 0.05;
+    this.interfaceText(rigthMargin, height * 0.05, this.key, 50, '#ffffff');
+
+    // Cronómetro
+    this.timerText = this.interfaceText(rigthMargin, height * 0.12, this.timer.toString(), 50, '#ffffff');
+
+    // Límite de tiempo con dos decimales
+    this.defeatTimeString = this.defeatTime.toFixed(2);
+    this.defeatTimeText = this.interfaceText(rigthMargin, height * 0.17, this.defeatTimeString + " ", 30, '#ff0000');
+
+    //Flechas de marca para la sombra
+    this.upArrow = this.interfaceImage(this.shadow.x, 32, "up_arrow", {
+      x: 0.5,
+      y: 0
+    }, 0Xf3463a);
+    this.downArrow = this.interfaceImage(this.shadow.x, height - 32, "down_arrow", {
+      x: 0.5,
+      y: 1
+    }, 0Xffffff)
+
+    //Música
+    this.music.play(this.key);
+    this.music.setRate(1.5);
+    this.music.setMute(this.game.audioConfig.mute);
+
+    //Reseteamos el haber llegado a la cima
+    this._reachedTop = false;
+  }
+
+  update(t, dt) {
+    super.update(t, dt);
+    this.frameTime += dt;
+
+    //Cronómetro
+    if (!this._reachedTop && this.hasTimerStarted) {
+      this.timer = this.timer + dt / 1000;
+
+      // Dos decimales
+      this.timerString = this.timer.toFixed(2);
+      this.timerText.setText(this.timerString + " ");
+
+      if (this.timer > this.defeatTime)
+        this.lose();
+    }
+
+    //Limitamos forzosamente el framerate a 60fps y los acompasamos con los pasos físicos (por problemas técnicos)
+    if (this.frameTime > 16.5) {
+      this.frameTime -= 16.5;
+      //Actualizar flechas de la sombra
+      this.downArrow.setVisible(!this._reachedTop && this.cameras.main.scrollY + this.cameras.main.height < this.shadow.y);
+      this.upArrow.setVisible(!this._reachedTop && this.cameras.main.scrollY > this.shadow.y);
+
+      //Condicion de ganar
+      if (!this._reachedTop && this.player.y < this.tileSize * (this.floorHeight + this.margin))
+        this.win();
+
+      this.matter.world.step();
+    }
+  }
+
+  loadMusic() {
     //La sombrá llegará a Judy cuando la música "tower" llegue a estos segundos
     this._loseMusicTime = 320;
     this._startMusicTime = this._loseMusicTime - (this.defeatTime * 1.5);
@@ -36,9 +154,7 @@ export default class Tower extends Phaser.Scene {
       start: this._startMusicTime,
       duration: this.defeatTime * 1.5 + 5
     };
-  }
 
-  preload() {
     //Cargamos la musica
     this.music = this.sound.add('tower', this.game.audioConfig);
     this.winMusic = this.sound.add('win', this.game.audioConfig);
@@ -48,7 +164,7 @@ export default class Tower extends Phaser.Scene {
       name: "winPart",
       start: 268,
       duration: 7.5
-    })
+    });
 
     //Cargamos los sonidos
     this.help_me = this.sound.add('help_me');
@@ -57,30 +173,17 @@ export default class Tower extends Phaser.Scene {
     this.thump = this.sound.add('thump');
   }
 
-  /**
-   * Creación de los elementos comunes a todas las torres
-   */
-  create() {
-    this.frameTime = 0;
-    this.matter.world.autoUpdate = false;
-
-    //Tamaño del mapa
-    let width = this.cameras.main.width;
-    let height = this.cameras.main.height;
-
-    this.matter.world.setBounds(0, 0, 1280, (this.floors + 1) * this.floorHeight * this.tileSize + 2 * this.margin * this.tileSize);
-
-    this.frameTime = 0;
-    this.matter.world.autoUpdate = false;
-
+  buildTower() {
     //Tiles
-    const map = this.make.tilemap({ key: this.keyTile });
-   
+    const map = this.make.tilemap({
+      key: this.keyTile
+    });
+
     const tileset = map.addTilesetImage(this.keyTile, 'tiles');
 
-    const coll = map.createLayer('Tower', tileset);
+    this.coll = map.createLayer('Tower', tileset);
     const stairs = map.createLayer('Interactuable', tileset);
-    const atravesable = map.createLayer('atravesable',tileset);
+    const atravesable = map.createLayer('atravesable', tileset);
     this.stairLayer = stairs;
     //const boxes = map.createLayer('cajas',tileset);
     //console.log(boxes);
@@ -88,86 +191,84 @@ export default class Tower extends Phaser.Scene {
     this.stairs = stairs;
 
     // Creacion cajas desde el JSON
-    if(map.getObjectLayer('cajas')!= null){
-    for (const objeto of map.getObjectLayer('cajas').objects) { 
-        new Box(this, objeto.x, objeto.y)     
-        }
+    if (map.getObjectLayer('cajas') != null) {
+      for (const objeto of map.getObjectLayer('cajas').objects) {
+        new Box(this, objeto.x, objeto.y)
+      }
     }
-    if(map.getObjectLayer('fragmentos')!= null){
-      for (const objeto of map.getObjectLayer('fragmentos').objects) { 
-          // let aux = new Frag(this, objeto.x, objeto.y, 'pivot',{label: 'fragmento'})  ;
-          // aux.isSensor = true;
-          //let rec = this.matter.add.image(objeto.x+objeto.width/2, objeto.y+objeto.height/2,"pivot",{label: 'fragmento'});
-         let rec = this.matter.add.image(objeto.x+objeto.width/2, objeto.y+objeto.height/2,"pivot",{label:'fragmento'});
-         rec.label = 'fragmento';
-         
-          rec.setSensor(true);
-          rec.setStatic(true);
-          }
-      }
-      
-    
-   
-    
-    if(map.getObjectLayer('escaleras')!= null){
-      for (const objeto of map.getObjectLayer('escaleras').objects) { 
-          //new Sensor(this, objeto.x, objeto.y, 'smallbox')    
-          //objeto.isSensor= true;  
-          
-          let rec = this.matter.add.rectangle(objeto.x+objeto.width/2, objeto.y+objeto.height/2, objeto.width, objeto.height,{label : 'escalera', reparada : objeto.properties[2].value, pX : objeto.properties[0].value, pY : objeto.properties[1].value});
-          rec.isStatic = true;
-          rec.isSensor  = true;
-          //Phaser.Physics.Matter.Matter.Bodies.rectangle(objeto.x, objeto.y , objeto.height, objeto.width);
-          // let compoundBody = Phaser.Physics.Matter.Matter.Body.create({
-          //   parts: [this.sens],
-          //   restitution: 0.05 //Para no engancharse a las paredes
-          // });
-      
-          // this.setExistingBody(compoundBody);  
-        }
-      }
+    if (map.getObjectLayer('fragmentos') != null) {
+      for (const objeto of map.getObjectLayer('fragmentos').objects) {
+        // let aux = new Frag(this, objeto.x, objeto.y, 'pivot',{label: 'fragmento'})  ;
+        // aux.isSensor = true;
+        //let rec = this.matter.add.image(objeto.x+objeto.width/2, objeto.y+objeto.height/2,"pivot",{label: 'fragmento'});
+        let rec = this.matter.add.image(objeto.x + objeto.width / 2, objeto.y + objeto.height / 2, "pivot", {
+          label: 'fragmento'
+        });
+        rec.label = 'fragmento';
 
+        rec.setSensor(true);
+        rec.setStatic(true);
+      }
+    }
+    if (map.getObjectLayer('escaleras') != null) {
+      for (const objeto of map.getObjectLayer('escaleras').objects) {
+        //new Sensor(this, objeto.x, objeto.y, 'smallbox')    
+        //objeto.isSensor= true;  
+
+        let rec = this.matter.add.rectangle(objeto.x + objeto.width / 2, objeto.y + objeto.height / 2, objeto.width, objeto.height, {
+          label: 'escalera',
+          reparada: objeto.properties[2].value,
+          pX: objeto.properties[0].value,
+          pY: objeto.properties[1].value
+        });
+        rec.isStatic = true;
+        rec.isSensor = true;
+        //Phaser.Physics.Matter.Matter.Bodies.rectangle(objeto.x, objeto.y , objeto.height, objeto.width);
+        // let compoundBody = Phaser.Physics.Matter.Matter.Body.create({
+        //   parts: [this.sens],
+        //   restitution: 0.05 //Para no engancharse a las paredes
+        // });
+
+        // this.setExistingBody(compoundBody);  
+      }
+    }
     //Creacion cuerdas desde el JSON
-    if(map.getObjectLayer('cuerdas')!= null){
-      for (const objeto of map.getObjectLayer('cuerdas').objects) { 
-          new Rope(this, objeto.x, objeto.y, objeto.properties[1].value,objeto.properties[0].value )              
-          }
+    if (map.getObjectLayer('cuerdas') != null) {
+      for (const objeto of map.getObjectLayer('cuerdas').objects) {
+        new Rope(this, objeto.x, objeto.y, objeto.properties[1].value, objeto.properties[0].value)
       }
-
-   
-
-
-
-
-    coll.setCollisionByProperty({ collides: true })
+    }
+    this.coll.setCollisionByProperty({
+      collides: true
+    })
     //atravesable.setCollisionByProperty({ collides: true })
     //stairs.setCollisionByProperty({ collides: true })
     //atravesable.setCollisionByExclusion(-1, true);
-    
-    this.matter.world.convertTilemapLayer(coll);
+
+    this.matter.world.convertTilemapLayer(this.coll);
     //this.matter.world.convertTilemapLayer(atravesable);
     //this.matter.world.convertTilemapLayer(stairs);
     const tileCollisions = [0, 1, 2, 3]
-  //   atravesable.layer.data.forEach(function (row){
-  //     row.forEach(function (tile) {
-  //     if (tileCollisions.includes(tile.index)) {
-  //       tile.collideDown = false
-  //       tile.collideLeft = false
-  //       tile.collideRight = false
-  //       tile.collideUp = true
-  //       // or less verbosely:
-  //       // tile.setCollision(false, false, true, false)
-  //     }
-  //   })
-  // })
-    
+    //   atravesable.layer.data.forEach(function (row){
+    //     row.forEach(function (tile) {
+    //     if (tileCollisions.includes(tile.index)) {
+    //       tile.collideDown = false
+    //       tile.collideLeft = false
+    //       tile.collideRight = false
+    //       tile.collideUp = true
+    //       // or less verbosely:
+    //       // tile.setCollision(false, false, true, false)
+    //     }
+    //   })
+    // })
+
     // atravesable.forEachTile((tile) => {
-      
-      
+
+
     //     tile.setCollision(false, false, true, false, true);
-      
-      
-      
+
+
+
     //   }, this);
 
     // stairs.forEachTile(function (tile) {
@@ -191,214 +292,12 @@ export default class Tower extends Phaser.Scene {
     //       part.isSensor = true;
     //     });
     //   }
-    // });
-
-    //Personajes
-    this.player = new Player(this, 400, (this.floors + 1) * this.floorHeight * this.tileSize, coll, { restitution: 1, label: 'player' });
-
-    
-    this.shadow = new Shadow(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize, this.defeatTime);
-
-    //Animaciones
-    this.anims.create({
-      key: 'scottie_idle',
-      frames: this.anims.generateFrameNumbers('scottie_idle', { start: 0, end: 152 }),
-      frameRate: 24,
-      repeat: -1
-    });
-    this.anims.create({
-      key: 'scottie_run',
-      frames: this.anims.generateFrameNumbers('scottie_run', { start: 0, end: 17 }),
-      frameRate: 24,
-      repeat: -1
-    });
-    this.anims.create({
-      key: 'scottie_idle_jump',
-      frames: this.anims.generateFrameNumbers('scottie_idle_jump', { start: 0, end: 3 }),
-      frameRate: 24,
-      repeat: -1
-    });
-    this.anims.create({
-      key: 'scottie_run_jump',
-      frames: this.anims.generateFrameNumbers('scottie_run_jump', { start: 0, end: 5 }),
-      frameRate: 24,
-      repeat: -1
-    });
-
-    //Timer
-    this.timer = 0;
-
-    //Camara
-    this.cameras.main.setBounds(0, 0, 1280, (this.floors + 1) * this.floorHeight * 32 + 32 * 4);
-    this.cameras.main.startFollow(this.player);
-
-    this.ropeConstraint = undefined;
-
-    //Agarrarse a la cuerda
-    this.matter.world.on('collisionstart',
-      (event, player, ropes) => {
-        if (ropes.gameObject != null && ropes.gameObject.body.label != 'Rectangle Body') {
-          if (player.gameObject !== null && ropes.gameObject !== null && player.gameObject.texture !== undefined && ropes.gameObject.texture !== undefined) {
-            if ((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player")) {
-              //Scottie se agarra a la cuerda
-              //Corrijo nombres de variables
-              if (player.gameObject.texture.key == "rope" && ropes.gameObject.body.label == "player") {
-                let aux = player;
-                player = ropes;
-                ropes = aux;
-              }
-              //Puede que ya estemos agarrados a un nodo
-              if (this.ropeConstraint === undefined) {
-                //Para permitir el salto de una cuerda a otra, 
-                //evitaremos engancharnos a otros nodos de la cuerda que acabamos de soltar
-                if (this._lastRopeId !== ropes.gameObject.id || this._canGrabLastRope) {
-                  this.ropeConstraint = this.matter.add.constraint(player,
-                    ropes,
-                    0, // distancia
-                    0.5 // rigidez de la unión
-                  );
-
-                  this._canGrabLastRope = false;
-
-                  console.log("engancho una cuerda");
-                  this._lastRopeId = ropes.gameObject.id;
-                  this.player.hangStart();
-                }
-              }
-            }
-          }
-        }
-        
-      });
-
-    //UI
-    let mute = this.game.audioConfig.mute ? 'mute_on' : 'mute_off';
-    let muteButton = this.add.sprite(width * 0.05, height * 0.2, mute)
-      .setInteractive(new Phaser.Geom.Rectangle(16, 16, 32, 32), Phaser.Geom.Rectangle.Contains);
-    muteButton.setOrigin(0, 0.5);
-    muteButton.setScrollFactor(0);
-    muteButton.on('pointerdown', pointer => {
-      this.game.audioConfig.mute = !this.game.audioConfig.mute;
-      this.music.setMute(!this.music.mute);
-      muteButton.setTexture(this.game.audioConfig.mute ? 'mute_on' : 'mute_off');
-    });
-
-    // Botón volver a SelectScreen
-    this.backButton = this.add.sprite(width * 0.05, height * 0.08, 'exit_icon')
-      .setInteractive(new Phaser.Geom.Rectangle(25, 25, 50, 50), Phaser.Geom.Rectangle.Contains);
-    this.backButton.setOrigin(0, 0);
-    this.backButton.setScrollFactor(0);
-
-    this.backButton.on('pointerdown', function (event) {
-      this.scene.music.stop();
-      this.scene.scene.start('select');
-    });
-
-    let levelNameText = this.add.text(width - width * 0.15, height * 0.05, this.key,
-      {
-        fontFamily: 'Caveat',
-        fontSize: 50,
-        color: '#ffffff'
-      })
-    levelNameText.setOrigin(0, 0);
-    levelNameText.setScrollFactor(0);
-
-    this.timerText = this.add.text(width - width * 0.15, height * 0.12, this.timer.toString(),
-      {
-        fontFamily: 'Caveat',
-        fontSize: 50,
-        color: '#ffffff',
-        align: 'right'
-      })
-    this.timerText.setOrigin(0, 0);
-    this.timerText.setScrollFactor(0);
-
-    // Dos decimales
-    this.defeatTimeString = this.defeatTime.toFixed(2);
-
-    this.defeatTimeText = this.add.text(width - width * 0.15, height * 0.17, this.defeatTimeString + " ",
-      {
-        fontFamily: 'Caveat',
-        fontSize: 30,
-        color: '#ff0000',
-        align: 'right'
-      })
-    this.defeatTimeText.setOrigin(0, 0);
-    this.defeatTimeText.setScrollFactor(0);
-
-    //Flechas de marca para la sombra
-    this.upArrow = this.add.sprite(this.shadow.x, 32, "up_arrow");
-    this.upArrow.setScrollFactor(0);
-    this.upArrow.setOrigin(0.5, 0);
-    this.upArrow.setTint(0Xf3463a);
-    this.downArrow = this.add.sprite(this.shadow.x, height - 32, "down_arrow");
-    this.downArrow.setScrollFactor(0);
-    this.downArrow.setOrigin(0.5, 1);
-
-    //Música
-    this.music.play(this.key);
-    this.music.setRate(1.5);
-    this.music.setMute(this.game.audioConfig.mute);
-
-    //Reseteamos el haber llegado a la cima
-    this._reachedTop = false;
-
-    
-    this.shareBut = this.add.image(this.sys.game.canvas.width/2, 100, 'share')
-    this.shareBut.scale = 0.2;
-    this.shareBut.setInteractive();
-    this.shareBut.on('pointerup' , this.clickshareScore, this);
-    this.shareBut.setVisible(false);
-    //this.txtShare = new Text(this, this.player.x , this.player.y, 'Share My Score', 'standard');
-
-    //this.txtShare = this.add.text( this.player.x , this.player.y, 'Share My Score' ,{ fontFamily: 'Vertigon', fontSize: 60, color: '#e07a66' });
+    // });    
   }
 
-  clickshareScore(){
-    //this.events.emit('clickShareScore');
-    let text = '¡He rescatado a Judy en la torre ' + this.scene.key[6] + ' en solo ' + this.scene.scene.timerString + 's! ¿Podrás superarme en @vertigo_tower ? https://t.co/mv5sKRrnXh';
-    let url = 'http://twitter.com/intent/tweet';
-    url += '?text=' +text;
-
-    window.open(url,'_blank')
-  }
-
-  update(t, dt) {
-    super.update(t, dt);
-    this.frameTime += dt;
-    if ( this.frameTime > 16.5) {
-      this.frameTime -= 16.5;
-
-    if (!this._reachedTop && this.hasTimerStarted) {
-      this.timer = this.timer + dt / 1000;
-
-      // Dos decimales
-      this.timerString = this.timer.toFixed(2);
-      this.timerText.setText(this.timerString + " ");
-
-      if (this.timer > this.defeatTime)
-        this.lose();
-    }
-
-    //Actualizar flechas de la sombra
-    if (!this._reachedTop && this.cameras.main.scrollY + this.cameras.main.height < this.shadow.y)
-      this.downArrow.setVisible(true);
-    else
-      this.downArrow.setVisible(false);
-    if (!this._reachedTop && this.cameras.main.scrollY > this.shadow.y)
-      this.upArrow.setVisible(true);
-    else
-      this.upArrow.setVisible(false);
-
-    //Condicion de ganar
-    if (!this._reachedTop && this.player.y < this.tileSize * (this.floorHeight + this.margin))
-      this.win();
-
-      this.matter.world.step();
-  }
-}
-
-  //Metodo de ganar
+  /**
+   * Se ejecuta al llegar a la cima de la torre.
+   */
   win() {
     this._reachedTop = true;
 
@@ -406,15 +305,12 @@ export default class Tower extends Phaser.Scene {
     this.backButton.destroy(true);
     this.timerText.setColor("#D6D45A");
     this.defeatTimeText.destroy(true);
-    //-----------------------------------------
-      this.shareBut.setVisible(true);
 
     //Paramos la musica y la sombra
     this.music.stop();
     this.shadow.stop();
 
     //Desactivar movimiento del jugador
-    //Desactivar boton de salir al menu
 
     //Empieza cinematica
     this.winMusic.play("winPart");
@@ -438,12 +334,14 @@ export default class Tower extends Phaser.Scene {
     if (towerNumber < 5) {
       console.log('Tower ' + (towerNumber + 1));
       this.scene.scene.start('Tower ' + (towerNumber + 1));
-    }
-    else {
+    } else {
       this.scene.scene.start('select');
     }
   }
 
+  /**
+   * Se ejecuta al acabarse el tiempo.
+   */
   lose() {
     this.music.stop();
     this.scene.start(this.key);
@@ -464,5 +362,119 @@ export default class Tower extends Phaser.Scene {
    */
   canGrabRopeAgain(self) {
     self.canGrabLastRope = true;
+  }
+
+  onGrabRope() {
+    this.matter.world.on('collisionstart',
+      (event, player, ropes) => {
+        if (ropes.gameObject != null && ropes.gameObject.body.label != 'Rectangle Body') {
+          if (player.gameObject !== null && ropes.gameObject !== null && player.gameObject.texture !== undefined && ropes.gameObject.texture !== undefined) {
+            if ((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player")) {
+              //Scottie se agarra a la cuerda
+              //Corrijo nombres de variables
+              if (player.gameObject.texture.key == "rope" && ropes.gameObject.body.label == "player") {
+                let aux = player;
+                player = ropes;
+                ropes = aux;
+              }
+              //Puede que ya estemos agarrados a un nodo
+              if (this.ropeConstraint === undefined) {
+                //Para permitir el salto de una cuerda a otra, 
+                //evitaremos engancharnos a otros nodos de la cuerda que acabamos de soltar
+                if (this._lastRopeId !== ropes.gameObject.id || this._canGrabLastRope) {
+                  this.ropeConstraint = this.matter.add.constraint(player,
+                    ropes,
+                    0,
+                    0.5 // rigidez de la unión
+                  );
+
+                  this._canGrabLastRope = false;
+
+                  console.log("engancho una cuerda");
+                  this._lastRopeId = ropes.gameObject.id;
+                  this.player.hangStart();
+                }
+              }
+            }
+          }
+        }
+
+      });
+  }
+
+  /**
+   * Añade una animación a la escena
+   * @param {string} animation_name Nombre de la animación. Debe ser el mismo con el que se cargó su spritesheet
+   * @param {integer} num_frames Número de frames de la animación
+   */
+  createAnimation(animation_name, num_frames) {
+    this.anims.create({
+      key: animation_name,
+      frames: this.anims.generateFrameNumbers(animation_name, {
+        start: 0,
+        end: num_frames - 1
+      }),
+      frameRate: 24,
+      repeat: -1
+    });
+  }
+
+  /**
+   * Crea un botón en la interfaz de usuario
+   * @param {integer} x Posición en el eje X (esquina superior izquierda)
+   * @param {integer} y Posición en el eje Y (esquina superior izquierda)
+   * @param {string} textureName Nombre de la textura del botón. Debe ser la misma con la que se cargó.
+   * @param {integer} size Tamaño de la textura. Necesaria para la hit area del botón.
+   * @param {function} buttonAction Función que se realiza al pulsar el botón
+   */
+  interfaceButton(x, y, textureName, size, buttonAction) {
+    let button = this.add.sprite(x, y, textureName)
+      .setInteractive(new Phaser.Geom.Rectangle(size / 2, size / 2, size, size), Phaser.Geom.Rectangle.Contains);
+    button.setOrigin(0, 0);
+    button.setScrollFactor(0);
+
+    button.on('pointerdown', buttonAction);
+
+    return button;
+  }
+
+  /**
+   * Crea un texto en la interfaz de usuario
+   * @param {integer} x Posición en el eje X (esquina superior derecha)
+   * @param {integer} y Posición en el eje Y (esquina superior derecha)
+   * @param {string} s Texto a escribir en el elemento de la interfaz
+   * @param {integer} size Tamaño del texto en px
+   * @param {string} color Color del texto. Se trata de un string con el código RGB del mismo ('#XXXXXX')
+   * @returns 
+   */
+  interfaceText(x, y, s, size, color) {
+    let text = this.add.text(x, y, s, {
+      fontFamily: 'Caveat',
+      fontSize: size,
+      color: color,
+      align: 'right'
+    });
+    text.setOrigin(1, 0);
+    text.setScrollFactor(0);
+
+    return text;
+  }
+
+  /**
+   * Crea una imagen en la interfaz de usuario
+   * @param {*} x Posición en el eje X
+   * @param {*} y Posición en el eje Y
+   * @param {*} textureName Nombre de la textura del botón. Debe ser la misma con la que se cargó.
+   * @param {object} origin Origen de la textura. Es un objeto con numbers x e y, entre 0 y 1.
+   * @param {number} tint Número hexadecimal del código del color de la tinta. 0Xffffff no tintará la imagen
+   * @returns 
+   */
+  interfaceImage(x, y, textureName, origin, tint) {
+    let image = this.add.image(x, y, textureName);
+    image.setScrollFactor(0);
+    image.setOrigin(origin.x, origin.y);
+    image.setTint(tint);
+
+    return image;
   }
 }

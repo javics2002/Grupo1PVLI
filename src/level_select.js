@@ -71,6 +71,13 @@ export default class Select extends Phaser.Scene {
                 //Es el último nivel accesible
                 break;
             }
+
+            //Botón de compartir
+            this.shareBut = this.add.image(this.sys.game.canvas.width / 2, 100, 'share')
+    this.shareBut.scale = 0.2;
+    this.shareBut.setInteractive();
+    this.shareBut.on('pointerup', this.clickshareScore, this);
+    this.shareBut.setVisible(false);
         }
 
         //Boton para volver a la pantalla de título
@@ -118,4 +125,13 @@ export default class Select extends Phaser.Scene {
         //Música
         this.vertigo.play();
     }
+
+    clickshareScore() {
+        //this.events.emit('clickShareScore');
+        let text = `¡He rescatado a Judy en la torre ${this.scene.key[6]} en solo ${this.scene.scene.timerString}s! ¿Podrás superarme en @vertigo_tower ? https://t.co/mv5sKRrnXh`;
+        let url = 'http://twitter.com/intent/tweet';
+        url += '?text=' + text;
+    
+        window.open(url, '_blank')
+      }
 }

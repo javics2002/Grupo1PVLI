@@ -85,6 +85,7 @@ this.puedeReparar = false;
 
     this.setExistingBody(compoundBody);
     this.setFixedRotation();
+    this.setPosition(x, y);
 
     scene.matter.world.on("beforeupdate", this.resetTouching, this);
     
@@ -239,9 +240,9 @@ this.puedeReparar = false;
         }
       }
       if (this.right() && !this.isTouching.right)
-        this.setVelocityX(this.speed * dt);
+        this.setVelocityX(this.speed);
       else if (this.left()&& !this.isTouching.left)
-        this.setVelocityX(-this.speed * dt);
+        this.setVelocityX(-this.speed);
       else
       {
         this.setVelocityX(0);

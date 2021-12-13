@@ -90,7 +90,6 @@ export default class Boot extends Phaser.Scene {
     this.load.setPath('assets/sprites/');
 
 
-    this.load.image('share', 'share.png');
     //Cargamos todos los sprites
     this.load.image('rope', 'rope.png');
     this.load.image('pivot', 'rope_pivot.png');
@@ -103,7 +102,8 @@ export default class Boot extends Phaser.Scene {
     this.load.image('mute_on', 'mute_on.png');
     this.load.image('enter_fullscreen', 'enter_fullscreen.png');
     this.load.image('exit_fullscreen', 'exit_fullscreen.png');
-
+    this.load.image('share', 'share.png');
+    
     //Cargamos animaciones
     this.load.setPath('assets/animations/');
     this.load.spritesheet('scottie_idle', 'scottie_idle.png', { frameWidth: 37, frameHeight: 62, margin: 1 });

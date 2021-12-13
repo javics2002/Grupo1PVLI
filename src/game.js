@@ -34,7 +34,7 @@ const initGame = () => {
             default: 'matter', 
             matter: { 
                 gravity: { y: 2 }, 
-                debug: false,
+                debug: true,
                 runner: { isFixed: true, fps: 60 }
             } 
         }
