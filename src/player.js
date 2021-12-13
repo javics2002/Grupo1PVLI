@@ -46,7 +46,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.hanged = false;
     this.ropeForce = 0.01;
 
-this.puedeReparar = true;
+this.puedeReparar = false;
 
     //Física
     this.setFixedRotation(true);
@@ -80,11 +80,12 @@ this.puedeReparar = true;
     //Sensores. El de abajo detecta el suelo y los de los lados, cajas
     let bodies = Phaser.Physics.Matter.Matter.Bodies;
     this.bottomSensor = bodies.rectangle(this.x, this.y + this.height / 2, this.width / 2, 15, { isSensor: true });
-    this.leftSensor = bodies.rectangle(this.x - this.width / 2, this.y, 15, this.height / 2, { isSensor: true });
-    this.rightSensor = bodies.rectangle(this.x + this.width / 2, this.y, 15, this.height / 2, { isSensor: true });
+    this.leftSensor = bodies.rectangle(this.x - this.width / 2, this.y, 15, this.height /2, { isSensor: true });
+    this.rightSensor = bodies.rectangle(this.x + this.width / 2, this.y, 15, this.height/2 , { isSensor: true });
+    this.stair = bodies.rectangle(this.x, this.y + this.height / 2-7.5, this.width / 2, 15, { isSensor: true });
     this.setExistingBody(bodies.rectangle(this.x, this.y, this.width, this.height, { chamfer: { radius: 10 } }),true);
     let compoundBody = Phaser.Physics.Matter.Matter.Body.create({
-      parts: [this.body, this.bottomSensor, this.leftSensor, this.rightSensor],
+      parts: [this.body, this.bottomSensor, this.leftSensor, this.rightSensor,this.stair],
       restitution: 0.05 //Para no engancharse a las paredes
     });
 
@@ -114,16 +115,18 @@ this.puedeReparar = true;
           this.coyoteCounter = this.coyoteTime;
         }
         if((bodyA === this.leftSensor&& bodyB.label === 'escalera' || bodyB === this.leftSensor&& bodyA.label === 'escalera' 
-        || bodyA === this.rightSensor&& bodyB.label === 'escalera' || bodyB === this.rightSensor&& bodyA.label === 'escalera')
-        ){
+        || bodyA === this.rightSensor&& bodyB.label === 'escalera' || bodyB === this.rightSensor&& bodyA.label === 'escalera'
+        || bodyA === this.stair&& bodyB.label === 'escalera' || bodyB === this.stair&& bodyA.label === 'escalera')
+        )
+        {
          if(tile.reparada){
           this.canClimb = true;
          }
         else if(this.puedeReparar){
-            scene.mapA.replaceByIndex(3,7,tile.pX,tile.pY,2,6);
-            scene.mapA.replaceByIndex(4,8,tile.pX,tile.pY,2,6);
-            scene.mapA.replaceByIndex(5,7,tile.pX,tile.pY,2,6);
-            scene.mapA.replaceByIndex(6,8,tile.pX,tile.pY,2,6);
+            scene.mapA.replaceByIndex(3,7,tile.pX,tile.pY,2,6,scene.stairs);
+            scene.mapA.replaceByIndex(4,8,tile.pX,tile.pY,2,6,scene.stairs);
+            scene.mapA.replaceByIndex(5,7,tile.pX,tile.pY,2,6,scene.stairs);
+            scene.mapA.replaceByIndex(6,8,tile.pX,tile.pY,2,6,scene.stairs);
             // scene.mapA.replaceByIndex(3,7,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
             // scene.mapA.replaceByIndex(4,8,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
             // scene.mapA.replaceByIndex(5,7,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
@@ -132,13 +135,14 @@ this.puedeReparar = true;
             this.puedeReparar = false;
           }
         }
-
-        if((bodyA === this.leftSensor&& bodyB.label === 'fragmento' || bodyB === this.leftSensor&& bodyA.label === 'fragmento' 
-        || bodyA === this.rightSensor&& bodyB.label === 'fragmento' || bodyB === this.rightSensor&& bodyA.label === 'fragmento')
-       ){
-         
+        if(gameObject != null && gameObject.type === 'Image'&&
+          (bodyA === this.leftSensor&& gameObject.label === 'fragmento' 
+        || bodyB === this.rightSensor&& gameObject.label === 'fragmento' )
+       ){         
           this.puedeReparar = true;
+          gameObject.destroy();
         }
+       
        
         if(gameObject!= null && gameObject.tile != null ){
         if (bodyA === this.leftSensor || bodyB === this.leftSensor ) {
@@ -147,6 +151,7 @@ this.puedeReparar = true;
         else if (bodyA === this.rightSensor || bodyB === this.rightSensor){
           this.isTouching.right = true;
         }
+        
       }
       }
     });

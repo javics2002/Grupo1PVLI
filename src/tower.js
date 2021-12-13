@@ -66,15 +66,17 @@ export default class Tower extends Phaser.Scene {
 
     //Tiles
     const map = this.make.tilemap({ key: this.keyTile });
-    this.mapA = map;
+   
     const tileset = map.addTilesetImage(this.keyTile, 'tiles');
 
     const coll = map.createLayer('Tower', tileset);
     const stairs = map.createLayer('Interactuable', tileset);
+    const atravesable = map.createLayer('atravesable',tileset);
     this.stairLayer = stairs;
     //const boxes = map.createLayer('cajas',tileset);
     //console.log(boxes);
-    
+    this.mapA = map;
+    this.stairs = stairs;
 
     // Creacion cajas desde el JSON
     if(map.getObjectLayer('cajas')!= null){
@@ -88,9 +90,10 @@ export default class Tower extends Phaser.Scene {
           // aux.isSensor = true;
           //let rec = this.matter.add.image(objeto.x+objeto.width/2, objeto.y+objeto.height/2,"pivot",{label: 'fragmento'});
          let rec = this.matter.add.image(objeto.x+objeto.width/2, objeto.y+objeto.height/2,"pivot",{label:'fragmento'});
+         rec.label = 'fragmento';
          
-         rec.setSensor(true);
-         rec.setStatic(true);
+          rec.setSensor(true);
+          rec.setStatic(true);
           }
       }
       
@@ -128,10 +131,35 @@ export default class Tower extends Phaser.Scene {
 
 
     coll.setCollisionByProperty({ collides: true })
+    //atravesable.setCollisionByProperty({ collides: true })
     //stairs.setCollisionByProperty({ collides: true })
-
+    //atravesable.setCollisionByExclusion(-1, true);
+    
     this.matter.world.convertTilemapLayer(coll);
+    //this.matter.world.convertTilemapLayer(atravesable);
     //this.matter.world.convertTilemapLayer(stairs);
+    const tileCollisions = [0, 1, 2, 3]
+  //   atravesable.layer.data.forEach(function (row){
+  //     row.forEach(function (tile) {
+  //     if (tileCollisions.includes(tile.index)) {
+  //       tile.collideDown = false
+  //       tile.collideLeft = false
+  //       tile.collideRight = false
+  //       tile.collideUp = true
+  //       // or less verbosely:
+  //       // tile.setCollision(false, false, true, false)
+  //     }
+  //   })
+  // })
+    
+    // atravesable.forEachTile((tile) => {
+      
+      
+    //     tile.setCollision(false, false, true, false, true);
+      
+      
+      
+    //   }, this);
 
     // stairs.forEachTile(function (tile) {
     //     //If your ladder tiles have a complex body made up of different parts, you'll need to iterate through
