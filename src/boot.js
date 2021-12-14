@@ -6,17 +6,19 @@ export default class Boot extends Phaser.Scene {
    * Constructor de la escena
    */
   constructor() {
-    super({ key: 'boot' });
+    super({
+      key: 'boot'
+    });
   }
 
   loadFont(name, url) {
     let newFont = new FontFace(name, `url(${url})`);
     newFont.load().then(function (loaded) {
-        document.fonts.add(loaded);
+      document.fonts.add(loaded);
     }).catch(function (error) {
-        return error;
+      return error;
     });
-}
+  }
 
   /**
    * Carga de los assets del juego
@@ -27,113 +29,104 @@ export default class Boot extends Phaser.Scene {
 
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;
-    
+
     //Barra de progreso
+    this.createProgressBar(width, height);
+
+    //Cargamos las torres
+    this.load.setPath('assets/map/');
+    this.load.image('tiles', 'atlas.png');
+    for (let i = 1; i <= 5; i++) {
+      //Tiles desde JSON
+      this.load.tilemapTiledJSON(`torre${i}`, `torre_${i}.json`);
+      //Preview de las torres
+      this.load.image(`tower${i}preview`, `torre_${i}.png`);
+    }
+
+    // Con setPath podemos establecer el prefijo que se añadirá a todos los load que aparecen a continuación
+    this.load.setPath('assets/sprites/');
+
+    //Cargamos todos los sprites
+    let sprites = ['rope', 'rope_pivot', 'box', 'exit_icon', 'shadow', 'up_arrow', 'down_arrow',
+      'mute_off', 'mute_on', 'enter_fullscreen', 'exit_fullscreen', 'share', 'title',
+    ];
+    sprites.forEach(element => {
+      this.load.image(element, `${element}.png`);
+    });
+
+    //Cargamos animaciones
+    this.load.setPath('assets/animations/');
+    let animations = [{
+      name: 'scottie_idle',
+      w: 37,
+      h: 62
+    }, {
+      name: 'scottie_run',
+      w: 56,
+      h: 55
+    }, {
+      name: 'scottie_idle_jump',
+      w: 36,
+      h: 58
+    }, {
+      name: 'scottie_run_jump',
+      w: 45,
+      h: 54
+    }];
+    animations.forEach(element => {
+      this.load.spritesheet(element.name, `${element.name}.png`, {
+        frameWidth: element.w,
+        frameHeight: element.h,
+        margin: 1
+      });
+    });
+
+    //Cargamos la música
+    this.load.setPath('assets/music/');
+    let songs = ['vertigo', 'tower', 'win'];
+    songs.forEach(element => {
+      this.load.audio(element, `${element}.mp3`);
+    });
+
+    //Cargamos los sonidos
+    this.load.setPath('assets/sounds/');
+    let wavSounds = ['fix_stairs', 'jump', 'pick_up', ];
+    wavSounds.forEach(element => {
+      this.load.audio(element, `${element}.wav`);
+    });
+    let mp3Sounds = ['fall', 'help_me', 'ladder1', 'ladder2', 'push_box', 'scream', 'thump', ];
+    mp3Sounds.forEach(element => {
+      this.load.audio(element, `${element}.mp3`);
+    });
+  }
+  
+  /**
+   * Creación de la escena. En este caso, solo cambiamos a la escena que representa la pantalla de título
+   */
+  create() {
+    this.scene.start('title');
+  }
+
+  /**
+   * Barra de progreso sacada del tutorial.
+   * Captura los eventos del load para actualizarse y mostrar información sobre el progreso.
+   * @param {integer} width Anchura de la pantalla
+   * @param {integer} height Altura de la pantalla
+   */
+  createProgressBar(width, height) {
     let progressBar = this.add.graphics();
     let progressBox = this.add.graphics();
     progressBox.fillStyle(0x222222, 0.8);
     progressBox.fillRect(width / 2 - 160, height / 2, 320, 50);
 
     //Texto del loading
-    let loadingText = this.make.text({
-      x: width / 2,
-      y: height / 2 - 30,
-      text: 'Loading...',
-      style: {
-        font: '24px caveat',
-        fill: '#ffffff'
-      }
-    });
-    loadingText.setOrigin(0.5, 0.5);
+    let loadingText = this.addInterfaceText(width / 2, height / 2 - 30, 'Loading...', 24, '#ffffff');
 
     //Porcentaje
-    let percentText = this.make.text({
-      x: width / 2,
-      y: height / 2 + 25,
-      text: '0%',
-      style: {
-        font: '18px caveat',
-        fill: '#ffffff'
-      }
-    });
-    percentText.setOrigin(0.5, 0.5);
+    let percentText = this.addInterfaceText(width / 2, height / 2 + 25, '0%', 18, '#ffffff');
 
     //Información sobre el asset cargado
-    let assetText = this.make.text({
-      x: width / 2,
-      y: height / 2 + 80,
-      text: '',
-      style: {
-        font: '18px caveat',
-        fill: '#ffffff'
-      }
-    });
-    assetText.setOrigin(0.5, 0.5);
-
-    //cargo los tiles
-    this.load.setPath('assets/map/');
-    this.load.image('tiles', 'atlas.png');
-    this.load.tilemapTiledJSON('torre1', 'torre_1.json');
-    this.load.tilemapTiledJSON('torre2', 'torre_2.json');
-    this.load.tilemapTiledJSON('torre3', 'torre_3.json');
-    this.load.tilemapTiledJSON('torre4', 'torre_4.json');
-    this.load.tilemapTiledJSON('torre5', 'torre_5.json');
-
-    //Preview de las torres
-    this.load.image('tower1preview', 'torre_1.png');
-    this.load.image('tower2preview', 'torre_2.png');
-    this.load.image('tower3preview', 'torre_3.png');
-    this.load.image('tower4preview', 'torre_4.png');
-    this.load.image('tower5preview', 'torre_5.png');
-
-    // Con setPath podemos establecer el prefijo que se añadirá a todos los load que aparecen a continuación
-    this.load.setPath('assets/sprites/');
-
-
-    //Cargamos todos los sprites
-    this.load.image('rope', 'rope.png');
-    this.load.image('pivot', 'rope_pivot.png');
-    this.load.image('box','box.png');
-    this.load.image('exit_icon', 'exiticon.png');
-    this.load.image('shadow', 'shadow.png');
-    this.load.image('up_arrow', 'up_arrow.png');
-    this.load.image('down_arrow', 'down_arrow.png');
-    this.load.image('mute_off', 'mute_off.png');
-    this.load.image('mute_on', 'mute_on.png');
-    this.load.image('enter_fullscreen', 'enter_fullscreen.png');
-    this.load.image('exit_fullscreen', 'exit_fullscreen.png');
-    this.load.image('share', 'share.png');
-    
-    //Cargamos animaciones
-    this.load.setPath('assets/animations/');
-    this.load.spritesheet('scottie_idle', 'scottie_idle.png', { frameWidth: 37, frameHeight: 62, margin: 1 });
-    this.load.spritesheet('scottie_run', 'scottie_run.png', { frameWidth: 56, frameHeight: 55, margin: 1 });
-    this.load.spritesheet('scottie_idle_jump', 'scottie_idle_jump.png', { frameWidth: 36, frameHeight: 58, margin: 1 });
-    this.load.spritesheet('scottie_run_jump', 'scottie_run_jump.png', { frameWidth: 45, frameHeight: 54, margin: 1 });
-
-    //Cargamos la música
-    this.load.setPath('assets/music/');
-    this.load.audio('vertigo', 'vertigo.mp3');
-    this.load.audio('tower', 'tower.mp3');
-    this.load.audio('win', 'win.mp3');
-
-    //Cargamos los sonidos
-    this.load.setPath('assets/sounds/');
-    this.load.audio('fall', 'fall.mp3');
-    this.load.audio('fix_stairs', 'fix_stairs.wav');
-    this.load.audio('help_me', 'help_me.mp3');
-    this.load.audio('jump', 'jump.wav');
-    this.load.audio('ladder1', 'ladder1.mp3');
-    this.load.audio('ladder2', 'ladder2.mp3');
-    this.load.audio('pick_up', 'pick_up.wav');
-    this.load.audio('push_box', 'push_box.mp3');
-    this.load.audio('scream', 'scream.mp3');
-    this.load.audio('thump', 'thump.mp3');
-
-    //Temporalmente para probar la barra de carga
-    for (var i = 0; i < 0; i++) {
-      this.load.image('archivo_innecesario' + i, 'player.png');
-    }
+    let assetText = this.addInterfaceText(width / 2,height / 2 + 80,'',18,'#ffffff');
 
     //Nos suscribimos a eventos sobre la carga de archivos
     this.load.on('progress', function (value) {
@@ -157,9 +150,23 @@ export default class Boot extends Phaser.Scene {
   }
 
   /**
-   * Creación de la escena. En este caso, solo cambiamos a la escena que representa la pantalla de título
+   * Crea un texto en la interfaz de usuario
+   * @param {integer} x Posición en el eje X (esquina superior derecha)
+   * @param {integer} y Posición en el eje Y (esquina superior derecha)
+   * @param {string} s Texto a escribir en el elemento de la interfaz
+   * @param {integer} size Tamaño del texto en px
+   * @param {string} color Color del texto. Se trata de un string con el código RGB del mismo ('#XXXXXX')
+   * @returns 
    */
-  create() {
-    this.scene.start('title');
+   addInterfaceText(x, y, s, size, color) {
+    let text = this.add.text(x, y, s, {
+      fontFamily: 'Caveat',
+      fontSize: size,
+      color: color,
+      align: 'center'
+    });
+    text.setOrigin(.5);
+
+    return text;
   }
 }

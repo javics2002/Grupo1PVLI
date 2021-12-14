@@ -210,7 +210,6 @@ this.puedeReparar = false;
    * @override
    */
   preUpdate(t, dt) {
-  
     super.preUpdate(t, dt);
 
     //Controles

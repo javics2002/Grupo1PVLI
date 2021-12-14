@@ -71,35 +71,35 @@ export default class Tower extends Phaser.Scene {
     //UI
     // Botón de mute
     let mute = this.game.audioConfig.mute ? 'mute_on' : 'mute_off';
-    this.interfaceButton(width * 0.05, height * 0.2, mute, 32, function () {
+    this.addInterfaceButton(width * 0.05, height * 0.2, mute, 32, function () {
       this.scene.game.audioConfig.mute = !this.scene.game.audioConfig.mute;
       this.scene.music.setMute(!this.scene.music.mute);
       this.setTexture(this.scene.game.audioConfig.mute ? 'mute_on' : 'mute_off');
     });
 
     // Botón volver a SelectScreen
-    this.backButton = this.interfaceButton(width * 0.05, height * 0.08, 'exit_icon', 50, function () {
+    this.backButton = this.addInterfaceButton(width * 0.05, height * 0.08, 'exit_icon', 50, function () {
       this.scene.music.stop();
       this.scene.scene.start('select');
     });
 
     // Texto del nombre de la escena: "Torre i"
     let rigthMargin = width - width * 0.05;
-    this.interfaceText(rigthMargin, height * 0.05, this.key, 50, '#ffffff');
+    this.addInterfaceText(rigthMargin, height * 0.05, this.key, 50, '#ffffff');
 
     // Cronómetro
-    this.timerText = this.interfaceText(rigthMargin, height * 0.12, this.timer.toString(), 50, '#ffffff');
+    this.timerText = this.addInterfaceText(rigthMargin, height * 0.12, this.timer.toString(), 50, '#ffffff');
 
     // Límite de tiempo con dos decimales
     this.defeatTimeString = this.defeatTime.toFixed(2);
-    this.defeatTimeText = this.interfaceText(rigthMargin, height * 0.17, this.defeatTimeString + " ", 30, '#ff0000');
+    this.defeatTimeText = this.addInterfaceText(rigthMargin, height * 0.17, this.defeatTimeString + " ", 30, '#ff0000');
 
     //Flechas de marca para la sombra
-    this.upArrow = this.interfaceImage(this.shadow.x, 32, "up_arrow", {
+    this.upArrow = this.addInterfaceImage(this.shadow.x, 32, "up_arrow", {
       x: 0.5,
       y: 0
     }, 0Xf3463a);
-    this.downArrow = this.interfaceImage(this.shadow.x, height - 32, "down_arrow", {
+    this.downArrow = this.addInterfaceImage(this.shadow.x, height - 32, "down_arrow", {
       x: 0.5,
       y: 1
     }, 0Xffffff)
@@ -426,8 +426,9 @@ export default class Tower extends Phaser.Scene {
    * @param {string} textureName Nombre de la textura del botón. Debe ser la misma con la que se cargó.
    * @param {integer} size Tamaño de la textura. Necesaria para la hit area del botón.
    * @param {function} buttonAction Función que se realiza al pulsar el botón
+   * @returns Devuelve el elemento de la interfaz para poder modificarlo
    */
-  interfaceButton(x, y, textureName, size, buttonAction) {
+  addInterfaceButton(x, y, textureName, size, buttonAction) {
     let button = this.add.sprite(x, y, textureName)
       .setInteractive(new Phaser.Geom.Rectangle(size / 2, size / 2, size, size), Phaser.Geom.Rectangle.Contains);
     button.setOrigin(0, 0);
@@ -445,9 +446,9 @@ export default class Tower extends Phaser.Scene {
    * @param {string} s Texto a escribir en el elemento de la interfaz
    * @param {integer} size Tamaño del texto en px
    * @param {string} color Color del texto. Se trata de un string con el código RGB del mismo ('#XXXXXX')
-   * @returns 
+   * @returns Devuelve el elemento de la interfaz para poder modificarlo
    */
-  interfaceText(x, y, s, size, color) {
+  addInterfaceText(x, y, s, size, color) {
     let text = this.add.text(x, y, s, {
       fontFamily: 'Caveat',
       fontSize: size,
@@ -467,9 +468,9 @@ export default class Tower extends Phaser.Scene {
    * @param {*} textureName Nombre de la textura del botón. Debe ser la misma con la que se cargó.
    * @param {object} origin Origen de la textura. Es un objeto con numbers x e y, entre 0 y 1.
    * @param {number} tint Número hexadecimal del código del color de la tinta. 0Xffffff no tintará la imagen
-   * @returns 
+   * @returns Devuelve el elemento de la interfaz para poder modificarlo
    */
-  interfaceImage(x, y, textureName, origin, tint) {
+  addInterfaceImage(x, y, textureName, origin, tint) {
     let image = this.add.image(x, y, textureName);
     image.setScrollFactor(0);
     image.setOrigin(origin.x, origin.y);

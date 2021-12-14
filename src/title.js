@@ -10,23 +10,31 @@ export default class Title extends Phaser.Scene {
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;
 
+    let titleArt = this.add.image(width, 0, 'title').setOrigin(1, 0);
+    titleArt.setScale(.47);
+
     //Texto del título
-    let titleText = this.add.text(this.sys.game.canvas.width/4.2 , this.sys.game.canvas.height/3 , 'VERTIGO TOWER',
-      { fontFamily: 'Vertigon', fontSize: 60, color: '#e07a66' });
-    titleText.setOrigin(0, 0);
-    titleText.setShadow(2, 2, "#333333", 2, false, true);
+    this.write(width * .07, height * .3, 'VERTIGO TOWER', { 
+      fontFamily: 'Vertigon', 
+      fontSize: 60, 
+      color: '#e07a66' 
+    });
 
     //Botón de PLAY
-    let playButton = this.add.text(this.sys.game.canvas.width/2.2 , this.sys.game.canvas.height/1.8, 'Play ',
-      {
-        fontFamily: 'Caveat',
-        fontSize: 50,
-        color: '#ffffff'
-      }).setInteractive();
-    playButton.setOrigin(0, 0.5);
-    playButton.on('pointerdown', pointer => {
+    let playButton = this.write(width * .2 , height * .5, 'PLAY ', {
+      fontFamily: 'Caveat',
+      fontSize: 50,
+      color: '#ffffff'
+    }).setInteractive();
+    playButton.on('pointerdown', () => {
       this.scene.start('select');
     });
-    playButton.setShadow(2, 2, "#333333", 2, false, true);
+  }
+
+  write(x, y, text, fontOptions) {
+    let textElement = this.add.text(x, y, text, fontOptions);
+    textElement.setOrigin(0, 0.5);
+    textElement.setShadow(2, 2, "#333333", 2, false, true);
+    return textElement;
   }
 }

@@ -14,7 +14,7 @@ export default class Rope extends Phaser.Physics.Matter.Sprite {
    * @param {integer} id Identificador
    */
   constructor(scene, x, y, length, id) {
-    super(scene.matter.world, x, y, 'pivot');
+    super(scene.matter.world, x, y, 'rope_pivot');
     this.setStatic(true);
     this.setSensor(true);
     this.id = id;
@@ -23,7 +23,7 @@ export default class Rope extends Phaser.Physics.Matter.Sprite {
     let nodes = new Array(length);
     for(let i = 0; i < length; i++)
     {
-      nodes[i] = new Node(scene, x, y + 33 * i, id);
+      nodes[i] = new Node(scene, x, y + scene.tileSize * i, id);
       let options = {
         bodyA: this,
         bodyB: nodes[i],
