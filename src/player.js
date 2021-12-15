@@ -1,4 +1,3 @@
-
 import S from './BrokenStairs.js'
 /**
  * El jugador. Se moverá y saltará usando los controles.
@@ -29,7 +28,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.jumpBufferLength = 100;
     this.jumpBufferCounter = 0;
 
-    //?
+    //Marcamos si podemos subir unas escaleras
     this.canClimb = false;
 
     //Cajas
@@ -40,7 +39,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.hanged = false;
     this.ropeForce = 0.01;
 
-this.puedeReparar = false;
+    this.puedeReparar = false;
 
     //Física
     this.setFixedRotation(true);
@@ -73,13 +72,25 @@ this.puedeReparar = false;
 
     //Sensores. El de abajo detecta el suelo y los de los lados, cajas
     let bodies = Phaser.Physics.Matter.Matter.Bodies;
-    this.bottomSensor = bodies.rectangle(this.x, this.y + this.height / 2, this.width / 2, 15, { isSensor: true });
-    this.leftSensor = bodies.rectangle(this.x - this.width / 2, this.y, 15, this.height /2, { isSensor: true });
-    this.rightSensor = bodies.rectangle(this.x + this.width / 2, this.y, 15, this.height/2 , { isSensor: true });
-    this.stair = bodies.rectangle(this.x, this.y + this.height / 2-7.5, this.width / 2, 15, { isSensor: true });
-    this.setExistingBody(bodies.rectangle(this.x, this.y, this.width, this.height, { chamfer: { radius: 10 } }),true);
+    this.bottomSensor = bodies.rectangle(this.x, this.y + this.height / 2, this.width / 2, 15, {
+      isSensor: true
+    });
+    this.leftSensor = bodies.rectangle(this.x - this.width / 2, this.y, 15, this.height / 2, {
+      isSensor: true
+    });
+    this.rightSensor = bodies.rectangle(this.x + this.width / 2, this.y, 15, this.height / 2, {
+      isSensor: true
+    });
+    this.stair = bodies.rectangle(this.x, this.y + this.height / 2 - 7.5, this.width / 2, 15, {
+      isSensor: true
+    });
+    this.setExistingBody(bodies.rectangle(this.x, this.y, this.width, this.height, {
+      chamfer: {
+        radius: 10
+      }
+    }), true);
     let compoundBody = Phaser.Physics.Matter.Matter.Body.create({
-      parts: [this.body, this.bottomSensor, this.leftSensor, this.rightSensor,this.stair],
+      parts: [this.body, this.bottomSensor, this.leftSensor, this.rightSensor, this.stair],
       restitution: 0.05 //Para no engancharse a las paredes
     });
 
@@ -88,8 +99,11 @@ this.puedeReparar = false;
     this.setPosition(x, y);
 
     scene.matter.world.on("beforeupdate", this.resetTouching, this);
-    
-    this.isTouching = { left: false, right: false};
+
+    this.isTouching = {
+      left: false,
+      right: false
+    };
 
     this.scene.matter.world.on("collisionactive", (event) => {
       for (let i = 0; i < event.pairs.length; i++) {
@@ -100,26 +114,25 @@ this.puedeReparar = false;
         const player = bodyA.label === 'player' ? bodyA : bodyB;
         const tile = bodyA.label === 'player' ? bodyB : bodyA;
         const mainBody = getRootBody(tile);
-        const { gameObject } = mainBody;
-         
+        const {
+          gameObject
+        } = mainBody;
+
         // Punto de interrupción: Comprobar bodyAs y bodyBs, ¿Se registran?
         if (bodyA === this.bottomSensor || bodyB === this.bottomSensor && tile.label !== 'escalera') {
           this.isJumping = false;
           this.coyoteCounter = this.coyoteTime;
         }
-        if((bodyA === this.leftSensor&& bodyB.label === 'escalera' || bodyB === this.leftSensor&& bodyA.label === 'escalera' 
-        || bodyA === this.rightSensor&& bodyB.label === 'escalera' || bodyB === this.rightSensor&& bodyA.label === 'escalera'
-        || bodyA === this.stair&& bodyB.label === 'escalera' || bodyB === this.stair&& bodyA.label === 'escalera')
-        )
-        {
-         if(tile.reparada){
-          this.canClimb = true;
-         }
-        else if(this.puedeReparar){
-            scene.mapA.replaceByIndex(3,7,tile.pX,tile.pY,2,6,scene.stairs);
-            scene.mapA.replaceByIndex(4,8,tile.pX,tile.pY,2,6,scene.stairs);
-            scene.mapA.replaceByIndex(5,7,tile.pX,tile.pY,2,6,scene.stairs);
-            scene.mapA.replaceByIndex(6,8,tile.pX,tile.pY,2,6,scene.stairs);
+        if ((bodyA === this.leftSensor && bodyB.label === 'escalera' || bodyB === this.leftSensor && bodyA.label === 'escalera' ||
+            bodyA === this.rightSensor && bodyB.label === 'escalera' || bodyB === this.rightSensor && bodyA.label === 'escalera' ||
+            bodyA === this.stair && bodyB.label === 'escalera' || bodyB === this.stair && bodyA.label === 'escalera')) {
+          if (tile.reparada) {
+            this.canClimb = true;
+          } else if (this.puedeReparar) {
+            scene.mapA.replaceByIndex(3, 7, tile.pX, tile.pY, 2, 6, scene.stairs);
+            scene.mapA.replaceByIndex(4, 8, tile.pX, tile.pY, 2, 6, scene.stairs);
+            scene.mapA.replaceByIndex(5, 7, tile.pX, tile.pY, 2, 6, scene.stairs);
+            scene.mapA.replaceByIndex(6, 8, tile.pX, tile.pY, 2, 6, scene.stairs);
             // scene.mapA.replaceByIndex(3,7,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
             // scene.mapA.replaceByIndex(4,8,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
             // scene.mapA.replaceByIndex(5,7,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
@@ -128,30 +141,30 @@ this.puedeReparar = false;
             this.puedeReparar = false;
           }
         }
-        if(gameObject != null && gameObject.type === 'Image'&&
-          (bodyA === this.leftSensor&& gameObject.label === 'fragmento' 
-        || bodyB === this.rightSensor&& gameObject.label === 'fragmento' )
-       ){         
+        if (gameObject != null && gameObject.type === 'Image' &&
+          (bodyA === this.leftSensor && gameObject.label === 'fragmento' ||
+            bodyB === this.rightSensor && gameObject.label === 'fragmento')
+        ) {
           this.puedeReparar = true;
           gameObject.destroy();
         }
-       
-       
-        if(gameObject!= null && gameObject.tile != null ){
-        if (bodyA === this.leftSensor || bodyB === this.leftSensor ) {
-          this.isTouching.left = true;
-        }          
-        else if (bodyA === this.rightSensor || bodyB === this.rightSensor){
-          this.isTouching.right = true;
+
+
+        if (gameObject != null && gameObject.tile != null) {
+          if (bodyA === this.leftSensor || bodyB === this.leftSensor) {
+            this.isTouching.left = true;
+          } else if (bodyA === this.rightSensor || bodyB === this.rightSensor) {
+            this.isTouching.right = true;
+          }
         }
-        
-      }
       }
     });
     // this.bottomSensor.setCollisionGroup(platformGroup);
 
     function getRootBody(body) {
-      if (body.parent === body) { return body; }
+      if (body.parent === body) {
+        return body;
+      }
       while (body.parent !== body) {
         body = body.parent;
       }
@@ -199,12 +212,7 @@ this.puedeReparar = false;
     this.pick_up = scene.sound.add('pick_up');
     this.push_box = scene.sound.add('push_box');
   }
-  resetTouching() {
-    this.isTouching.left = false;
-    this.isTouching.right = false;
-    this.isTouching.ground = false;
-    this.canClimb = false;
-  }
+
   /**
    * Métodos preUpdate de Phaser. Se encarga del control del jugador
    * @override
@@ -214,110 +222,18 @@ this.puedeReparar = false;
 
     //Controles
     if (!this.hanged) {
-      if(this.isTouching.right || this.isTouching.left) this.setVelocityX(0);
-      //Momiento horizontal
-      if (this.right())
-      {
-        this.setVelocityX(this.speed);
-        this.setFlipX(false);
+      this.horizontalMovement();
 
-        if(!this.isJumping && this.idling)
-        {
-          this.play('scottie_run');
-          this.idling = false;
-        }
+      if (!this.canClimb) {
+        //Control estándar
+        this.jumpPerformance(dt);
+      } else {
+        //Control escalando
+        this.climbStairs();
       }
-      else if (this.left())
-      {
-        this.setVelocityX(-this.speed);
-        this.setFlipX(true);
-        
-        if(!this.isJumping && this.idling)
-        {
-          this.play('scottie_run');
-          this.idling = false;
-        }
-      }
-      if (this.right() && !this.isTouching.right)
-        this.setVelocityX(this.speed);
-      else if (this.left()&& !this.isTouching.left)
-        this.setVelocityX(-this.speed);
-      else
-      {
-        this.setVelocityX(0);
-
-        if(!this.isJumping && !this.idling)
-        {
-          this.play('scottie_idle');
-          this.idling = true;
-        }
-      }
-
-        if(!this.canClimb){
-          this.setIgnoreGravity(false);
-      //Salto
-      if ((this.jump() && !this.jumpDown || this.jumpBufferCounter > 0) && this.coyoteCounter > 0 && !this.isJumping) {
-        this.jumpDown = true;
-        this.isJumping = true;
-        this.applyForce({ x: 0, y: this.jumpForce });
-        this.jumpSound.play();
-
-        //Si se ha saltado por el buffer, lo reseteamos
-        if(this.jumpBufferCounter > 0)
-          this.jumpBufferCounter = 0;
-      }
-
-      //Jump Buffer. Si ya estamos saltando, guardamos la pulsación en el buffer
-      else if(this.jump() && !this.jumpDown && this.isJumping && this.jumpBufferCounter <= 0)
-        this.jumpBufferCounter = this.jumpBufferLength;
-
-      //Si cancelamos el salto aplica otra fuerza hacia abajo
-      // //Se aplica la una velocidad ascendente hasta llegar a la altura. Sera menor cuanto más nos acerquemos a ella
-      // if (this.isJumping && this.jump() && this.body.velocity.y < -1 && this.jumpInitialHeight - this.y < this.jumpHeight) 
-      //   this.setVelocityY(this.jumpSpeed * (1.1 - (this.jumpInitialHeight - this.y)/this.jumpHeight) * dt);
-
-      // //Velocidad de caida
-      // else if (this.isJumping && this.body.velocity.y > -0.1)
-      //   this.setVelocityY(this.body.velocity.y - this.fallMultiplier * dt);
-
-      if (this.isJumping && this.body.velocity.y < -0.1 && !this.jump())
-        this.applyForce({ x: 0, y: this.lowJumpMultiplier });
-
-      //Solo 1 salto por pulsación
-      if (!this.jump() && this.jumpDown) {
-        //Soltamos el boton y por tanto se cancela la aplicación de velocidad ascendente
-        this.jumpDown = false;
-      }
-    }
-    else {
-      if(this.jump()){
-        this.setVelocityY(-5);
-      }
-      else if(this.down()){
-        this.setVelocityY(7);
-      }
-      else{
-        this.setVelocityY(0);
-        this.setIgnoreGravity(true);
-      }
-      
-    }
-
-      //Timers
-      this.coyoteCounter -= dt;
-      this.jumpBufferCounter -= dt;
-    }
-
-    //Controles agarrado a una cuerda
-    else {
-      if (this.jump()) {
-        this.hanged = false;
-        this.scene.freePlayer();
-      }
-      else if (this.left())
-        this.applyForce({ x: -this.ropeForce, y: 0 });
-      else if (this.right())
-        this.applyForce({ x: this.ropeForce, y: 0 });
+    } else {
+      //Controles agarrado a una cuerda
+      this.swing();
     }
     /*
         if (this.brokenStair)
@@ -325,11 +241,148 @@ this.puedeReparar = false;
         else this.propE.visible = false;*/
   }
 
-  hangStart() {
-    this.hanged = true;
+  resetTouching() {
+    this.isTouching.left = false;
+    this.isTouching.right = false;
+    this.isTouching.ground = false;
+    this.canClimb = false;
   }
 
-  hangEnd() {
-    this.hanged = false;
+  /**
+   * Se encarga del movimiento horizontal del jugador. Actualiza su velocidad y animación en el eje X.
+   */
+   horizontalMovement() {
+    if (this.right() && !this.isTouching.right) {
+      move(true, this);
+    } else if (this.left() && !this.isTouching.left) {
+      move(false, this);
+    } else {
+      stop(this);
+    }
+
+    /**
+     * Mueve al jugador horizontalmente. 
+     * Cambia la velocidad, empieza la animación y también invierte su sprite para orientarlo en la dirección correcta.
+     * @param {boolean} right true si se mueve a la derecha, false si se mueve a la izquierda
+     * @param {Player} self referencia al player
+     */
+    function move(right, self) {
+      self.setVelocityX(right ? self.speed : -self.speed);
+      self.setFlipX(!right);
+
+      if (!self.isJumping && self.idling) {
+        self.play('scottie_run');
+        self.idling = false;
+      }
+    }
+
+    /**
+     * Pone la velocidad a 0 y empieza la animación de idle
+     * @param {Player} self referencia al player
+     */
+    function stop(self) {
+      self.setVelocityX(0);
+      if (!self.isJumping && !self.idling) {
+        self.play('scottie_idle');
+        self.idling = true;
+      }
+    }
+  }
+
+  
+  jumpPerformance(dt) {
+    this.setIgnoreGravity(false);
+
+    if ((this.jump() && !this.jumpDown || this.jumpBufferCounter > 0) && this.coyoteCounter > 0 && !this.isJumping) {
+      this.jumpDown = true;
+      this.isJumping = true;
+      this.applyForce({
+        x: 0,
+        y: this.jumpForce
+      });
+      this.jumpSound.play();
+
+      //Si se ha saltado por el buffer, lo reseteamos
+      if (this.jumpBufferCounter > 0)
+        this.jumpBufferCounter = 0;
+    }
+
+    //Jump Buffer. Si ya estamos saltando, guardamos la pulsación en el buffer
+    else if (this.jump() && !this.jumpDown && this.isJumping && this.jumpBufferCounter <= 0)
+      this.jumpBufferCounter = this.jumpBufferLength;
+
+    if (this.isJumping && this.body.velocity.y < -0.1 && !this.jump())
+      this.applyForce({
+        x: 0,
+        y: this.lowJumpMultiplier
+      });
+
+    //Solo 1 salto por pulsación
+    if (!this.jump() && this.jumpDown) {
+      //Soltamos el boton y por tanto se cancela la aplicación de velocidad ascendente
+      this.jumpDown = false;
+    }
+
+    //Timers
+    this.coyoteCounter -= dt;
+    this.jumpBufferCounter -= dt;
+  }
+
+  climbStairs() {
+    this.setIgnoreGravity(true);
+
+    if (this.jump()) {
+      move(true, this);
+    } else if (this.down()) {
+      move(false, this);
+    } else {
+      stop(this);
+    }
+
+    /**
+     * Mueve al jugador verticalmente. 
+     * Cambia la velocidad vertical y reproduce la alimación de subir las escaleras.
+     * @param {boolean} up true si se mueve hacia arriba, false si se mueve abajo
+     * @param {Player} self referencia al player
+     */
+     function move(up, self) {
+      self.setVelocityY(up ? -self.speed : self.speed);
+    }
+
+    /**
+     * Pone la velocidad a 0 y para la animacion
+     * @param {Player} self referencia al player
+     */
+    function stop(self) {
+      self.setVelocityY(0);
+    }
+  }
+
+  /**
+   * Balancea al jugador a los lados cuando está agarrado en una cuerda, y lo suelta si pulsamos jump.
+   */
+   swing() {
+    if (this.jump()) {
+      //Se suelta de la cuerda
+      this.hanged = false;
+      this.scene.freePlayer();
+    } else if (this.left())
+      this.applyForce({
+        x: -this.ropeForce,
+        y: 0
+      });
+    else if (this.right())
+      this.applyForce({
+        x: this.ropeForce,
+        y: 0
+      });
+  }
+
+  /**
+   * Suelta o agarra el jugador a una cuerda
+   * @param {boolean} hanged true si el jugador se ha agarrado a una cuerda o false si se ha soltado
+   */
+  changeHang(hanged) {
+    this.hanged = hanged;
   }
 }

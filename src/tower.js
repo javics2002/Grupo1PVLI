@@ -392,7 +392,7 @@ export default class Tower extends Phaser.Scene {
 
                   console.log("engancho una cuerda");
                   this._lastRopeId = ropes.gameObject.id;
-                  this.player.hangStart();
+                  this.player.changeHang(true);
                 }
               }
             }
