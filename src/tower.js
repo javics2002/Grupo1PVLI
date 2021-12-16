@@ -114,6 +114,7 @@ export default class Tower extends Phaser.Scene {
   }
 
   update(t, dt) {
+    console.log("Altura del jugador: " + this.player.y);
     super.update(t, dt);
     this.frameTime += dt;
 

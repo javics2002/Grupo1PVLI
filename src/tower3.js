@@ -7,10 +7,11 @@ export default class Tower3 extends Tower {
   }
   create(){
     super.create();
-    this.cameraRanges = [{"max": 4020, "min": 3445},
-    {"max": 3444, "min": 2290},
-    {"max": 2289, "min": 1720},
-    {"max": 1719, "min":640},
+    this.cameraRanges = [{"max": 4020, "min": 3460},
+    {"max": 3459, "min": 2870},
+    {"max": 2869, "min": 2295},
+    {"max": 2294, "min": 1741},
+    {"max": 1740, "min":640},
     {"max": 639, "min":0}]
   
     // Ocurre animación. Llama a judyAnimationEndCallback

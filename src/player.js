@@ -24,6 +24,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     // Coyote Time: podemos saltar en el aire un poco después de salirnos de una plataforma
     this.coyoteTime = 100;
     this.coyoteCounter = 0;
+
     // Jump Buffer: podemos pulsar el botón de salto antes de tocar el suelo y saltar automáticamente en cuando lo toquemos
     this.jumpBufferLength = 100;
     this.jumpBufferCounter = 0;
@@ -293,7 +294,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   jumpPerformance(dt) {
     this.setIgnoreGravity(false);
 
-    if ((this.jump() && !this.jumpDown || this.jumpBufferCounter > 0) && this.coyoteCounter > 0 && !this.isJumping) {
+    if ((this.jump() && !this.jumpDown || this.jumpBufferCounter > 0) && this.coyoteCounter > 0 && !this.isJumping)) {
       this.jumpDown = true;
       this.isJumping = true;
       this.applyForce({
