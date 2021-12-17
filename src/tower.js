@@ -2,7 +2,7 @@ import Player from './player.js';
 import Shadow from './shadow.js';
 import Box from './box.js'
 import Rope from './rope.js';
-import Frag from './fragmento.js';
+
 import Judy from './judy.js';
 export default class Tower extends Phaser.Scene {
   /**
