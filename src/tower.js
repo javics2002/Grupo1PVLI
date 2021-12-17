@@ -55,6 +55,8 @@ export default class Tower extends Phaser.Scene {
     this.createAnimation('scottie_run', 16);
     this.createAnimation('scottie_run_jump', 4);
     this.createAnimation('scottie_run_jump', 6);
+    this.createAnimation('scottie_climb', 8);
+    this.createAnimation('scottie_push', 12);
 
     //Timer
     this.timer = 0;

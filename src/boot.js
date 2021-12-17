@@ -48,7 +48,7 @@ export default class Boot extends Phaser.Scene {
 
     //Cargamos todos los sprites
     let sprites = ['rope', 'rope_pivot', 'box', 'exit_icon', 'shadow', 'up_arrow', 'down_arrow',
-      'mute_off', 'mute_on', 'enter_fullscreen', 'exit_fullscreen', 'share', 'title','fragment'
+      'mute_off', 'mute_on', 'enter_fullscreen', 'exit_fullscreen', 'share', 'title', 'fragment'
     ];
     sprites.forEach(element => {
       this.load.image(element, `${element}.png`);
@@ -72,6 +72,14 @@ export default class Boot extends Phaser.Scene {
       name: 'scottie_run_jump',
       w: 45,
       h: 54
+    }, {
+      name: 'scottie_climb',
+      w: 38,
+      h: 61
+    }, {
+      name: 'scottie_push',
+      w: 40,
+      h: 59
     }];
     animations.forEach(element => {
       this.load.spritesheet(element.name, `${element.name}.png`, {
