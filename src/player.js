@@ -162,11 +162,11 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         }
 
         //Colisión con cajas
-        const sideSensor = bodyA === this.leftSensor || bodyA === this.rightSensor || 
+        const sideSensor = bodyA === this.leftSensor || bodyA === this.rightSensor ||
           bodyB === this.leftSensor || bodyB === this.rightSensor;
         const box = bodyA.gameObject instanceof Box || bodyB.gameObject instanceof Box;
 
-        if(!pushingBox)
+        if (!pushingBox)
           pushingBox = sideSensor && box;
       }
 
@@ -218,15 +218,25 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     //this.propE.depth = 6
 
     //Cargamos los sonidos que produce el jugador
-    this.fix_stairs = scene.sound.add('fix_stairs');
+    this.fix_stairs = scene.sound.add('fix_stairs'); //falta por meter
     this.jumpSound = scene.sound.add('jump');
     this.ladder1 = scene.sound.add('ladder1');
     this.ladder2 = scene.sound.add('ladder2');
-    this.pick_up = scene.sound.add('pick_up');
+    this.pick_up = scene.sound.add('pick_up'); //falta por meter
     this.push_box = scene.sound.add('push_box');
 
-    this.on('animationrepeat-scottie_climb', () => {
-      this.ladder1.play();
+    //Sonidos enlazados a animaciones
+    this.on('animationrepeat', (animation) => {
+      if (animation.key === "scottie_climb") {
+        //Se alternan los sonidos
+        this.lastLadderSound = !this.lastLadderSound;
+        if (this.lastLadderSound)
+          this.ladder1.play();
+        else
+          this.ladder2.play();
+      }
+      else if(animation.key === "scottie_push")
+        this.push_box.play();
     });
   }
 
@@ -290,7 +300,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       let speed = self.isPushing ? self.pushSpeed : self.speed;
       self.setVelocityX(right ? speed : -speed);
       self.setFlipX(!right);
-      if(!self.canClimb)
+      if (!self.canClimb && !self.isJumping)
         self.play(self.isPushing ? 'scottie_push' : 'scottie_run', true);
     }
 
@@ -300,7 +310,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
      */
     function stop(self) {
       self.setVelocityX(0);
-      if(!self.canClimb)
+      if (!self.canClimb && !self.isJumping)
         self.play('scottie_idle', true);
     }
   }
@@ -316,6 +326,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         y: this.jumpForce
       });
       this.jumpSound.play();
+      this.play("scottie_jump", true);
 
       //Si se ha saltado por el buffer, lo reseteamos
       if (this.jumpBufferCounter > 0)
@@ -386,6 +397,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         x: this.ropeForce,
         y: 0
       });
+
+    this.play("scottie_hang", true);
   }
 
   /**

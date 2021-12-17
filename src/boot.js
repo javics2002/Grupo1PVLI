@@ -80,6 +80,26 @@ export default class Boot extends Phaser.Scene {
       name: 'scottie_push',
       w: 40,
       h: 59
+    }, {
+      name: 'scottie_jump',
+      w: 34,
+      h: 56
+    }, {
+      name: 'scottie_hang',
+      w: 34,
+      h: 56
+    }, {
+      name: 'shadow_rise',
+      w: 38,
+      h: 61
+    }, {
+      name: 'judy_idle',
+      w: 47,
+      h: 58
+    }, {
+      name: 'judy_fall',
+      w: 45,
+      h: 57
     }];
     animations.forEach(element => {
       this.load.spritesheet(element.name, `${element.name}.png`, {
