@@ -4,35 +4,32 @@
  */
 export default class Shadow extends Phaser.GameObjects.Sprite {
     /**
-       * Constructor de la sombra
-       * @param {Phaser.Scene} scene Escena a la que pertenece el jugador
-       * @param {number} x Coordenada X
-       * @param {number} y Coordenada Y
-       * @param {number} time Tiempo que tardará en llegar a lo alto
-       */
+     * Constructor de la sombra
+     * @param {Phaser.Scene} scene Escena a la que pertenece el jugador
+     * @param {number} x Coordenada X
+     * @param {number} y Coordenada Y
+     * @param {number} time Tiempo que tardará en llegar a lo alto
+     */
     constructor(scene, x, y, time) {
-        super(scene, x, y, 'shadow');
-        this.scene = scene;
-        this.scene.add.existing(this);
-        
+        super(scene, 17, 30, 'shadow');
+        scene.add.existing(this);
+        this.setPosition(x, y);
         this.time = time;
 
-        this.tween = this.scene.tweens.add({
+        this.tween = scene.tweens.add({
             targets: [this],
-            y: (this.scene.floorHeight + this.scene.margin) * this.scene.tileSize,
+            y: (this.scene.floorHeight + scene.margin) * scene.tileSize,
             duration: this.time * 1000
         });
 
         this.tween.on('stop', this.kill);
     }
 
-    kill()
-    {
+    kill() {
         console.log('La sombra ha llegado arriba');
     }
 
-    stop()
-    {
+    stop() {
         this.tween.pause();
     }
 }

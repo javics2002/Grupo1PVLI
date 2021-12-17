@@ -1,4 +1,7 @@
-# Vertigo Tower (provisional)
+# Vertigo Tower
+[¡Juégalo aquí!](https://javics2002.github.io/Grupo1PVLI/)
+
+[Comprueba el estado del desarrollo](https://www.pivotaltracker.com/n/projects/2534253)
 
 ### Grupo1PVLI
 - Jonathan Sebastián Andrade Gordillo

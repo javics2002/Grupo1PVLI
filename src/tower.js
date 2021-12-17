@@ -2,7 +2,8 @@ import Player from './player.js';
 import Shadow from './shadow.js';
 import Box from './box.js'
 import Rope from './rope.js';
-
+import Frag from './fragmento.js';
+import Judy from './judy.js';
 export default class Tower extends Phaser.Scene {
   /**
    * Constructor de la escena
@@ -46,17 +47,25 @@ export default class Tower extends Phaser.Scene {
 
     this.buildTower();
 
-    //Personajes
-    this.player = new Player(this, 400, (this.floors + 1) * this.floorHeight * this.tileSize);
-    this.shadow = new Shadow(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize, this.defeatTime);
-
     //Animaciones
     this.createAnimation('scottie_idle', 153);
     this.createAnimation('scottie_run', 16);
     this.createAnimation('scottie_run_jump', 4);
     this.createAnimation('scottie_run_jump', 6);
     this.createAnimation('scottie_climb', 8);
-    this.createAnimation('scottie_push', 12);
+    this.createAnimation('scottie_push', 11);
+    this.createAnimation('scottie_jump', 1);
+    this.createAnimation('scottie_hang', 1);
+    this.createAnimation('shadow_rise', 6, true);
+    this.createAnimation('judy_idle', 8);
+    this.createAnimation('judy_fall', 1);
+
+    //Personajes
+    this.player = new Player(this, 400, (this.floors + 1) * this.floorHeight * this.tileSize);
+    this.judy = new Judy(this);
+    this.judy.play("judy_idle");
+    this.shadow = new Shadow(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize, this.defeatTime);
+    this.shadow.play("shadow_rise");
 
     //Timer
     this.timer = 0;
@@ -118,7 +127,7 @@ export default class Tower extends Phaser.Scene {
   update(t, dt) {
     super.update(t, dt);
     this.frameTime += dt;
-    console.log("Altura del jugador: " + this.player.y);
+    //console.log("Altura del jugador: " + this.player.y);
 
     //Cronómetro
     if (!this._reachedTop && this.hasTimerStarted)
@@ -350,14 +359,14 @@ export default class Tower extends Phaser.Scene {
    * @param {string} animation_name Nombre de la animación. Debe ser el mismo con el que se cargó su spritesheet
    * @param {integer} num_frames Número de frames de la animación
    */
-  createAnimation(animation_name, num_frames) {
+  createAnimation(animation_name, num_frames, slow = false) {
     this.anims.create({
       key: animation_name,
       frames: this.anims.generateFrameNumbers(animation_name, {
         start: 0,
         end: num_frames - 1
       }),
-      frameRate: 24,
+      frameRate: slow ? 8 : 24,
       repeat: -1
     });
   }
