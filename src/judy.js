@@ -9,8 +9,9 @@
     constructor(scene, x, y, time) {
         super(scene, 17, 30, 'shadow');
         scene.add.existing(this);
-        this.setPosition(1060, 548);
+        this.setPosition(1060, 572);
         this.fallSpeed = 20;
+        this.play("judy_idle");
     }
 
     fall(){

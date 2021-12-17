@@ -10,18 +10,17 @@ export default class Title extends Phaser.Scene {
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;
 
-    let titleArt = this.add.image(width, 0, 'title').setOrigin(1, 0);
-    titleArt.setScale(.47);
+    let titleArt = this.add.image(0, 0, 'title').setOrigin(0, 0);
 
     //Texto del título
-    this.write(width * .07, height * .3, 'VERTIGO TOWER', { 
+    this.write(width * .1, height * .3, 'VERTIGO\nTOWER', { 
       fontFamily: 'Vertigon', 
       fontSize: 60, 
       color: '#e07a66' 
     });
 
     //Botón de PLAY
-    let playButton = this.write(width * .2 , height * .5, 'PLAY ', {
+    let playButton = this.write(width * .15 , height * .6, 'PLAY ', {
       fontFamily: 'Caveat',
       fontSize: 50,
       color: '#ffffff'

@@ -17,6 +17,8 @@ export default class Select extends Phaser.Scene {
         let width = this.cameras.main.width;
         let height = this.cameras.main.height;
 
+        this.add.image(0,0, 'level_select_bg').setOrigin(0, 0);
+
         //Creamos una columna para cada nivel
         this.createTowerColumns()
 
@@ -67,7 +69,7 @@ export default class Select extends Phaser.Scene {
             drawBackgroundRectangle(i);
 
             //Nombre de la torre
-            writeTextInColumns(towerNames, i, 100, ` Tower ${i + 1} `, 50, '#f3463a', "#333333");
+            writeTextInColumns(towerNames, i, 100, ` Tower ${i + 1} `, 50, '#e07a66', "#333333");
 
             //Preview de la torre
             drawImageInColumns(towerPreviews, i, 0, 450, `tower${i + 1}preview`,{x: .5, y: 1}, .05);
@@ -161,7 +163,7 @@ export default class Select extends Phaser.Scene {
          */
         function drawBackgroundRectangle(i) {
             let column = self.add.graphics();
-            column.fillStyle(0x222222, 0.8);
+            column.fillStyle(0x222222, 0.9);
             column.fillRect(90 + i * 224, 50, 204, 530);
         }
     }
@@ -177,11 +179,13 @@ export default class Select extends Phaser.Scene {
         let button = this.add.text(x, y, text, {
             fontFamily: 'Caveat',
             fontSize: 30,
-            color: '#ffffff'
+            color: '#fed882',
+            strokeThickness: 20,
+            stroke: '#342c25'
         });
         button.setInteractive(new Phaser.Geom.Rectangle(0, -20, 150, 30), Phaser.Geom.Rectangle.Contains);
         button.setOrigin(0, 1);
-        button.setShadow(2, 2, "#333333", 2, false, true);
+        //button.setShadow(2, 2, "#333333", 2, false, true);
         button.on('pointerdown', buttonAction);
     }
 
@@ -196,6 +200,7 @@ export default class Select extends Phaser.Scene {
     addInteractiveImage(x, y, textureName, buttonAction) {
         let size = 32;
         let button = this.add.sprite(x, y, textureName);
+        button.setTint(0X342c25);
         button.setInteractive(new Phaser.Geom.Rectangle(-size / 2, -size / 2, size, size), Phaser.Geom.Rectangle.Contains);
         button.setOrigin(1, 1);
 

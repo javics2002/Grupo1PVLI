@@ -23,6 +23,8 @@ export default class Shadow extends Phaser.GameObjects.Sprite {
         });
 
         this.tween.on('stop', this.kill);
+
+        this.play("shadow_rise");
     }
 
     kill() {

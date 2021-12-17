@@ -218,10 +218,12 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
           this.ladder1.play();
         else
           this.ladder2.play();
-      }
-      else if(animation.key === "scottie_push")
+      } else if (animation.key === "scottie_push")
         this.push_box.play();
     });
+
+    //Comenzamos la animación
+    this.play("scottie_idle");
   }
 
   /**
@@ -237,28 +239,31 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       this.frag.y = this.y-this.height;       
     }
     //Controles
-    if (!this.hanged) {
-      this.horizontalMovement();
+    if (this.canMove) {
+      if (!this.hanged) {
+        this.horizontalMovement();
 
-      if (!this.canClimb)
-        //Control estándar
-        this.jumpPerformance(dt);
-      else{
-     
-      
-        //Control escalando
-        this.climbStairs();
+        if (!this.canClimb)
+          //Control estándar
+          this.jumpPerformance(dt);
+        else
+          //Control escalando
+          this.climbStairs();
+      } else
+        //Controles agarrado a una cuerda
+        this.swing();
+
+      //Solo 1 salto por pulsación
+      if (!this.jump() && this.jumpDown) {
+        //Soltamos el boton y por tanto se cancela la aplicación de velocidad ascendente
+        this.jumpDown = false;
       }
     } else
-      //Controles agarrado a una cuerda
-      this.swing();
-
-    //Solo 1 salto por pulsación
-    if (!this.jump() && this.jumpDown) {
-      //Soltamos el boton y por tanto se cancela la aplicación de velocidad ascendente
-      this.jumpDown = false;
-    }
-   
+      this.setVelocityX(0);
+    /*
+        if (this.brokenStair)
+          this.propE.visible = true;
+        else this.propE.visible = false;*/
   }
 
   //reseteo la deteccion de colisiones cada frame tanto al haber tocado paredes como suelo
@@ -397,5 +402,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
    */
   changeHang(hanged) {
     this.hanged = hanged;
+  }
+
+  setControllable(controllable){
+    this.canMove = controllable;
   }
 }

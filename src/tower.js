@@ -63,9 +63,7 @@ export default class Tower extends Phaser.Scene {
     //Personajes
     this.player = new Player(this, 400, (this.floors + 1) * this.floorHeight * this.tileSize);
     this.judy = new Judy(this);
-    this.judy.play("judy_idle");
     this.shadow = new Shadow(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize, this.defeatTime);
-    this.shadow.play("shadow_rise");
 
     //Timer
     this.timer = 0;
@@ -251,6 +249,7 @@ export default class Tower extends Phaser.Scene {
    */
   win() {
     this._reachedTop = true;
+    this.player.setControllable(false);
 
     //Eliminamos UI
     this.backButton.destroy(true);
@@ -295,6 +294,8 @@ export default class Tower extends Phaser.Scene {
    */
   lose() {
     this.music.stop();
+    this.player.setControllable(false);
+    this.judy.fall();
     this.scene.start(this.key);
   }
 
@@ -315,7 +316,11 @@ export default class Tower extends Phaser.Scene {
     self._canGrabLastRope = true;
   }
 
-  onGrabRope() {
+  /**
+   * asjidajosp
+   * @param {boolean} hola  asoiajsofi
+   */
+  onGrabRope(hola) {
     this.matter.world.on('collisionstart', (event) => {
       for (let i = 0; i < event.pairs.length; i++) {
         let bodyA = getRootBody(event.pairs[i].bodyA);
