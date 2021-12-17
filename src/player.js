@@ -1,3 +1,4 @@
+import Box from './box.js'
 /**
  * El jugador. Se moverá y saltará usando los controles.
  */
@@ -106,6 +107,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     };
 
     this.scene.matter.world.on("collisionactive", (event) => {
+      let pushingBox = false;
+
       for (let i = 0; i < event.pairs.length; i++) {
 
         let bodyA = event.pairs[i].bodyA;
@@ -157,7 +160,17 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
             this.isTouching.right = true;
           }
         }
+
+        //Colisión con cajas
+        const sideSensor = bodyA === this.leftSensor || bodyA === this.rightSensor || 
+          bodyB === this.leftSensor || bodyB === this.rightSensor;
+        const box = bodyA.gameObject instanceof Box || bodyB.gameObject instanceof Box;
+
+        if(!pushingBox)
+          pushingBox = sideSensor && box;
       }
+
+      this.isPushing = pushingBox;
     });
     // this.bottomSensor.setCollisionGroup(platformGroup);
 
@@ -211,6 +224,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.ladder2 = scene.sound.add('ladder2');
     this.pick_up = scene.sound.add('pick_up');
     this.push_box = scene.sound.add('push_box');
+
+    this.on('animationrepeat-scottie_climb', () => {
+      this.ladder1.play();
+    });
   }
 
   /**
@@ -263,7 +280,6 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     else
       stop(this);
 
-
     /**
      * Mueve al jugador horizontalmente. 
      * Cambia la velocidad, empieza la animación y también invierte su sprite para orientarlo en la dirección correcta.
@@ -271,9 +287,11 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
      * @param {Player} self referencia al player
      */
     function move(right, self) {
-      self.setVelocityX(right ? self.speed : -self.speed);
+      let speed = self.isPushing ? self.pushSpeed : self.speed;
+      self.setVelocityX(right ? speed : -speed);
       self.setFlipX(!right);
-      self.play('scottie_run', true);
+      if(!self.canClimb)
+        self.play(self.isPushing ? 'scottie_push' : 'scottie_run', true);
     }
 
     /**
@@ -282,7 +300,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
      */
     function stop(self) {
       self.setVelocityX(0);
-      self.play('scottie_idle', true);
+      if(!self.canClimb)
+        self.play('scottie_idle', true);
     }
   }
 
@@ -336,6 +355,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
      */
     function move(up, self) {
       self.setVelocityY(up ? -self.speed : self.speed);
+      self.play('scottie_climb', true);
     }
 
     /**
@@ -343,6 +363,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
      * @param {Player} self referencia al player
      */
     function stop(self) {
+      self.stop();
       self.setVelocityY(0);
     }
   }
