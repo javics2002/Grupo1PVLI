@@ -64,13 +64,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     //Control
     this.canMove = true; //Se desactiva en las cinemáticas
 
-    /*
-        let playerGroup = this.scene.matter.world.nextGroup(true);
-        let platformGroup = this.scene.matter.world.nextGroup();
-        this.setCollisionGroup(playerGroup);
-        let playerTouchingGround = false;
-    */
-
+ 
 
     //Sensores. El de abajo detecta el suelo y los de los lados, cajas
     let bodies = Phaser.Physics.Matter.Matter.Bodies;
@@ -102,9 +96,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.setPosition(x, y);
 
 
-    
+    //creacion del fragmento superior player
     this.frag = this.scene.matter.add.image(0,0, "fragment");
-    this.frag.setIgnoreGravity(true);   
+    //this.frag.setIgnoreGravity(true);   
     this.frag.setSensor(true);
     this.frag.setStatic(true);        
     this.frag.visible = false;   
@@ -132,39 +126,46 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         } = mainBody;
 
         // Punto de interrupción: Comprobar bodyAs y bodyBs, ¿Se registran?
-        if (bodyA === this.bottomSensor || bodyB === this.bottomSensor && tile.label !== 'escalera') {
+        if (bodyA === this.bottomSensor || bodyB === this.bottomSensor && tile.label !== 'escalera' && !this.canClimb) {
           this.isJumping = false;
           this.coyoteCounter = this.coyoteTime;
         }
-        if ((bodyA === this.leftSensor && bodyB.label === 'escalera' || bodyB === this.leftSensor && bodyA.label === 'escalera' ||
+        //en caso de colision con una escalera
+        if ((bodyA === this.bottomSensor && bodyB.label === 'escalera' || bodyB === this.bottomSensor && bodyA.label === 'escalera' ||
+          bodyA === this.leftSensor && bodyB.label === 'escalera' || bodyB === this.leftSensor && bodyA.label === 'escalera' ||
             bodyA === this.rightSensor && bodyB.label === 'escalera' || bodyB === this.rightSensor && bodyA.label === 'escalera' ||
             bodyA === this.stair && bodyB.label === 'escalera' || bodyB === this.stair && bodyA.label === 'escalera')) {
+              // si la escalera esta reparada la escalo
           if (tile.reparada) {
             this.canClimb = true;
+            this.isJumping = true;
+            //this.coyoteCounter = this.coyoteTime;
+            //si no esta reparada y he recogido un fragmento antes cambio el sprite de los 
+            //tiles en una zona de rotos a reparados
           } else if (this.puedeReparar) {
             scene.mapA.replaceByIndex(3, 7, tile.pX, tile.pY, 2, 6, scene.stairs);
             scene.mapA.replaceByIndex(4, 8, tile.pX, tile.pY, 2, 6, scene.stairs);
             scene.mapA.replaceByIndex(5, 7, tile.pX, tile.pY, 2, 6, scene.stairs);
             scene.mapA.replaceByIndex(6, 8, tile.pX, tile.pY, 2, 6, scene.stairs);
-            // scene.mapA.replaceByIndex(3,7,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
-            // scene.mapA.replaceByIndex(4,8,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
-            // scene.mapA.replaceByIndex(5,7,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
-            // scene.mapA.replaceByIndex(6,8,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
+            //reestablezco las variables de usar escaleras
             this.frag.visible = false;
             tile.reparada = true;
             this.puedeReparar = false;
+            this.frag.x = 0; this.frag.y = 0;
           }
         }
+        //en caso de colisionar con un fragmento de escalera
         if (gameObject != null && gameObject.type === 'Image' &&
           (bodyA === this.leftSensor && gameObject.label === 'fragmento' ||
             bodyB === this.rightSensor && gameObject.label === 'fragmento')
         ) {
+          //lo recojo y destruyo el objeto
           this.frag.visible = true;
           this.puedeReparar = true;
           gameObject.destroy();
         }
 
-
+        //en caso de colisionar con una pared , pongo isTouching a true para que deje de aplicar fuerzas en X
         if (gameObject != null && gameObject.tile != null) {
           if (bodyA === this.leftSensor || bodyB === this.leftSensor) {
             this.isTouching.left = true;
@@ -184,8 +185,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
       this.isPushing = pushingBox;
     });
-    // this.bottomSensor.setCollisionGroup(platformGroup);
-
+   
+    //en caso de ser un objeto compuesto por mas recojo el principal(preventivo)
     function getRootBody(body) {
       if (body.parent === body) {
         return body;
@@ -196,38 +197,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       return body;
     }
 
-    // this.scene.matter.world.on('collisionactive', function (event) {
-    //   for (let i = 0; i < event.pairs.length; i++) {
-    //     const { bodyA, bodyB } = event.pairs[i];
-    //     const player = bodyA.label === 'player' ? bodyA : bodyB;
-    //     const tile = bodyA.label === 'player' ? bodyB : bodyA;
-    //     if (tile.isSensor) {
-    //       const mainBody = getRootBody(tile);
-    //       const { gameObject } = mainBody;
-    //       // console.log(gameObject.tile);
-    //       // console.log(player);
-    //       // gameObject.tile.tint = 0x00FFFF;
-    //       this.canClimb = true;
-
-
-    //       if (gameObject != null&& gameObject.tile.properties.type === 'fragment') {
-    //         this.brokenStair = true;
-    //         gameObject.tile.visible = false;
-    //       }
-    //     }
-    //     //else player.canClimb = false;
-    //   }
-    // });
-
 
     //escaleras
     this.brokenStair = false;
-
-    //Por favor RENOMBRAR ESTO para que se entienda o al menos comentarlo
-    //this.propE = new S(this.scene, x, y - this.height / 2);
-    //this.propE = this.scene.add.image(x, y - this.height/2,"brokenStair");
-    //this.propE.y -= this.propE.height / 2;
-    //this.propE.depth = 6
 
     //Cargamos los sonidos que produce el jugador
     this.fix_stairs = scene.sound.add('fix_stairs');
@@ -249,6 +221,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   preUpdate(t, dt) {
     super.preUpdate(t, dt);
 
+    //actualizo la posicion del fragmento encima de scottie en caso de haber recogido uno
     if(this.puedeReparar){
       this.frag.x = this.x;
       this.frag.y = this.y-this.height;       
@@ -275,12 +248,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       //Soltamos el boton y por tanto se cancela la aplicación de velocidad ascendente
       this.jumpDown = false;
     }
-    /*
-        if (this.brokenStair)
-          this.propE.visible = true;
-        else this.propE.visible = false;*/
+   
   }
 
+  //reseteo la deteccion de colisiones cada frame tanto al haber tocado paredes como suelo
   resetTouching() {
     this.isTouching.left = false;
     this.isTouching.right = false;
@@ -355,7 +326,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.coyoteCounter -= dt;
     this.jumpBufferCounter -= dt;
   }
-
+//escalado de escaleras 
   climbStairs() {
     this.setIgnoreGravity(true);
 

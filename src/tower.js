@@ -2,7 +2,7 @@ import Player from './player.js';
 import Shadow from './shadow.js';
 import Box from './box.js'
 import Rope from './rope.js';
-import Frag from './fragmento.js';
+
 export default class Tower extends Phaser.Scene {
   /**
    * Constructor de la escena
@@ -191,8 +191,6 @@ export default class Tower extends Phaser.Scene {
     const stairs = map.createLayer('Interactuable', tileset);
     const atravesable = map.createLayer('atravesable', tileset);
     this.stairLayer = stairs;
-    //const boxes = map.createLayer('cajas',tileset);
-    //console.log(boxes);
     this.mapA = map;
     this.stairs = stairs;
 
@@ -202,25 +200,18 @@ export default class Tower extends Phaser.Scene {
         new Box(this, objeto.x, objeto.y)
       }
     }
+    //creo los fragmentos de escalera desde su capa
     if (map.getObjectLayer('fragmentos') != null) {
       for (const objeto of map.getObjectLayer('fragmentos').objects) {
-        // let aux = new Frag(this, objeto.x, objeto.y, 'pivot',{label: 'fragmento'})  ;
-        // aux.isSensor = true;
-        //let rec = this.matter.add.image(objeto.x+objeto.width/2, objeto.y+objeto.height/2,"pivot",{label: 'fragmento'});
-        let rec = this.matter.add.image(objeto.x + objeto.width / 2, objeto.y + objeto.height / 2, "fragment", {
-          label: 'fragmento'
-        });
+        let rec = this.matter.add.image(objeto.x + objeto.width / 2, objeto.y + objeto.height / 2, "fragment");
         rec.label = 'fragmento';
-
         rec.setSensor(true);
         rec.setStatic(true);
       }
     }
+    //creo la capa fisica de las escaleras
     if (map.getObjectLayer('escaleras') != null) {
       for (const objeto of map.getObjectLayer('escaleras').objects) {
-        //new Sensor(this, objeto.x, objeto.y, 'smallbox')    
-        //objeto.isSensor= true;  
-
         let rec = this.matter.add.rectangle(objeto.x + objeto.width / 2, objeto.y + objeto.height / 2, objeto.width, objeto.height, {
           label: 'escalera',
           reparada: objeto.properties[2].value,
@@ -229,13 +220,6 @@ export default class Tower extends Phaser.Scene {
         });
         rec.isStatic = true;
         rec.isSensor = true;
-        //Phaser.Physics.Matter.Matter.Bodies.rectangle(objeto.x, objeto.y , objeto.height, objeto.width);
-        // let compoundBody = Phaser.Physics.Matter.Matter.Body.create({
-        //   parts: [this.sens],
-        //   restitution: 0.05 //Para no engancharse a las paredes
-        // });
-
-        // this.setExistingBody(compoundBody);  
       }
     }
     //Creacion cuerdas desde el JSON
@@ -247,58 +231,10 @@ export default class Tower extends Phaser.Scene {
     this.coll.setCollisionByProperty({
       collides: true
     })
-    //atravesable.setCollisionByProperty({ collides: true })
-    //stairs.setCollisionByProperty({ collides: true })
-    //atravesable.setCollisionByExclusion(-1, true);
-
+  
+    
     this.matter.world.convertTilemapLayer(this.coll);
-    //this.matter.world.convertTilemapLayer(atravesable);
-    //this.matter.world.convertTilemapLayer(stairs);
-    const tileCollisions = [0, 1, 2, 3]
-    //   atravesable.layer.data.forEach(function (row){
-    //     row.forEach(function (tile) {
-    //     if (tileCollisions.includes(tile.index)) {
-    //       tile.collideDown = false
-    //       tile.collideLeft = false
-    //       tile.collideRight = false
-    //       tile.collideUp = true
-    //       // or less verbosely:
-    //       // tile.setCollision(false, false, true, false)
-    //     }
-    //   })
-    // })
-
-    // atravesable.forEachTile((tile) => {
-
-
-    //     tile.setCollision(false, false, true, false, true);
-
-
-
-    //   }, this);
-
-    // stairs.forEachTile(function (tile) {
-    //     //If your ladder tiles have a complex body made up of different parts, you'll need to iterate through
-    //     //each part. If it's a simple rectangle, it will only have 1 part which is a reference to itself
-    //     if (tile.properties.type === 'ladder') {
-    //      console.log(tile.index)
-    //       };
-    //     });
-
-    // stairs.forEachTile(function (tile) {
-    //   // If your ladder tiles have a complex body made up of different parts, you'll need to iterate through
-    //   // each part. If it's a simple rectangle, it will only have 1 part which is a reference to itself
-    //   // if (tile.properties.type === 'ladder') {
-    //   //   tile.physics.matterBody.body.parts.forEach((part) => {
-    //   //     part.isSensor = true;
-    //   //   });
-    //   // }
-    //  if (tile.properties.type === 'fragment') {
-    //     tile.physics.matterBody.body.parts.forEach((part) => {
-    //       part.isSensor = true;
-    //     });
-    //   }
-    // });    
+       
   }
 
   /**

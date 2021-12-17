@@ -18,8 +18,6 @@ export default class StairFragment extends Phaser.Physics.Matter.Sprite {
   
     this.y -= this.height;
     this.base = base;
-  
-
   }
 
   /**
