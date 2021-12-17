@@ -205,7 +205,7 @@ export default class Tower extends Phaser.Scene {
         // let aux = new Frag(this, objeto.x, objeto.y, 'pivot',{label: 'fragmento'})  ;
         // aux.isSensor = true;
         //let rec = this.matter.add.image(objeto.x+objeto.width/2, objeto.y+objeto.height/2,"pivot",{label: 'fragmento'});
-        let rec = this.matter.add.image(objeto.x + objeto.width / 2, objeto.y + objeto.height / 2, "pivot", {
+        let rec = this.matter.add.image(objeto.x + objeto.width / 2, objeto.y + objeto.height / 2, "fragment", {
           label: 'fragmento'
         });
         rec.label = 'fragmento';

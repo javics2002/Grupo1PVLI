@@ -48,7 +48,7 @@ export default class Boot extends Phaser.Scene {
 
     //Cargamos todos los sprites
     let sprites = ['rope', 'rope_pivot', 'box', 'exit_icon', 'shadow', 'up_arrow', 'down_arrow',
-      'mute_off', 'mute_on', 'enter_fullscreen', 'exit_fullscreen', 'share', 'title',
+      'mute_off', 'mute_on', 'enter_fullscreen', 'exit_fullscreen', 'share', 'title','fragment'
     ];
     sprites.forEach(element => {
       this.load.image(element, `${element}.png`);

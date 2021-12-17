@@ -70,6 +70,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         let playerTouchingGround = false;
     */
 
+
     //Sensores. El de abajo detecta el suelo y los de los lados, cajas
     let bodies = Phaser.Physics.Matter.Matter.Bodies;
     this.bottomSensor = bodies.rectangle(this.x, this.y + this.height / 2, this.width / 2, 15, {
@@ -84,6 +85,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.stair = bodies.rectangle(this.x, this.y + this.height / 2 - 7.5, this.width / 2, 15, {
       isSensor: true
     });
+    
     this.setExistingBody(bodies.rectangle(this.x, this.y, this.width, this.height, {
       chamfer: {
         radius: 10
@@ -97,6 +99,14 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.setExistingBody(compoundBody);
     this.setFixedRotation();
     this.setPosition(x, y);
+
+
+    
+    this.frag = this.scene.matter.add.image(0,0, "fragment");
+    this.frag.setIgnoreGravity(true);   
+    this.frag.setSensor(true);
+    this.frag.setStatic(true);        
+    this.frag.visible = false;   
 
     scene.matter.world.on("beforeupdate", this.resetTouching, this);
 
@@ -137,6 +147,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
             // scene.mapA.replaceByIndex(4,8,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
             // scene.mapA.replaceByIndex(5,7,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
             // scene.mapA.replaceByIndex(6,8,scene.mapA.getTileAtWorldXY(player.x,player.y),100,100);
+            this.frag.visible = false;
             tile.reparada = true;
             this.puedeReparar = false;
           }
@@ -145,6 +156,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
           (bodyA === this.leftSensor && gameObject.label === 'fragmento' ||
             bodyB === this.rightSensor && gameObject.label === 'fragmento')
         ) {
+          this.frag.visible = true;
           this.puedeReparar = true;
           gameObject.destroy();
         }
@@ -220,6 +232,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   preUpdate(t, dt) {
     super.preUpdate(t, dt);
 
+    if(this.puedeReparar){
+      this.frag.x = this.x;
+      this.frag.y = this.y-this.height;       
+    }
     //Controles
     if (!this.hanged) {
       this.horizontalMovement();
@@ -227,9 +243,12 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       if (!this.canClimb)
         //Control estándar
         this.jumpPerformance(dt);
-      else
+      else{
+     
+      
         //Control escalando
         this.climbStairs();
+      }
     } else
       //Controles agarrado a una cuerda
       this.swing();
