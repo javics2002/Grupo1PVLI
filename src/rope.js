@@ -21,33 +21,23 @@ export default class Rope extends Phaser.Physics.Matter.Sprite {
 
     this.scene.add.existing(this);
     let nodes = new Array(length);
-    for(let i = 0; i < length; i++)
-    {
+    for (let i = 0; i < length; i++) {
       nodes[i] = new Node(scene, x, y + scene.tileSize * i, id);
       let options = {
-        bodyA: this,
+        bodyA: i > 0 ? nodes[i - 1] : this,
         bodyB: nodes[i],
         length: 32,
         stiffness: 0.4
       };
-      if (i > 0)
-      {
-        options = {
-          bodyA: nodes[i - 1],
-          bodyB: nodes[i],
-          length: 32,
-          stiffness: 0.4
-        };
-      }
-        
+
       this.scene.matter.add.constraint(options.bodyA, options.bodyB, options.length, options.stiffness);
     }
   }
 
   /**
- * Métodos preUpdate de Phaser.
- * @override
- */
+   * Métodos preUpdate de Phaser.
+   * @override
+   */
   preUpdate(t, dt) {
     super.preUpdate(t, dt);
   }

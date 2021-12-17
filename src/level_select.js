@@ -90,8 +90,8 @@ export default class Select extends Phaser.Scene {
                 recordText[i].setColor('#838383');
                 recordText[i].text = "No data";
 
-                //Es el último nivel accesible
-                towerLocked = true;
+                //Es el último nivel accesible (si el modo debug está activo no bloquea ningún nivel)
+                towerLocked = !this.game.config.physics.matter.debug;
             } else {
                 //Botón de compartir
                 drawImageInColumns(shareButtons, i, 60,470, 'share',{x: 0, y: .5}, .8);

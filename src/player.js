@@ -1,4 +1,3 @@
-import S from './BrokenStairs.js'
 /**
  * El jugador. Se moverá y saltará usando los controles.
  */
@@ -38,7 +37,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
     //Cuerdas
     this.hanged = false;
-    this.ropeForce = 0.01;
+    this.ropeForce = 0.001;
 
     this.puedeReparar = false;
 
@@ -225,16 +224,20 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     if (!this.hanged) {
       this.horizontalMovement();
 
-      if (!this.canClimb) {
+      if (!this.canClimb)
         //Control estándar
         this.jumpPerformance(dt);
-      } else {
+      else
         //Control escalando
         this.climbStairs();
-      }
-    } else {
+    } else
       //Controles agarrado a una cuerda
       this.swing();
+
+    //Solo 1 salto por pulsación
+    if (!this.jump() && this.jumpDown) {
+      //Soltamos el boton y por tanto se cancela la aplicación de velocidad ascendente
+      this.jumpDown = false;
     }
     /*
         if (this.brokenStair)
@@ -252,14 +255,14 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   /**
    * Se encarga del movimiento horizontal del jugador. Actualiza su velocidad y animación en el eje X.
    */
-   horizontalMovement() {
-    if (this.right() && !this.isTouching.right) {
+  horizontalMovement() {
+    if (this.right() && !this.isTouching.right)
       move(true, this);
-    } else if (this.left() && !this.isTouching.left) {
+    else if (this.left() && !this.isTouching.left)
       move(false, this);
-    } else {
+    else
       stop(this);
-    }
+
 
     /**
      * Mueve al jugador horizontalmente. 
@@ -270,11 +273,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     function move(right, self) {
       self.setVelocityX(right ? self.speed : -self.speed);
       self.setFlipX(!right);
-
-      if (!self.isJumping && self.idling) {
-        self.play('scottie_run');
-        self.idling = false;
-      }
+      self.play('scottie_run', true);
     }
 
     /**
@@ -283,18 +282,14 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
      */
     function stop(self) {
       self.setVelocityX(0);
-      if (!self.isJumping && !self.idling) {
-        self.play('scottie_idle');
-        self.idling = true;
-      }
+      self.play('scottie_idle', true);
     }
   }
 
-  
   jumpPerformance(dt) {
     this.setIgnoreGravity(false);
 
-    if ((this.jump() && !this.jumpDown || this.jumpBufferCounter > 0) && this.coyoteCounter > 0 && !this.isJumping)) {
+    if ((this.jump() && !this.jumpDown || this.jumpBufferCounter > 0) && this.coyoteCounter > 0 && !this.isJumping) {
       this.jumpDown = true;
       this.isJumping = true;
       this.applyForce({
@@ -318,12 +313,6 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         y: this.lowJumpMultiplier
       });
 
-    //Solo 1 salto por pulsación
-    if (!this.jump() && this.jumpDown) {
-      //Soltamos el boton y por tanto se cancela la aplicación de velocidad ascendente
-      this.jumpDown = false;
-    }
-
     //Timers
     this.coyoteCounter -= dt;
     this.jumpBufferCounter -= dt;
@@ -332,13 +321,12 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   climbStairs() {
     this.setIgnoreGravity(true);
 
-    if (this.jump()) {
+    if (this.jump())
       move(true, this);
-    } else if (this.down()) {
+    else if (this.down())
       move(false, this);
-    } else {
+    else
       stop(this);
-    }
 
     /**
      * Mueve al jugador verticalmente. 
@@ -346,7 +334,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
      * @param {boolean} up true si se mueve hacia arriba, false si se mueve abajo
      * @param {Player} self referencia al player
      */
-     function move(up, self) {
+    function move(up, self) {
       self.setVelocityY(up ? -self.speed : self.speed);
     }
 
@@ -362,8 +350,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   /**
    * Balancea al jugador a los lados cuando está agarrado en una cuerda, y lo suelta si pulsamos jump.
    */
-   swing() {
-    if (this.jump()) {
+  swing() {
+    if (this.jump() && !this.jumpDown) {
       //Se suelta de la cuerda
       this.hanged = false;
       this.scene.freePlayer();

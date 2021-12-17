@@ -114,21 +114,13 @@ export default class Tower extends Phaser.Scene {
   }
 
   update(t, dt) {
-    console.log("Altura del jugador: " + this.player.y);
     super.update(t, dt);
     this.frameTime += dt;
+    console.log("Altura del jugador: " + this.player.y);
 
     //Cronómetro
-    if (!this._reachedTop && this.hasTimerStarted) {
-      this.timer = this.timer + dt / 1000;
-
-      // Dos decimales
-      this.timerString = this.timer.toFixed(2);
-      this.timerText.setText(this.timerString + " ");
-
-      if (this.timer > this.defeatTime)
-        this.lose();
-    }
+    if (!this._reachedTop && this.hasTimerStarted)
+      this.updateTimer(dt);
 
     //Limitamos forzosamente el framerate a 60fps y los acompasamos con los pasos físicos (por problemas técnicos)
     if (this.frameTime > 16.5) {
@@ -143,6 +135,17 @@ export default class Tower extends Phaser.Scene {
 
       this.matter.world.step();
     }
+  }
+
+  updateTimer(dt) {
+    this.timer = this.timer + dt / 1000;
+
+    // Dos decimales
+    this.timerString = this.timer.toFixed(2);
+    this.timerText.setText(this.timerString + " ");
+
+    if (this.timer > this.defeatTime)
+      this.lose();
   }
 
   loadMusic() {
@@ -362,45 +365,46 @@ export default class Tower extends Phaser.Scene {
    * @param {Phaser.Scene} self Referencia a this para acceder a la variable
    */
   canGrabRopeAgain(self) {
-    self.canGrabLastRope = true;
+    self._canGrabLastRope = true;
   }
 
   onGrabRope() {
-    this.matter.world.on('collisionstart',
-      (event, player, ropes) => {
-        if (ropes.gameObject != null && ropes.gameObject.body.label != 'Rectangle Body') {
-          if (player.gameObject !== null && ropes.gameObject !== null && player.gameObject.texture !== undefined && ropes.gameObject.texture !== undefined) {
-            if ((player.gameObject.texture.key == "player" && ropes.gameObject.texture.key == "rope") || (player.gameObject.texture.key == "rope" && ropes.gameObject.texture.key == "player")) {
-              //Scottie se agarra a la cuerda
-              //Corrijo nombres de variables
-              if (player.gameObject.texture.key == "rope" && ropes.gameObject.body.label == "player") {
-                let aux = player;
-                player = ropes;
-                ropes = aux;
-              }
-              //Puede que ya estemos agarrados a un nodo
-              if (this.ropeConstraint === undefined) {
-                //Para permitir el salto de una cuerda a otra, 
-                //evitaremos engancharnos a otros nodos de la cuerda que acabamos de soltar
-                if (this._lastRopeId !== ropes.gameObject.id || this._canGrabLastRope) {
-                  this.ropeConstraint = this.matter.add.constraint(player,
-                    ropes,
-                    0,
-                    0.5 // rigidez de la unión
-                  );
+    this.matter.world.on('collisionstart', (event) => {
+      for (let i = 0; i < event.pairs.length; i++) {
+        let bodyA = getRootBody(event.pairs[i].bodyA);
+        let bodyB = getRootBody(event.pairs[i].bodyB);
 
-                  this._canGrabLastRope = false;
+        const player = bodyA.gameObject instanceof Player ? bodyA : bodyB;
+        const ropes = bodyA.gameObject instanceof Player ? bodyB : bodyA;
 
-                  console.log("engancho una cuerda");
-                  this._lastRopeId = ropes.gameObject.id;
-                  this.player.changeHang(true);
-                }
-              }
-            }
+        //Puede que ya estemos agarrados a un nodo
+        if (player.gameObject instanceof Player && ropes.label === "rope" && this.ropeConstraint === undefined) {
+          //Para permitir el salto de una cuerda a otra, 
+          //evitaremos engancharnos a otros nodos de la cuerda que acabamos de soltar
+          if (this._lastRopeId !== ropes.gameObject.id || this._canGrabLastRope) {
+            this.ropeConstraint = this.matter.add.constraint(player,
+              ropes,
+              0,
+              0.5 // rigidez de la unión
+            );
+
+            this._canGrabLastRope = false;
+            this._lastRopeId = ropes.gameObject.id;
+            this.player.changeHang(true);
           }
         }
+      }
 
-      });
+      function getRootBody(body) {
+        if (body.parent === body) {
+          return body;
+        }
+        while (body.parent !== body) {
+          body = body.parent;
+        }
+        return body;
+      }
+    });
   }
 
   /**
