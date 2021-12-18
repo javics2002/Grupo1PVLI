@@ -2,7 +2,6 @@ import Player from './player.js';
 import Shadow from './shadow.js';
 import Box from './box.js'
 import Rope from './rope.js';
-
 import Judy from './judy.js';
 export default class Tower extends Phaser.Scene {
   /**
@@ -127,8 +126,7 @@ export default class Tower extends Phaser.Scene {
   update(t, dt) {
     super.update(t, dt);
     this.frameTime += dt;
-    //console.log("Altura del jugador: " + this.player.y);
-
+    
     //Cronómetro
     if (!this._reachedTop && this.hasTimerStarted)
       this.updateTimer(dt);

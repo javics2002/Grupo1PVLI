@@ -95,7 +95,7 @@ h1 {
   padding-top:0;
   position:relative;
   margin:0;
-  margin-left: 100px;
+  margin-left: 1vh;
 }
 .juego{
   font-size: 18px;
@@ -181,7 +181,7 @@ width: 100%;
 
 } 
 .container{
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
   
 }
