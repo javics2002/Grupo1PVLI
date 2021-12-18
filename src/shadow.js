@@ -16,7 +16,7 @@ export default class Shadow extends Phaser.GameObjects.Sprite {
         this.setPosition(x, y);
         this.time = time;
         this.scene = scene;
-
+        this.start();
         this.tween.on('stop', this.kill);
 
         this.play("shadow_rise");
