@@ -183,7 +183,7 @@ export default class Select extends Phaser.Scene {
             strokeThickness: 20,
             stroke: '#342c25'
         });
-        button.setInteractive(new Phaser.Geom.Rectangle(0, -20, 150, 30), Phaser.Geom.Rectangle.Contains);
+        button.setInteractive(new Phaser.Geom.Rectangle(0, -20, 150, 50), Phaser.Geom.Rectangle.Contains);
         button.setOrigin(0, 1);
         //button.setShadow(2, 2, "#333333", 2, false, true);
         button.on('pointerdown', buttonAction);

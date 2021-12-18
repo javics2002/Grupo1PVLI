@@ -10,7 +10,7 @@ export default class Title extends Phaser.Scene {
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;
 
-    let titleArt = this.add.image(0, 0, 'title').setOrigin(0, 0);
+    this.add.image(0, 0, 'title').setOrigin(0, 0);
 
     //Texto del título
     this.write(width * .1, height * .3, 'VERTIGO\nTOWER', { 
@@ -30,6 +30,14 @@ export default class Title extends Phaser.Scene {
     });
   }
 
+  /**
+   * Escribe en la pantalla el texto dado según las opciones en la posición (x, y)
+   * @param {integer} x Posición en la pantalla en el eje X (punto izquierdo central)
+   * @param {integer} y Posición en la pantalla en el eje Y (punto izquierdo central)
+   * @param {string} text Texto a escribir
+   * @param {object} fontOptions Objeto que contiene las opciones del texto
+   * @returns 
+   */
   write(x, y, text, fontOptions) {
     let textElement = this.add.text(x, y, text, fontOptions);
     textElement.setOrigin(0, 0.5);

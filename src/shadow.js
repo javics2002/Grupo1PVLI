@@ -8,23 +8,26 @@ export default class Shadow extends Phaser.GameObjects.Sprite {
      * @param {Phaser.Scene} scene Escena a la que pertenece el jugador
      * @param {number} x Coordenada X
      * @param {number} y Coordenada Y
-     * @param {number} time Tiempo que tardará en llegar a lo alto
+     * @param {number} time Tiempo que tardará en llegar a lo alto en segundos
      */
     constructor(scene, x, y, time) {
         super(scene, 17, 30, 'shadow');
         scene.add.existing(this);
         this.setPosition(x, y);
         this.time = time;
-
-        this.tween = scene.tweens.add({
-            targets: [this],
-            y: (this.scene.floorHeight + scene.margin) * scene.tileSize,
-            duration: this.time * 1000
-        });
+        this.scene = scene;
 
         this.tween.on('stop', this.kill);
 
         this.play("shadow_rise");
+    }
+
+    start() {
+        this.tween = this.scene.tweens.add({
+            targets: [this],
+            y: (this.scene.floorHeight + this.scene.margin) * this.scene.tileSize,
+            duration: this.time * 1000
+        });
     }
 
     kill() {

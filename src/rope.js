@@ -33,12 +33,4 @@ export default class Rope extends Phaser.Physics.Matter.Sprite {
       this.scene.matter.add.constraint(options.bodyA, options.bodyB, options.length, options.stiffness);
     }
   }
-
-  /**
-   * Métodos preUpdate de Phaser.
-   * @override
-   */
-  preUpdate(t, dt) {
-    super.preUpdate(t, dt);
-  }
 }

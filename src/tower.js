@@ -2,8 +2,8 @@ import Player from './player.js';
 import Shadow from './shadow.js';
 import Box from './box.js'
 import Rope from './rope.js';
-
 import Judy from './judy.js';
+
 export default class Tower extends Phaser.Scene {
   /**
    * Constructor de la escena
@@ -11,16 +11,14 @@ export default class Tower extends Phaser.Scene {
    * @param {number} defeatTime Tiempo límite para completar el nivel
    * @param {integer} floors Número de plantas de la torre, sin contar el campanario
    * @param {integer} floorHeight Número de tiles que mide un piso
-   * @param {integer} keyTile
+   * @param {string} keyTile Nombre del mapa de Tiled
    * @param {Array<Object<integer, integer>>} cameraRanges Conjunto de rangos en los que la cámara se puede mover, dividida por los pisos de la torre
    * @param {integer} panEnd Posición final de la cámara. Usado para el cálculo del panning inicial de la cámara
    */
-  constructor(key, defeatTime, floors, floorHeight, keyTile, cameraRanges, panEnd) {
+  constructor(key, defeatTime, floors, floorHeight, keyTile) {
     super({
       key: key
     });
-    this.cameraRanges = cameraRanges;
-    this.panEnd = panEnd;
     this.keyTile = keyTile;
     this.key = key;
     this.defeatTime = defeatTime;
@@ -33,26 +31,24 @@ export default class Tower extends Phaser.Scene {
     this._grabLastRopeTime = 100;
     this._reachedTop = false;
     this.hasTimerStarted = false;
-    this.isCinematicFinished = false;
-    this.isThisFirstTime = true;
   }
 
   preload() {
     this.loadMusic();
   }
-  
+
   create() {
     this.frameTime = 0;
     this.matter.world.autoUpdate = false;
-    
+
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;
-    
+
     //Tamaño del mapa
     this.matter.world.setBounds(0, 0, 1280, (this.floors + 1) * this.floorHeight * this.tileSize + 2 * this.margin * this.tileSize);
-    
+
     this.buildTower();
-    
+
     //Animaciones
     this.createAnimation('scottie_idle', 153);
     this.createAnimation('scottie_run', 16);
@@ -65,24 +61,24 @@ export default class Tower extends Phaser.Scene {
     this.createAnimation('shadow_rise', 6, true);
     this.createAnimation('judy_idle', 8);
     this.createAnimation('judy_fall', 1);
-    
+
     //Personajes
     this.player = new Player(this, 400, (this.floors + 1) * this.floorHeight * this.tileSize);
     this.judy = new Judy(this);
     this.shadow = new Shadow(this, 200, (this.floors + 1) * this.floorHeight * this.tileSize, this.defeatTime);
-    
+
     //Timer
     this.timer = 0;
-    
+
     //Camara
     this.cameras.main.setBounds(0, 0, 1280, (this.floors + 1) * this.floorHeight * 32 + 32 * 4);
     this.cameras.main.startFollow(this.player);
-    
+
     this.ropeConstraint = undefined;
-    
+
     //Agarrarse a la cuerda
     this.onGrabRope();
-    
+
     //UI
     // Botón de mute
     let mute = this.game.audioConfig.mute ? 'mute_on' : 'mute_off';
@@ -91,25 +87,24 @@ export default class Tower extends Phaser.Scene {
       this.scene.music.setMute(!this.scene.music.mute);
       this.setTexture(this.scene.game.audioConfig.mute ? 'mute_on' : 'mute_off');
     });
-    
+
     // Botón volver a SelectScreen
     this.backButton = this.addInterfaceButton(width * 0.05, height * 0.08, 'exit_icon', 50, function () {
       this.scene.music.stop();
       this.scene.scene.start('select');
-      
     });
-    
+
     // Texto del nombre de la escena: "Torre i"
     let rigthMargin = width - width * 0.05;
     this.addInterfaceText(rigthMargin, height * 0.05, this.key, 50, '#ffffff');
-    
+
     // Cronómetro
     this.timerText = this.addInterfaceText(rigthMargin, height * 0.12, this.timer.toString(), 50, '#ffffff');
-    
+
     // Límite de tiempo con dos decimales
     this.defeatTimeString = this.defeatTime.toFixed(2);
     this.defeatTimeText = this.addInterfaceText(rigthMargin, height * 0.17, this.defeatTimeString + " ", 30, '#ff0000');
-    
+
     //Flechas de marca para la sombra
     this.upArrow = this.addInterfaceImage(this.shadow.x, 32, "up_arrow", {
       x: 0.5,
@@ -119,81 +114,56 @@ export default class Tower extends Phaser.Scene {
       x: 0.5,
       y: 1
     }, 0Xffffff)
-    
+
     //Música
     this.music.play(this.key);
     this.music.setRate(1.5);
     this.music.setMute(this.game.audioConfig.mute);
-    
+
     //Reseteamos el haber llegado a la cima
     this._reachedTop = false;
-    
-    //Inicialización de la cámara
-
-    if (this.isThisFirstTime) {
-      // Ocurre animación. Llama a judyAnimationEndCallback
-  
-      // *** Esto va dentro de judyAnimationEndCallback
-      this.cameras.main.setScroll(0, 0);
-      this.cameras.main.pan(0, this.panEnd, 1000, "Sine.easeInOut", true, this.panEndCallback);
-      // ***
-    }
-    else {
-      this.panEndCallback(null, 1);
-    }
   }
-  
+
   update(t, dt) {
     super.update(t, dt);
     this.frameTime += dt;
     //console.log("Altura del jugador: " + this.player.y);
-    
+
     //Cronómetro
     if (!this._reachedTop && this.hasTimerStarted)
-    this.updateTimer(dt);
-    
+      this.updateTimer(dt);
+
     //Limitamos forzosamente el framerate a 60fps y los acompasamos con los pasos físicos (por problemas técnicos)
     if (this.frameTime > 16.5) {
       this.frameTime -= 16.5;
       //Actualizar flechas de la sombra
       this.downArrow.setVisible(!this._reachedTop && this.cameras.main.scrollY + this.cameras.main.height < this.shadow.y);
       this.upArrow.setVisible(!this._reachedTop && this.cameras.main.scrollY > this.shadow.y);
-      
+
       //Condicion de ganar
       if (!this._reachedTop && this.player.y < this.tileSize * (this.floorHeight + this.margin))
-      this.win();
-      
+        this.win();
+
       this.matter.world.step();
     }
-    if (this.isCinematicFinished === true) {
-      this.cameraRanges.forEach(element => {
-        if (this.player.y >= element.min && this.player.y < element.max) {
-          this.cameras.main.setBounds(0, element.min - 100, 1280, element.max - element.min + 100);
-          this.cameras.main.startFollow(this.player,false, 0.3, 0.3);
-        }
-      });
-    }
-    // Setting de la cámara inicial
-
-
   }
-  
+
   updateTimer(dt) {
     this.timer = this.timer + dt / 1000;
-    
+
     // Dos decimales
     this.timerString = this.timer.toFixed(2);
     this.timerText.setText(this.timerString + " ");
-    
+
     if (this.timer > this.defeatTime)
-    this.lose();
+      this.lose();
   }
-  
+
   loadMusic() {
     //La sombrá llegará a Judy cuando la música "tower" llegue a estos segundos
     this._loseMusicTime = 320;
     this._startMusicTime = this._loseMusicTime - (this.defeatTime * 1.5);
-    
+
     this.musicMarker = {
       name: this.key,
       start: this._startMusicTime,
@@ -270,10 +240,10 @@ export default class Tower extends Phaser.Scene {
     this.coll.setCollisionByProperty({
       collides: true
     })
-  
-    
+
+
     this.matter.world.convertTilemapLayer(this.coll);
-       
+
   }
 
   /**
@@ -348,22 +318,11 @@ export default class Tower extends Phaser.Scene {
     self._canGrabLastRope = true;
   }
 
-  panEndCallback(camera = null, progress = 0) {
-    console.log("Se ha llamado al callback final"); // para debug
-    if (progress === 1) {
-      this.hasTimerStarted = true;
-      this.player.setControllable(true);
-      console.log("Se llama al finalizado de la fx"); // para debug
-      this.isCinematicFinished = true;
-      this.isThisFirstTime = false;
-    }
-  }
-
   /**
-   * asjidajosp
-   * @param {boolean} hola  asoiajsofi
+   * Evento que se ejecuta cuando Scottie agarra una cuerda.
+   * Crea la constraint necesaria para agarrarlo.
    */
-  onGrabRope(hola) {
+  onGrabRope() {
     this.matter.world.on('collisionstart', (event) => {
       for (let i = 0; i < event.pairs.length; i++) {
         let bodyA = getRootBody(event.pairs[i].bodyA);
@@ -426,7 +385,7 @@ export default class Tower extends Phaser.Scene {
    * @param {string} textureName Nombre de la textura del botón. Debe ser la misma con la que se cargó.
    * @param {integer} size Tamaño de la textura. Necesaria para la hit area del botón.
    * @param {function} buttonAction Función que se realiza al pulsar el botón
-   * @returns Devuelve el elemento de la interfaz para poder modificarlo
+   * @returns {sprite} Devuelve el elemento de la interfaz para poder modificarlo
    */
   addInterfaceButton(x, y, textureName, size, buttonAction) {
     let button = this.add.sprite(x, y, textureName)
@@ -446,7 +405,7 @@ export default class Tower extends Phaser.Scene {
    * @param {string} s Texto a escribir en el elemento de la interfaz
    * @param {integer} size Tamaño del texto en px
    * @param {string} color Color del texto. Se trata de un string con el código RGB del mismo ('#XXXXXX')
-   * @returns Devuelve el elemento de la interfaz para poder modificarlo
+   * @returns {text} Devuelve el elemento de la interfaz para poder modificarlo
    */
   addInterfaceText(x, y, s, size, color) {
     let text = this.add.text(x, y, s, {
@@ -463,12 +422,12 @@ export default class Tower extends Phaser.Scene {
 
   /**
    * Crea una imagen en la interfaz de usuario
-   * @param {*} x Posición en el eje X
-   * @param {*} y Posición en el eje Y
-   * @param {*} textureName Nombre de la textura del botón. Debe ser la misma con la que se cargó.
+   * @param {integer} x Posición en el eje X
+   * @param {integer} y Posición en el eje Y
+   * @param {string} textureName Nombre de la textura del botón. Debe ser la misma con la que se cargó.
    * @param {object} origin Origen de la textura. Es un objeto con numbers x e y, entre 0 y 1.
-   * @param {number} tint Número hexadecimal del código del color de la tinta. 0Xffffff no tintará la imagen
-   * @returns Devuelve el elemento de la interfaz para poder modificarlo
+   * @param {integer} tint Número hexadecimal del código del color de la tinta. 0Xffffff no tintará la imagen
+   * @returns {image} Devuelve el elemento de la interfaz para poder modificarlo
    */
   addInterfaceImage(x, y, textureName, origin, tint) {
     let image = this.add.image(x, y, textureName);

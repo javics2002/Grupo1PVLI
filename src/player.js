@@ -38,9 +38,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
     //Cuerdas
     this.hanged = false;
-    this.ropeForce = 0.001;
+    this.ropeForce = 0.004;
 
-    this.puedeReparar = false;
+    this.hasStairs = false;
 
     //Física
     this.setFixedRotation(true);
@@ -62,9 +62,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       this.cursorsWASD.up.isDown || this.cursorsWASD.jump.isDown;
 
     //Control
-    this.canMove = true; //Se desactiva en las cinemáticas
-
- 
+    this.canMove = false; //Se desactiva en las cinemáticas
 
     //Sensores. El de abajo detecta el suelo y los de los lados, cajas
     let bodies = Phaser.Physics.Matter.Matter.Bodies;
@@ -80,7 +78,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.stair = bodies.rectangle(this.x, this.y + this.height / 2 - 7.5, this.width / 2, 15, {
       isSensor: true
     });
-    
+
     this.setExistingBody(bodies.rectangle(this.x, this.y, this.width, this.height, {
       chamfer: {
         radius: 10
@@ -95,13 +93,12 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.setFixedRotation();
     this.setPosition(x, y);
 
-
     //creacion del fragmento superior player
-    this.frag = this.scene.matter.add.image(0,0, "fragment");
+    this.fragment = this.scene.matter.add.image(0, 0, "fragment");
     //this.frag.setIgnoreGravity(true);   
-    this.frag.setSensor(true);
-    this.frag.setStatic(true);        
-    this.frag.visible = false;   
+    this.fragment.setSensor(true);
+    this.fragment.setStatic(true);
+    this.fragment.visible = false;
 
     scene.matter.world.on("beforeupdate", this.resetTouching, this);
 
@@ -132,26 +129,27 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         }
         //en caso de colision con una escalera
         if ((bodyA === this.bottomSensor && bodyB.label === 'escalera' || bodyB === this.bottomSensor && bodyA.label === 'escalera' ||
-          bodyA === this.leftSensor && bodyB.label === 'escalera' || bodyB === this.leftSensor && bodyA.label === 'escalera' ||
+            bodyA === this.leftSensor && bodyB.label === 'escalera' || bodyB === this.leftSensor && bodyA.label === 'escalera' ||
             bodyA === this.rightSensor && bodyB.label === 'escalera' || bodyB === this.rightSensor && bodyA.label === 'escalera' ||
             bodyA === this.stair && bodyB.label === 'escalera' || bodyB === this.stair && bodyA.label === 'escalera')) {
-              // si la escalera esta reparada la escalo
+          // si la escalera esta reparada la escalo
           if (tile.reparada) {
             this.canClimb = true;
             this.isJumping = true;
             //this.coyoteCounter = this.coyoteTime;
             //si no esta reparada y he recogido un fragmento antes cambio el sprite de los 
             //tiles en una zona de rotos a reparados
-          } else if (this.puedeReparar) {
+          } else if (this.hasStairs) {
             scene.mapA.replaceByIndex(3, 7, tile.pX, tile.pY, 2, 6, scene.stairs);
             scene.mapA.replaceByIndex(4, 8, tile.pX, tile.pY, 2, 6, scene.stairs);
             scene.mapA.replaceByIndex(5, 7, tile.pX, tile.pY, 2, 6, scene.stairs);
             scene.mapA.replaceByIndex(6, 8, tile.pX, tile.pY, 2, 6, scene.stairs);
             //reestablezco las variables de usar escaleras
-            this.frag.visible = false;
+            this.fragment.visible = false;
             tile.reparada = true;
-            this.puedeReparar = false;
-            this.frag.x = 0; this.frag.y = 0;
+            this.hasStairs = false;
+            this.fragment.x = 0;
+            this.fragment.y = 0;
           }
         }
         //en caso de colisionar con un fragmento de escalera
@@ -160,8 +158,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
             bodyB === this.rightSensor && gameObject.label === 'fragmento')
         ) {
           //lo recojo y destruyo el objeto
-          this.frag.visible = true;
-          this.puedeReparar = true;
+          this.fragment.visible = true;
+          this.hasStairs = true;
           gameObject.destroy();
         }
 
@@ -185,7 +183,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
       this.isPushing = pushingBox;
     });
-   
+
     //en caso de ser un objeto compuesto por mas recojo el principal(preventivo)
     function getRootBody(body) {
       if (body.parent === body) {
@@ -202,11 +200,11 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.brokenStair = false;
 
     //Cargamos los sonidos que produce el jugador
-    this.fix_stairs = scene.sound.add('fix_stairs'); //falta por meter
+    this.fix_stairs = scene.sound.add('fix_stairs');
     this.jumpSound = scene.sound.add('jump');
     this.ladder1 = scene.sound.add('ladder1');
     this.ladder2 = scene.sound.add('ladder2');
-    this.pick_up = scene.sound.add('pick_up'); //falta por meter
+    this.pick_up = scene.sound.add('pick_up');
     this.push_box = scene.sound.add('push_box');
 
     //Sonidos enlazados a animaciones
@@ -234,10 +232,11 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     super.preUpdate(t, dt);
 
     //actualizo la posicion del fragmento encima de scottie en caso de haber recogido uno
-    if(this.puedeReparar){
-      this.frag.x = this.x;
-      this.frag.y = this.y-this.height;       
+    if (this.hasStairs) {
+      this.fragment.x = this.x;
+      this.fragment.y = this.y - this.height;
     }
+
     //Controles
     if (this.canMove) {
       if (!this.hanged) {
@@ -342,11 +341,11 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.coyoteCounter -= dt;
     this.jumpBufferCounter -= dt;
   }
-//escalado de escaleras 
+  //escalado de escaleras 
   climbStairs() {
     this.setIgnoreGravity(true);
 
-    if (this.jump())
+    if (this.up())
       move(true, this);
     else if (this.down())
       move(false, this);
@@ -404,7 +403,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.hanged = hanged;
   }
 
-  setControllable(controllable){
+  setControllable(controllable) {
     this.canMove = controllable;
   }
 }

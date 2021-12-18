@@ -16,12 +16,4 @@ export default class Node extends Phaser.Physics.Matter.Sprite {
     this.id = id;
     this.body.label = "rope";
   }
-
-  /**
-   * Métodos preUpdatçe de Phaser. Se encarga del balanceo de la cuerda.
-   * @override
-   */
-  preUpdate(t, dt) {
-    super.preUpdate(t, dt);
-  }
 }
