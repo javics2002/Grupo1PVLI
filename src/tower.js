@@ -285,7 +285,6 @@ export default class Tower extends Phaser.Scene {
    */
   win() {
     this._reachedTop = true;
-    this.player.setControllable(false);
 
     //Eliminamos UI
     this.backButton.destroy(true);
@@ -297,8 +296,13 @@ export default class Tower extends Phaser.Scene {
     this.shadow.stop();
 
     //Desactivar movimiento del jugador
+    this.player.setControllable(false);
 
     //Empieza cinematica
+    this.player.setPosition(600, 572);
+    this.player.setVelocity(0);
+    this.judy.setPosition(700, 572);
+    //Play win animations
     this.winMusic.play("winPart");
     this.winMusic.setRate(1.5);
 
