@@ -14,37 +14,37 @@ const initGame = () => {
      */
     let config = {
         type: Phaser.AUTO,
-        width:  1280,
+        width: 1280,
         height: 720,
         fps: 60,
         scale: {
-            mode: Phaser.Scale.FIT,  
+            mode: Phaser.Scale.FIT,
             autoCenter: Phaser.Scale.CENTER_BOTH,
             parent: 'GameContainer',
-            max:{
+            max: {
                 width: 1400,
                 height: 800,
-              }
+            }
         },
         pixelArt: true,
-        scene: [Boot, Title, Select, Tower1, Tower2, Tower3, Tower4, Tower5 ],
-        physics: { 
-            default: 'matter', 
-            matter: { 
-                gravity: { y: 2 }, 
-                debug: false,
-                runner: { isFixed: true, fps: 60 }
-            } 
+        scene: [Boot, Title, Select, Tower1, Tower2, Tower3, Tower4, Tower5],
+        physics: {
+            default: 'matter',
+            matter: {
+                gravity: {
+                    y: 2
+                },
+                debug: true,
+                runner: {
+                    isFixed: true,
+                    fps: 60
+                }
+            }
         }
-        
     };
-    
-    
-    
-    
+
     let game = new Phaser.Game(config);
-   
-   
+
     game.levelsInfo = [];
 
     // Número de nivel actual. 0 es uno de los menús
@@ -70,7 +70,7 @@ const initGame = () => {
         record: parseFloat(localStorage.getItem('Tower5')) || 0,
         winHeight: 600
     }
- 
+
     game.audioConfig = {
         mute: false,
         volume: 1,
@@ -79,15 +79,15 @@ const initGame = () => {
         seek: 0,
         loop: true,
         delay: 0,
-      };
+    };
 }
 
 //Código de Iván para cargar la fuente usada en la pantalla de carga.
 const WebFontConfig = {
     google: {
-        families: [ 'Caveat' ]
+        families: ['Caveat']
     },
-    active : () => {
+    active: () => {
         initGame();
     }
 };
@@ -95,7 +95,7 @@ const WebFontConfig = {
 //El juego se carga cuando la fuente esté lista
 let script = document.createElement('script');
 script.onload = function () {
-    WebFont.load(WebFontConfig);    
+    WebFont.load(WebFontConfig);
 };
 script.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js';
 
