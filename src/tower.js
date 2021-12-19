@@ -245,14 +245,7 @@ export default class Tower extends Phaser.Scene {
         });
         rec.isStatic = true;
         rec.isSensor = true;
-        rec.boxblocker = this.matter.add.rectangle(objeto.x + objeto.width / 2, objeto.y + objeto.height / 2, objeto.width, objeto.height,{
-          'isStatic' : true,
-          collisionFilter : {
-            'group' : 1,
-            'category' : 2,
-            'mask' : 1
-          }
-        });
+        
       }
 
     }
