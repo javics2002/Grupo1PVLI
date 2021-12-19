@@ -84,7 +84,6 @@ export default class Tower extends Phaser.Scene {
     this.backButton = this.addInterfaceButton(width * 0.05, height * 0.08, 'exit_icon', 50, function () {
       this.scene.music.stop();
       this.scene.scene.start('select');
-
     });
 
     // Texto del nombre de la escena: "Torre i"
@@ -118,13 +117,14 @@ export default class Tower extends Phaser.Scene {
 
     //Cinemática inicial
     this.hasTimerStarted = false;
+    this.isCinematicFinished = !this.isThisFirstTime;
     if (this.isThisFirstTime) {
       // Ocurre animación. Llama a judyAnimationEndCallback
       this.help_me.scene = this
       this.help_me.play();
       this.help_me.once("complete", this.judyAnimationEndCallback);
     } else {
-      this.countdown()
+      this.countdown();
     }
   }
 
@@ -134,7 +134,7 @@ export default class Tower extends Phaser.Scene {
     //console.log("Altura del jugador: " + this.player.y);
 
     //Cronómetro
-    if (!this._reachedTop && this.hasTimerStarted)
+    if (!this._reachedTop && !this.shadowReachedTop && this.hasTimerStarted)
       this.updateTimer(dt);
 
     //Limitamos forzosamente el framerate a 60fps y los acompasamos con los pasos físicos (por problemas técnicos)
@@ -151,13 +151,15 @@ export default class Tower extends Phaser.Scene {
       this.matter.world.step();
     }
 
-    if (this.isCinematicFinished === true) {
+    if (this.isCinematicFinished) {
       this.cameraRanges.forEach(element => {
         if (this.player.y >= element.min && this.player.y < element.max) {
           this.cameras.main.setBounds(0, element.min - 100, 1280, element.max - element.min + 100);
           this.cameras.main.startFollow(this.player, false, 0.3, 0.3);
         }
       });
+    }else{
+      this.cameras.main.setBounds(0, 0, 1280, (this.floors + 1) * this.floorHeight * this.tileSize + 2 * this.margin * this.tileSize);
     }
   }
 
@@ -287,9 +289,7 @@ export default class Tower extends Phaser.Scene {
     this._reachedTop = true;
 
     //Eliminamos UI
-    this.backButton.destroy(true);
-    this.timerText.setColor("#D6D45A");
-    this.defeatTimeText.destroy(true);
+    this.destroyUI();
 
     //Paramos la musica y la sombra
     this.music.stop();
@@ -309,6 +309,12 @@ export default class Tower extends Phaser.Scene {
     //Pasa al siguiente nivel cuando se acabe la musica
     this.winMusic.scene = this;
     this.winMusic.once("complete", this.nextTower);
+  }
+
+  destroyUI() {
+    this.backButton.destroy(true);
+    this.timerText.setColor("#D6D45A");
+    this.defeatTimeText.destroy(true);
   }
 
   nextTower() {
@@ -333,9 +339,18 @@ export default class Tower extends Phaser.Scene {
    * Se ejecuta al acabarse el tiempo.
    */
   lose() {
+    this.destroyUI();
+    this.shadowReachedTop = true;
     this.music.stop();
+    //Animacion de perder
+    this.player.stop();
     this.player.setControllable(false);
     this.judy.fall();
+    this.isCinematicFinished = false;
+    this.cameras.main.startFollow(this.judy);
+  }
+
+  repeat() {
     this.scene.start(this.key);
   }
 
