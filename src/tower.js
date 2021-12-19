@@ -210,10 +210,11 @@ export default class Tower extends Phaser.Scene {
     });
 
     const tileset = map.addTilesetImage(this.keyTile, 'tiles');
-
+    const backround = map.createLayer('background', tileset);
     this.coll = map.createLayer('Tower', tileset);
     const stairs = map.createLayer('Interactuable', tileset);
     const atravesable = map.createLayer('atravesable', tileset);
+    
     this.stairLayer = stairs;
     this.mapA = map;
     this.stairs = stairs;
