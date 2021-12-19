@@ -15,17 +15,4 @@ export default class Tower1 extends Tower {
     this.isCinematicFinished = false;
     this.isThisFirstTime = true;
   }
-
-  create() {
-    super.create();
-    
-    
-  }
-
-
-  
-  update(t, dt) {
-  super.update(t, dt);
-  
-  }
 }

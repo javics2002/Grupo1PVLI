@@ -10,13 +10,4 @@ export default class Tower3 extends Tower {
     {"max": 639, "min":0}], 3700);
     this.isCinematicFinished = false;
   }
-  create(){
-    super.create();
-    
-  }
-
- 
-  update(t, dt) {
-    super.update(t,dt);
-  }
 }

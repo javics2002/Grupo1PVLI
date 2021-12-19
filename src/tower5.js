@@ -10,13 +10,4 @@ export default class Tower5 extends Tower {
     6040);
     this.isCinematicFinished = false;
   }
-
-  create(){
-    super.create();
-  }
-
-  
-  update(t, dt) {
-    super.update(t, dt);
-  }
 }

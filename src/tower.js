@@ -2,8 +2,8 @@ import Player from './player.js';
 import Shadow from './shadow.js';
 import Box from './box.js'
 import Rope from './rope.js';
-
 import Judy from './judy.js';
+
 export default class Tower extends Phaser.Scene {
   /**
    * Constructor de la escena
@@ -54,18 +54,7 @@ export default class Tower extends Phaser.Scene {
     this.buildTower();
 
     //Animaciones
-    this.createAnimation('scottie_idle', 153);
-    this.createAnimation('scottie_run', 16);
-    this.createAnimation('scottie_run_jump', 4);
-    this.createAnimation('scottie_run_jump', 6);
-    this.createAnimation('scottie_climb', 8);
-    this.createAnimation('scottie_push', 11);
-    this.createAnimation('scottie_jump', 1);
-    this.createAnimation('scottie_hang', 1);
-    this.createAnimation('shadow_rise', 6, true);
-    this.createAnimation('judy_idle', 8);
-    this.createAnimation('judy_fall', 1);
-
+    this.createAnimations();
     //Personajes
     this.player = new Player(this, 400, (this.floors + 1) * this.floorHeight * this.tileSize);
     this.judy = new Judy(this);
@@ -275,7 +264,20 @@ export default class Tower extends Phaser.Scene {
 
 
     this.matter.world.convertTilemapLayer(this.coll);
+  }
 
+  createAnimations() {
+    this.createAnimation('scottie_idle', 153);
+    this.createAnimation('scottie_run', 16);
+    this.createAnimation('scottie_run_jump', 4);
+    this.createAnimation('scottie_run_jump', 6);
+    this.createAnimation('scottie_climb', 8);
+    this.createAnimation('scottie_push', 11);
+    this.createAnimation('scottie_jump', 1);
+    this.createAnimation('scottie_hang', 1);
+    this.createAnimation('shadow_rise', 6, true);
+    this.createAnimation('judy_idle', 6);
+    this.createAnimation('judy_fall', 1);
   }
 
   /**
@@ -367,13 +369,43 @@ export default class Tower extends Phaser.Scene {
    * Comienza la cuenta atrás (3, 2, 1, GO!) y tras ello comienza el timer, la sombra y da control al jugador.
    */
   countdown() {
-    this.addInterfaceText(this.cameras.main.width, this.cameras.main.height, "3", 50, "#ffffff").setOrigin();
+    let number = 3;
+    let count = this.addInterfaceText(this.cameras.main.width / 2, this.cameras.main.height / 2, ` ${number} `, 120, "#ffffff").setOrigin(.5);
+    count.setScale(0.7);
+
+    //La cuenta atrás es un timeline que contiene tweens para cada número
+    let timeline = this.tweens.createTimeline({
+      delay: 500,
+      duration: 1000,
+      onComplete: this.start
+    });
+    timeline.scene = this;
+
+    //Añadimos al timeline los 3 números de la cuenta atrás. Son el mismo tween, solo se actualiza el número
+    // "GO!" borra el texto
+    for (let i = 0; i <= number; i++)
+      timeline.add({
+        targets: [count],
+        scale: 1,
+        ease: "Quint.easeOut",
+        onComplete: i === 3 ? () => {
+          count.destroy();
+        } : nextNumber,
+      });
+      
+    timeline.play();
+
+    function nextNumber() {
+      number -= 1;
+      count.setScale(0.7);
+      count.setText(number === 0 ? " GO! " : ` ${number} `);
+    }
   }
 
   start() {
-    this.hasTimerStarted = true;
-    this.player.setControllable(true);
-    this.shadow.start();
+    this.scene.hasTimerStarted = true;
+    this.scene.player.setControllable(true);
+    this.scene.shadow.start();
   }
 
   /**

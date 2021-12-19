@@ -8,12 +8,4 @@ export default class Tower2 extends Tower {
     {"max": 1149, "min":639},
     {"max": 630, "min":0}], 2568);
   }
-  create(){
-    super.create();
-  }
-
-  
-  update(t, dt) {
-    super.update(t, dt);
-  }
 }
