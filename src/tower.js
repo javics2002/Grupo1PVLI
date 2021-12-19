@@ -32,9 +32,9 @@ export default class Tower extends Phaser.Scene {
     this._canGrabLastRope = false;
     this._grabLastRopeTime = 100;
     this._reachedTop = false;
-    this.hasTimerStarted = false;
     this.isCinematicFinished = false;
     this.isThisFirstTime = true;
+    this.panSpeed = 300;
   }
 
   preload() {
@@ -92,7 +92,7 @@ export default class Tower extends Phaser.Scene {
     this.addInterfaceText(rigthMargin, height * 0.05, this.key, 50, '#ffffff');
 
     // Cronómetro
-    this.timerText = this.addInterfaceText(rigthMargin, height * 0.12, this.timer.toString(), 50, '#ffffff');
+    this.timerText = this.addInterfaceText(rigthMargin, height * 0.12, this.timer.toString() + " ", 50, '#ffffff');
 
     // Límite de tiempo con dos decimales
     this.defeatTimeString = this.defeatTime.toFixed(2);
@@ -116,8 +116,8 @@ export default class Tower extends Phaser.Scene {
     //Reseteamos el haber llegado a la cima
     this._reachedTop = false;
 
-    //Inicialización de la cámara
-
+    //Cinemática inicial
+    this.hasTimerStarted = false;
     if (this.isThisFirstTime) {
       // Ocurre animación. Llama a judyAnimationEndCallback
       this.help_me.scene = this
@@ -354,7 +354,7 @@ export default class Tower extends Phaser.Scene {
 
   judyAnimationEndCallback() {
     this.scene.cameras.main.setScroll(0, 0);
-    this.scene.cameras.main.pan(0, this.panEnd, 1000, "Sine.easeInOut", true, this.scene.panEndCallback);
+    this.scene.cameras.main.pan(0, this.scene.panEnd, this.scene.panSpeed * this.scene.floors, "Cubic.easeInOut", true, this.scene.panEndCallback);
   }
 
   panEndCallback(camera = null, progress = 0) {
@@ -392,7 +392,7 @@ export default class Tower extends Phaser.Scene {
           count.destroy();
         } : nextNumber,
       });
-      
+
     timeline.play();
 
     function nextNumber() {
