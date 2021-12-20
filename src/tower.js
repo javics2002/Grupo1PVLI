@@ -275,6 +275,8 @@ export default class Tower extends Phaser.Scene {
     this.createAnimation('shadow_rise', 6, true);
     this.createAnimation('judy_idle', 6);
     this.createAnimation('judy_fall', 1);
+    this.createAnimation('judy_hole', 1);
+    this.createAnimation('judy_win', 11);
   }
 
   /**
@@ -297,7 +299,7 @@ export default class Tower extends Phaser.Scene {
     this.player.setPosition(600, 572);
     this.player.setVelocity(0);
     this.judy.setPosition(700, 572);
-    //Play win animations
+    this.judy.celebrate();
     this.winMusic.play("winPart");
     this.winMusic.setRate(1.5);
 
