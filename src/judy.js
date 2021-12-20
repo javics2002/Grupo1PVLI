@@ -1,7 +1,7 @@
 /**
  * Jusdy
  */
- export default class Judy extends Phaser.GameObjects.Sprite {
+export default class Judy extends Phaser.GameObjects.Sprite {
     /**
      * Constructor de Judy
      * @param {Phaser.Scene} scene Escena a la que pertenece el jugador
@@ -18,7 +18,7 @@
         this.thump = scene.sound.add('thump');
     }
 
-    fall(){
+    fall() {
         this.setPosition(1150, 572)
         this.scream.play();
         this.fall_sound.play();
@@ -26,20 +26,22 @@
 
         this.tween = this.scene.tweens.add({
             targets: [this],
-            y: (this.scene.floorHeight * (this.scene.floors + 1)) * this.scene.tileSize,
+            y: (this.scene.floorHeight * (this.scene.floors + 1) + 2) * this.scene.tileSize,
             angle: 500 * this.scene.floors,
             duration: this.time * this.scene.floors,
             ease: "Quad.easeIn",
-            onComplete: ()=>{
+            onComplete: () => {
+                this.setAngle(0);
+                this.play('judy_hole');
                 this.thump.play();
-                this.thump.once("complete", ()=>{
+                this.thump.once("complete", () => {
                     this.scene.repeat();
                 });
             }
         });
     }
 
-    celebrate(){
-        
+    celebrate() {
+        this.play("judy_win");
     }
 }

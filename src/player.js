@@ -149,6 +149,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
             this.fragment.visible = false;
             tile.reparada = true;
             this.hasStairs = false;
+            this.puedeReparar = false;
             this.fragment.x = 0;
             this.fragment.y = 0;
           }
@@ -159,8 +160,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
             bodyB === this.rightSensor && gameObject.label === 'fragmento')
         ) {
           //lo recojo y destruyo el objeto
-          this.frag.visible = true;
+          this.fragment.visible = true;
           this.puedeReparar = true;
+          this.hasStairs = true;
           this.pick_up.play();
          
           gameObject.destroy();
