@@ -376,7 +376,7 @@ export default class Tower extends Phaser.Scene {
 
   panEndCallback(camera = null, progress = 0) {
     if (progress === 1) {
-      this.isCinematicFinished = true;
+      
       this.isThisFirstTime = false;
       this.countdown();
     }
@@ -386,6 +386,8 @@ export default class Tower extends Phaser.Scene {
    * Comienza la cuenta atrás (3, 2, 1, GO!) y tras ello comienza el timer, la sombra y da control al jugador.
    */
   countdown() {
+    this.isCinematicFinished = true;
+    this.cameras.main.startFollow(this.player);
     this.createUI(this.cameras.main.width, this.cameras.main.height);
     
     let number = 3;
