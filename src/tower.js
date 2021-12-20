@@ -71,32 +71,6 @@ export default class Tower extends Phaser.Scene {
     //Agarrarse a la cuerda
     this.onGrabRope();
 
-    //UI
-    // Botón de mute
-    let mute = this.game.audioConfig.mute ? 'mute_on' : 'mute_off';
-    this.addInterfaceButton(width * 0.05, height * 0.2, mute, 32, function () {
-      this.scene.game.audioConfig.mute = !this.scene.game.audioConfig.mute;
-      this.scene.music.setMute(!this.scene.music.mute);
-      this.setTexture(this.scene.game.audioConfig.mute ? 'mute_on' : 'mute_off');
-    });
-
-    // Botón volver a SelectScreen
-    this.backButton = this.addInterfaceButton(width * 0.05, height * 0.08, 'exit_icon', 50, function () {
-      this.scene.music.stop();
-      this.scene.scene.start('select');
-    });
-
-    // Texto del nombre de la escena: "Torre i"
-    let rigthMargin = width - width * 0.05;
-    this.addInterfaceText(rigthMargin, height * 0.05, this.key, 50, '#ffffff');
-
-    // Cronómetro
-    this.timerText = this.addInterfaceText(rigthMargin, height * 0.12, this.timer.toString() + " ", 50, '#ffffff');
-
-    // Límite de tiempo con dos decimales
-    this.defeatTimeString = this.defeatTime.toFixed(2);
-    this.defeatTimeText = this.addInterfaceText(rigthMargin, height * 0.17, this.defeatTimeString + " ", 30, '#ff0000');
-
     //Flechas de marca para la sombra
     this.upArrow = this.addInterfaceImage(this.shadow.x, 32, "up_arrow", {
       x: 0.5,
@@ -128,10 +102,36 @@ export default class Tower extends Phaser.Scene {
     }
   }
 
+  createUI(width, height) {
+    // Botón de mute
+    let mute = this.game.audioConfig.mute ? 'mute_on' : 'mute_off';
+    this.addInterfaceButton(width * 0.05, height * 0.2, mute, 32, function () {
+      this.scene.game.audioConfig.mute = !this.scene.game.audioConfig.mute;
+      this.scene.music.setMute(!this.scene.music.mute);
+      this.setTexture(this.scene.game.audioConfig.mute ? 'mute_on' : 'mute_off');
+    });
+
+    // Botón volver a SelectScreen
+    this.backButton = this.addInterfaceButton(width * 0.05, height * 0.08, 'exit_icon', 50, function () {
+      this.scene.music.stop();
+      this.scene.scene.start('select');
+    });
+
+    // Texto del nombre de la escena: "Torre i"
+    let rigthMargin = width - width * 0.05;
+    this.addInterfaceText(rigthMargin, height * 0.05, this.key, 50, '#000000');
+
+    // Cronómetro
+    this.timerText = this.addInterfaceText(rigthMargin, height * 0.12, this.timer.toString() + " ", 50, '#000000');
+
+    // Límite de tiempo con dos decimales
+    this.defeatTimeString = this.defeatTime.toFixed(2);
+    this.defeatTimeText = this.addInterfaceText(rigthMargin, height * 0.17, this.defeatTimeString + " ", 30, '#ff0000');
+  }
+
   update(t, dt) {
     super.update(t, dt);
     this.frameTime += dt;
-    //console.log("Altura del jugador: " + this.player.y);
 
     //Cronómetro
     if (!this._reachedTop && !this.shadowReachedTop && this.hasTimerStarted)
@@ -308,7 +308,7 @@ export default class Tower extends Phaser.Scene {
 
   destroyUI() {
     this.backButton.destroy(true);
-    this.timerText.setColor("#D6D45A");
+    this.timerText.setColor(this.shadowReachedTop ? '#ff0000' : "#D6D45A");
     this.defeatTimeText.destroy(true);
   }
 
@@ -334,8 +334,8 @@ export default class Tower extends Phaser.Scene {
    * Se ejecuta al acabarse el tiempo.
    */
   lose() {
-    this.destroyUI();
     this.shadowReachedTop = true;
+    this.destroyUI();
     this.music.stop();
     //Animacion de perder
     this.player.stop();
@@ -346,6 +346,7 @@ export default class Tower extends Phaser.Scene {
   }
 
   repeat() {
+    this.shadowReachedTop = false;
     this.scene.start(this.key);
   }
 
@@ -383,8 +384,11 @@ export default class Tower extends Phaser.Scene {
    * Comienza la cuenta atrás (3, 2, 1, GO!) y tras ello comienza el timer, la sombra y da control al jugador.
    */
   countdown() {
+    this.createUI(this.cameras.main.width, this.cameras.main.height);
+    
     let number = 3;
-    let count = this.addInterfaceText(this.cameras.main.width / 2, this.cameras.main.height / 2, ` ${number} `, 120, "#ffffff").setOrigin(.5);
+    let count = this.addInterfaceText(this.cameras.main.width / 2, this.cameras.main.height / 2,
+      ` ${number} `, 120, '#d00000').setOrigin(.5);
     count.setScale(0.7);
 
     //La cuenta atrás es un timeline que contiene tweens para cada número
@@ -496,6 +500,7 @@ export default class Tower extends Phaser.Scene {
       .setInteractive(new Phaser.Geom.Rectangle(size / 2, size / 2, size, size), Phaser.Geom.Rectangle.Contains);
     button.setOrigin(0, 0);
     button.setScrollFactor(0);
+    button.setTint("0X000000");
 
     button.on('pointerdown', buttonAction);
 

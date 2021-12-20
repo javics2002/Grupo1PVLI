@@ -10,7 +10,7 @@
         super(scene, 17, 30, 'shadow');
         scene.add.existing(this);
         this.scene = scene;
-        this.setPosition(1060, 572);
+        this.setPosition(1050, 572);
         this.time = 700;
         this.play("judy_idle");
         this.scream = scene.sound.add('scream');
@@ -27,6 +27,7 @@
         this.tween = this.scene.tweens.add({
             targets: [this],
             y: (this.scene.floorHeight * (this.scene.floors + 1)) * this.scene.tileSize,
+            angle: 500 * this.scene.floors,
             duration: this.time * this.scene.floors,
             ease: "Quad.easeIn",
             onComplete: ()=>{
