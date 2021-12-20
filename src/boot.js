@@ -108,6 +108,10 @@ export default class Boot extends Phaser.Scene {
       name: 'judy_win',
       w: 58,
       h: 62
+    }, {
+      name: 'scottie_win',
+      w: 50,
+      h: 62
     }];
     animations.forEach(element => {
       this.load.spritesheet(element.name, `${element.name}.png`, {

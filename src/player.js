@@ -411,4 +411,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   setControllable(controllable) {
     this.canMove = controllable;
   }
+
+  celebrate(){
+    this.play("scottie_win");
+  }
 }
