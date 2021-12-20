@@ -1,3 +1,15 @@
+function enterFullScreen() {
+    var canvas = document.querySelector("canvas");
+     canvas.style.border = "0vh solid #505050";
+     canvas.style.transform = "translateY(0%)";
+}
+function exitFullScreen() {
+    var canvas = document.querySelector("canvas");
+    canvas.style.border ="3vh solid #505050";
+    //canvas.style.transform = "translate(0%,15%)";
+    canvas.style.transform = "translateY(15%)";
+}
+
 export default class Select extends Phaser.Scene {
     /**
      * Constructor de la escena
@@ -42,9 +54,12 @@ export default class Select extends Phaser.Scene {
             if (this.scene.scale.isFullscreen) {
                 this.setTexture('enter_fullscreen');
                 this.scene.scale.stopFullscreen();
+                exitFullScreen();
             } else {
                 this.setTexture('exit_fullscreen');
                 this.scene.scale.startFullscreen();
+                enterFullScreen();
+              
             }
         });
 

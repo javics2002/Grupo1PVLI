@@ -139,7 +139,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
             //this.coyoteCounter = this.coyoteTime;
             //si no esta reparada y he recogido un fragmento antes cambio el sprite de los 
             //tiles en una zona de rotos a reparados
-          } else if (this.hasStairs) {
+          } else if (this.puedeReparar) {
+            this.fix_stairs.play();
             scene.mapA.replaceByIndex(3, 7, tile.pX, tile.pY, 2, 6, scene.stairs);
             scene.mapA.replaceByIndex(4, 8, tile.pX, tile.pY, 2, 6, scene.stairs);
             scene.mapA.replaceByIndex(5, 7, tile.pX, tile.pY, 2, 6, scene.stairs);
@@ -158,8 +159,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
             bodyB === this.rightSensor && gameObject.label === 'fragmento')
         ) {
           //lo recojo y destruyo el objeto
-          this.fragment.visible = true;
-          this.hasStairs = true;
+          this.frag.visible = true;
+          this.puedeReparar = true;
+          this.pick_up.play();
+         
           gameObject.destroy();
         }
 

@@ -132,7 +132,7 @@ export default class Tower extends Phaser.Scene {
   update(t, dt) {
     super.update(t, dt);
     this.frameTime += dt;
-
+    
     //Cronómetro
     if (!this._reachedTop && !this.shadowReachedTop && this.hasTimerStarted)
       this.updateTimer(dt);
