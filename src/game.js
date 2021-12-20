@@ -7,6 +7,23 @@ import Tower3 from './tower3.js';
 import Tower4 from './tower4.js';
 import Tower5 from './tower5.js';
 
+function resize() {
+    var canvas = document.querySelector("canvas");
+    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight;
+    var windowRatio = windowWidth / windowHeight;
+    var gameRatio = game.config.width / game.config.height;
+
+    if(windowRatio < gameRatio){
+        canvas.style.width = windowWidth + "px";
+        canvas.style.height = (windowWidth / gameRatio) + "px";
+    }
+    else {
+        canvas.style.width = (windowHeight * gameRatio) + "px";
+        canvas.style.height = windowHeight + "px";
+    }
+}
+
 const initGame = () => {
     /**
      * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
@@ -20,11 +37,7 @@ const initGame = () => {
         scale: {
             mode: Phaser.Scale.FIT,
             autoCenter: Phaser.Scale.CENTER_BOTH,
-            parent: 'GameContainer',
-            max: {
-                width: 1400,
-                height: 800,
-            }
+            
         },
         pixelArt: true,
         scene: [Boot, Title, Select, Tower1, Tower2, Tower3, Tower4, Tower5],
@@ -44,7 +57,7 @@ const initGame = () => {
     };
 
     let game = new Phaser.Game(config);
-
+   
     game.levelsInfo = [];
 
     // Número de nivel actual. 0 es uno de los menús
