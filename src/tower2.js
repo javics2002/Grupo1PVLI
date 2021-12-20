@@ -6,6 +6,7 @@ export default class Tower2 extends Tower {
     {"max": 2299, "min": 1720},
     {"max": 1719, "min":1150},
     {"max": 1149, "min":639},
-    {"max": 630, "min":0}], 2568);
+    {"max": 630, "min":0}],
+     2568);
   }
 }

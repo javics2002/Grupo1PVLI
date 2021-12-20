@@ -159,7 +159,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
             bodyB === this.rightSensor && gameObject.label === 'fragmento')
         ) {
           //lo recojo y destruyo el objeto
-          this.frag.visible = true;
+          this.fragment.visible = true;
           this.puedeReparar = true;
           this.pick_up.play();
          

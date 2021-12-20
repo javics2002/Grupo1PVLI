@@ -7,7 +7,8 @@ export default class Tower3 extends Tower {
     {"max": 2869, "min": 2295},
     {"max": 2294, "min": 1741},
     {"max": 1740, "min":640},
-    {"max": 639, "min":0}], 3700);
+    {"max": 639, "min":0}],
+     3900);
     this.isCinematicFinished = false;
   }
 }
