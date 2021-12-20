@@ -47,7 +47,7 @@ const initGame = () => {
                 gravity: {
                     y: 2
                 },
-                debug: true,
+                debug: false,
                 runner: {
                     isFixed: true,
                     fps: 60
