@@ -107,87 +107,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       right: false
     };
 
-    this.scene.matter.world.on("collisionactive", (event) => {
-      let pushingBox = false;
-
-      for (let i = 0; i < event.pairs.length; i++) {
-
-        let bodyA = event.pairs[i].bodyA;
-        let bodyB = event.pairs[i].bodyB;
-
-        const player = bodyA.label === 'player' ? bodyA : bodyB;
-        const tile = bodyA.label === 'player' ? bodyB : bodyA;
-        const mainBody = getRootBody(tile);
-        const {
-          gameObject
-        } = mainBody;
-
-        // Punto de interrupción: Comprobar bodyAs y bodyBs, ¿Se registran?
-        if (bodyA === this.bottomSensor || bodyB === this.bottomSensor && tile.label !== 'escalera' && !this.canClimb) {
-          this.isJumping = false;
-          this.coyoteCounter = this.coyoteTime;
-        }
-        //en caso de colision con una escalera
-        if ((bodyA === this.bottomSensor && bodyB.label === 'escalera' || bodyB === this.bottomSensor && bodyA.label === 'escalera' ||
-            bodyA === this.leftSensor && bodyB.label === 'escalera' || bodyB === this.leftSensor && bodyA.label === 'escalera' ||
-            bodyA === this.rightSensor && bodyB.label === 'escalera' || bodyB === this.rightSensor && bodyA.label === 'escalera' ||
-            bodyA === this.stair && bodyB.label === 'escalera' || bodyB === this.stair && bodyA.label === 'escalera')) {
-          // si la escalera esta reparada la escalo
-          if (tile.reparada) {
-            this.canClimb = true;
-            this.isJumping = true;
-            //this.coyoteCounter = this.coyoteTime;
-            //si no esta reparada y he recogido un fragmento antes cambio el sprite de los 
-            //tiles en una zona de rotos a reparados
-          } else if (this.puedeReparar) {
-            this.fix_stairs.play();
-            scene.mapA.replaceByIndex(3, 7, tile.pX, tile.pY, 2, 6, scene.stairs);
-            scene.mapA.replaceByIndex(4, 8, tile.pX, tile.pY, 2, 6, scene.stairs);
-            scene.mapA.replaceByIndex(5, 7, tile.pX, tile.pY, 2, 6, scene.stairs);
-            scene.mapA.replaceByIndex(6, 8, tile.pX, tile.pY, 2, 6, scene.stairs);
-            //reestablezco las variables de usar escaleras
-            this.fragment.visible = false;
-            tile.reparada = true;
-            this.hasStairs = false;
-            this.puedeReparar = false;
-            this.fragment.x = 0;
-            this.fragment.y = 0;
-          }
-        }
-        //en caso de colisionar con un fragmento de escalera
-        if (gameObject != null && gameObject.type === 'Image' &&
-          (bodyA === this.leftSensor && gameObject.label === 'fragmento' ||
-            bodyB === this.rightSensor && gameObject.label === 'fragmento')
-        ) {
-          //lo recojo y destruyo el objeto
-          this.fragment.visible = true;
-          this.puedeReparar = true;
-          this.hasStairs = true;
-          this.pick_up.play();
-         
-          gameObject.destroy();
-        }
-
-        //en caso de colisionar con una pared , pongo isTouching a true para que deje de aplicar fuerzas en X
-        if (gameObject != null && gameObject.tile != null) {
-          if (bodyA === this.leftSensor || bodyB === this.leftSensor) {
-            this.isTouching.left = true;
-          } else if (bodyA === this.rightSensor || bodyB === this.rightSensor) {
-            this.isTouching.right = true;
-          }
-        }
-
-        //Colisión con cajas
-        const sideSensor = bodyA === this.leftSensor || bodyA === this.rightSensor ||
-          bodyB === this.leftSensor || bodyB === this.rightSensor;
-        const box = bodyA.gameObject instanceof Box || bodyB.gameObject instanceof Box;
-
-        if (!pushingBox)
-          pushingBox = sideSensor && box;
-      }
-
-      this.isPushing = pushingBox;
-    });
+    this.setCollissions(getRootBody, scene);
 
     //en caso de ser un objeto compuesto por mas recojo el principal(preventivo)
     function getRootBody(body) {
@@ -241,26 +161,20 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   preUpdate(t, dt) {
     super.preUpdate(t, dt);
 
-    //actualizo la posicion del fragmento encima de scottie en caso de haber recogido uno
-    if (this.hasStairs) {
-      this.fragment.x = this.x;
-      this.fragment.y = this.y - this.height;
-    }
+    this.updateFragment();
 
     //Controles
     if (this.canMove) {
       if (!this.hanged) {
         this.horizontalMovement();
 
-        if (!this.canClimb)
-        {
+        if (!this.canClimb) {
           //Control estándar
           this.jumpPerformance(dt);
 
-          if(this.isJumping && (this.isTouching.left || this.isTouching.right))
+          if (this.isJumping && (this.isTouching.left || this.isTouching.right))
             this.play("scottie_wall_slide", true);
-        }
-        else
+        } else
           //Control escalando
           this.climbStairs();
       } else
@@ -274,13 +188,149 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       }
     } else
       this.setVelocityX(0);
-    /*
-        if (this.brokenStair)
-          this.propE.visible = true;
-        else this.propE.visible = false;*/
   }
 
-  //reseteo la deteccion de colisiones cada frame tanto al haber tocado paredes como suelo
+  /**
+   * Nos suscribimos a los eventos que gestionan las colisiones con el resto de objetos
+   * @param {function} getRootBody Devuelve el body del padre
+   * @param {Phaser.Scene} scene Referencia a la escena
+   */
+  setCollissions(getRootBody, scene) {
+    this.scene.matter.world.on("collisionactive", (event) => {
+      let pushingBox = false;
+
+      for (let i = 0; i < event.pairs.length; i++) {
+
+        let bodyA = event.pairs[i].bodyA;
+        let bodyB = event.pairs[i].bodyB;
+
+        const player = bodyA.label === 'player' ? bodyA : bodyB;
+        const tile = bodyA.label === 'player' ? bodyB : bodyA;
+        const mainBody = getRootBody(tile);
+        const {
+          gameObject
+        } = mainBody;
+
+        // Punto de interrupción: Comprobar bodyAs y bodyBs, ¿Se registran?
+        if (bodyA === this.bottomSensor || bodyB === this.bottomSensor && tile.label !== 'escalera' && !this.canClimb) {
+          this.isJumping = false;
+          this.coyoteCounter = this.coyoteTime;
+        }
+        //en caso de colision con una escalera
+        this.collissionStairs(bodyA, bodyB, tile, scene);
+
+        //en caso de colisionar con un fragmento de escalera
+        this.collissionFragment(gameObject, bodyA, bodyB);
+
+        //en caso de colisionar con una pared , pongo isTouching a true para que deje de aplicar fuerzas en X
+        this.collissionWall(gameObject, bodyA, bodyB);
+
+        if (!pushingBox)
+          pushingBox = this.collissionBox(bodyA, bodyB);
+      }
+
+      this.isPushing = pushingBox;
+    });
+  }
+
+  /**
+   * Comprueba si estamos empujando una caja o no
+   * @param {Matter.body} bodyA 
+   * @param {Matter.body} bodyB 
+   * @returns Devuelve si estamos empujando una caja o no
+   */
+  collissionBox(bodyA, bodyB) {
+    //Colisión con cajas
+    const sideSensor = bodyA === this.leftSensor || bodyA === this.rightSensor ||
+      bodyB === this.leftSensor || bodyB === this.rightSensor;
+    const box = bodyA.gameObject instanceof Box || bodyB.gameObject instanceof Box;
+    return sideSensor && box;
+  }
+
+  /**
+   * Comprueba si estamos tocando una pared y actualiza los marcadores isTouching
+   * @param {gameObject} gameObject Objeto con el que colisiona el jugador
+   * @param {Matter.body} bodyA 
+   * @param {Matter.body} bodyB 
+   */
+  collissionWall(gameObject, bodyA, bodyB) {
+    if (gameObject != null && gameObject.tile != null) {
+      if (bodyA === this.leftSensor || bodyB === this.leftSensor) {
+        this.isTouching.left = true;
+      } else if (bodyA === this.rightSensor || bodyB === this.rightSensor) {
+        this.isTouching.right = true;
+      }
+    }
+  }
+
+  /**
+   * Comprueba si chocamos con un fragmento de escalera para recogerlo
+   * @param {gameObject} gameObject Objeto con el que colisiona el jugador
+   * @param {Matter.body} bodyA 
+   * @param {Matter.body} bodyB 
+   */
+  collissionFragment(gameObject, bodyA, bodyB) {
+    if (gameObject != null && gameObject.type === 'Image' &&
+      (bodyA === this.leftSensor && gameObject.label === 'fragmento' ||
+        bodyB === this.rightSensor && gameObject.label === 'fragmento')) {
+      //lo recojo y destruyo el objeto
+      this.fragment.visible = true;
+      this.puedeReparar = true;
+      this.hasStairs = true;
+      this.pick_up.play();
+
+      gameObject.destroy();
+    }
+  }
+
+  /**
+   * Detecta colisiones con las escaleras. Si puedo repararla, la reparo.
+   * @param {Matter.body} bodyA 
+   * @param {Matter.body} bodyB 
+   * @param {Matter.body} tile Tile con el que colisiono
+   * @param {Phaser.Scene} scene Referencia a la escena
+   */
+  collissionStairs(bodyA, bodyB, tile, scene) {
+    if ((bodyA === this.bottomSensor && bodyB.label === 'escalera' || bodyB === this.bottomSensor && bodyA.label === 'escalera' ||
+        bodyA === this.leftSensor && bodyB.label === 'escalera' || bodyB === this.leftSensor && bodyA.label === 'escalera' ||
+        bodyA === this.rightSensor && bodyB.label === 'escalera' || bodyB === this.rightSensor && bodyA.label === 'escalera' ||
+        bodyA === this.stair && bodyB.label === 'escalera' || bodyB === this.stair && bodyA.label === 'escalera')) {
+      // si la escalera esta reparada la escalo
+      if (tile.reparada) {
+        this.canClimb = true;
+        this.isJumping = true;
+        //si no esta reparada y he recogido un fragmento antes cambio el sprite de los 
+        //tiles en una zona de rotos a reparados
+      } else if (this.puedeReparar) {
+        this.fix_stairs.play();
+        scene.mapA.replaceByIndex(3, 7, tile.pX, tile.pY, 2, 6, scene.stairs);
+        scene.mapA.replaceByIndex(4, 8, tile.pX, tile.pY, 2, 6, scene.stairs);
+        scene.mapA.replaceByIndex(5, 7, tile.pX, tile.pY, 2, 6, scene.stairs);
+        scene.mapA.replaceByIndex(6, 8, tile.pX, tile.pY, 2, 6, scene.stairs);
+        //reestablezco las variables de usar escaleras
+        this.fragment.visible = false;
+        tile.reparada = true;
+        this.hasStairs = false;
+        this.puedeReparar = false;
+        this.fragment.x = 0;
+        this.fragment.y = 0;
+      }
+    }
+  }
+
+  /**
+   * actualizo la posicion del fragmento encima de scottie en caso de haber recogido uno
+   */
+  updateFragment() {
+    if (this.hasStairs) {
+      this.fragment.x = this.x;
+      this.fragment.y = this.y - this.height;
+    }
+  }
+
+  /**
+   * reseteo la deteccion de colisiones cada frame tanto al haber tocado paredes como suelo
+   */
   resetTouching() {
     this.isTouching.left = false;
     this.isTouching.right = false;
@@ -324,6 +374,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     }
   }
 
+  /**
+   * Se encarga del movimiento vertical del jugador estandar, es decir, de cuando saltamos.
+   * @param {number} dt deltatime
+   */
   jumpPerformance(dt) {
     this.setIgnoreGravity(false);
 
@@ -352,14 +406,17 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       });
 
     //Animación
-    if(this.isJumping && !this.isTouching.left && !this.isTouching.right)
-    this.play("scottie_jump", true);
+    if (this.isJumping && !this.isTouching.left && !this.isTouching.right)
+      this.play("scottie_jump", true);
 
     //Timers
     this.coyoteCounter -= dt;
     this.jumpBufferCounter -= dt;
   }
-  //escalado de escaleras 
+
+  /**
+   * Se encarga del control en el escalado de escaleras
+   */
   climbStairs() {
     this.setIgnoreGravity(true);
 
@@ -422,11 +479,18 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.hanged = hanged;
   }
 
+  /**
+   * Cambia si podemos controlar al jugador o no, para separar las cinemáticas iniciales y finales del juego.
+   * @param {boolean} controllable true para controlar al jugador, false para perder el control y que se quede quieto
+   */
   setControllable(controllable) {
     this.canMove = controllable;
   }
 
-  celebrate(){
+  /**
+   * Reproduce la animación de ganar
+   */
+  celebrate() {
     this.play("scottie_win");
   }
 }

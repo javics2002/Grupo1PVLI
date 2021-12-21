@@ -7,6 +7,5 @@ export default class Tower5 extends Tower {
     {"max": 1739, "min":651},
     {"max": 650, "min":200}],
     6240);
-    this.isCinematicFinished = false;
   }
 }

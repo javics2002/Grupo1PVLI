@@ -20,6 +20,9 @@ export default class Shadow extends Phaser.GameObjects.Sprite {
         this.play("shadow_rise");
     }
 
+    /**
+     * Comienza el ascenso
+     */
     start() {
         this.tween = this.scene.tweens.add({
             targets: [this],
@@ -28,6 +31,9 @@ export default class Shadow extends Phaser.GameObjects.Sprite {
         });
     }
 
+    /**
+     * Detiene el ascenso, por si ganamos o volvemos al menú
+     */
     stop() {
         this.tween.pause();
     }

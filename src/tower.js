@@ -4,6 +4,9 @@ import Box from './box.js'
 import Rope from './rope.js';
 import Judy from './judy.js';
 
+/**
+ * Escena genérica de una torre. Incluye todo lo común.
+ */
 export default class Tower extends Phaser.Scene {
   /**
    * Constructor de la escena
@@ -55,7 +58,7 @@ export default class Tower extends Phaser.Scene {
 
     //Animaciones
     this.createAnimations();
-    
+
     //Personajes
     this.player = new Player(this, 400, (this.floors + 1) * this.floorHeight * this.tileSize);
     this.judy = new Judy(this);
@@ -80,7 +83,7 @@ export default class Tower extends Phaser.Scene {
     this.downArrow = this.addInterfaceImage(this.shadow.x, height - 32, "down_arrow", {
       x: 0.5,
       y: 1
-    }, 0Xffffff)
+    }, 0Xffffff);
 
     //Música
     this.music.play(this.key);
@@ -90,60 +93,13 @@ export default class Tower extends Phaser.Scene {
     //Reseteamos el haber llegado a la cima
     this._reachedTop = false;
 
-    //Cinemática inicial
-    this.hasTimerStarted = false;
-    this.isCinematicFinished = !this.isThisFirstTime;
-    if (this.isThisFirstTime) {
-      // Ocurre animación. Llama a judyAnimationEndCallback
-      this.help_me.scene = this
-      this.help_me.play();
-      this.help_me.once("complete", this.judyAnimationEndCallback);
-    } else {
-      this.countdown();
-    }
-  }
-
-  createUI(width, height) {
-    // Botón de mute
-    let mute = this.game.audioConfig.mute ? 'mute_on' : 'mute_off';
-    this.addInterfaceButton(width * 0.05, height * 0.2, mute, 32, function () {
-      this.scene.game.audioConfig.mute = !this.scene.game.audioConfig.mute;
-      this.scene.music.setMute(!this.scene.music.mute);
-      this.scene.winMusic.setMute(!this.scene.winMusic.mute);
-      this.scene.sounds.forEach(element => {
-        element.setMute(!element.mute);
-      })
-      this.scene.player.sounds.forEach(element => {
-        element.setMute(!element.mute);
-      });
-      this.scene.judy.sounds.forEach(element => {
-        element.setMute(!element.mute);
-      })
-      this.setTexture(this.scene.game.audioConfig.mute ? 'mute_on' : 'mute_off');
-    });
-
-    // Botón volver a SelectScreen
-    this.backButton = this.addInterfaceButton(width * 0.05, height * 0.08, 'exit_icon', 50, function () {
-      this.scene.music.stop();
-      this.scene.scene.start('select');
-    });
-
-    // Texto del nombre de la escena: "Torre i"
-    let rigthMargin = width - width * 0.05;
-    this.addInterfaceText(rigthMargin, height * 0.05, this.key, 50, '#000000');
-
-    // Cronómetro
-    this.timerText = this.addInterfaceText(rigthMargin, height * 0.12, this.timer.toString() + " ", 50, '#000000');
-
-    // Límite de tiempo con dos decimales
-    this.defeatTimeString = this.defeatTime.toFixed(2);
-    this.defeatTimeText = this.addInterfaceText(rigthMargin, height * 0.17, this.defeatTimeString + " ", 30, '#ff0000');
+    this.startCinematic();
   }
 
   update(t, dt) {
     super.update(t, dt);
     this.frameTime += dt;
-    
+
     //Cronómetro
     if (!this._reachedTop && !this.shadowReachedTop && this.hasTimerStarted)
       this.updateTimer(dt);
@@ -169,7 +125,7 @@ export default class Tower extends Phaser.Scene {
           this.cameras.main.startFollow(this.player, false, 0.3, 0.3);
         }
       });
-    }else{
+    } else {
       this.cameras.main.setBounds(0, 0, 1280, (this.floors + 1) * this.floorHeight * this.tileSize + 2 * this.margin * this.tileSize);
     }
   }
@@ -185,6 +141,9 @@ export default class Tower extends Phaser.Scene {
       this.lose();
   }
 
+  /**
+   * Carga la música que se usa en las torres.
+   */
   loadMusic() {
     //La sombrá llegará a Judy cuando la música "tower" llegue a estos segundos
     this._loseMusicTime = 320;
@@ -218,6 +177,63 @@ export default class Tower extends Phaser.Scene {
     });
   }
 
+  /**
+   * Da comienzo al nivel. 
+   * Decide si se reproduce la cinemática, o da comienzo a la cuenta atrás directamente.
+   */
+  startCinematic() {
+    this.hasTimerStarted = false;
+    this.isCinematicFinished = !this.isThisFirstTime;
+    if (this.isThisFirstTime) {
+      // Ocurre animación. Llama a judyAnimationEndCallback
+      this.help_me.scene = this;
+      this.help_me.play();
+      this.help_me.once("complete", this.judyAnimationEndCallback);
+    } else {
+      this.countdown();
+    }
+  }
+
+  createUI(width, height) {
+    // Botón de mute
+    let mute = this.game.audioConfig.mute ? 'mute_on' : 'mute_off';
+    this.addInterfaceButton(width * 0.05, height * 0.2, mute, 32, function () {
+      this.scene.game.audioConfig.mute = !this.scene.game.audioConfig.mute;
+      this.scene.music.setMute(!this.scene.music.mute);
+      this.scene.winMusic.setMute(!this.scene.winMusic.mute);
+      this.scene.sounds.forEach(element => {
+        element.setMute(!element.mute);
+      });
+      this.scene.player.sounds.forEach(element => {
+        element.setMute(!element.mute);
+      });
+      this.scene.judy.sounds.forEach(element => {
+        element.setMute(!element.mute);
+      });
+      this.setTexture(this.scene.game.audioConfig.mute ? 'mute_on' : 'mute_off');
+    });
+
+    // Botón volver a SelectScreen
+    this.backButton = this.addInterfaceButton(width * 0.05, height * 0.08, 'exit_icon', 50, function () {
+      this.scene.music.stop();
+      this.scene.scene.start('select');
+    });
+
+    // Texto del nombre de la escena: "Torre i"
+    let rigthMargin = width - width * 0.05;
+    this.addInterfaceText(rigthMargin, height * 0.05, this.key, 50, '#000000');
+
+    // Cronómetro
+    this.timerText = this.addInterfaceText(rigthMargin, height * 0.12, this.timer.toString() + " ", 50, '#000000');
+
+    // Límite de tiempo con dos decimales
+    this.defeatTimeString = this.defeatTime.toFixed(2);
+    this.defeatTimeText = this.addInterfaceText(rigthMargin, height * 0.17, this.defeatTimeString + " ", 30, '#ff0000');
+  }
+
+  /**
+   * Construye la torre a partir del tilemap cargado
+   */
   buildTower() {
     //Tiles
     const map = this.make.tilemap({
@@ -229,53 +245,64 @@ export default class Tower extends Phaser.Scene {
     this.coll = map.createLayer('Tower', tileset);
     const stairs = map.createLayer('Interactuable', tileset);
     const atravesable = map.createLayer('atravesable', tileset);
-    
+
     this.stairLayer = stairs;
     this.mapA = map;
     this.stairs = stairs;
 
-    // Creacion cajas desde el JSON
-    if (map.getObjectLayer('cajas') != null) {
-      for (const objeto of map.getObjectLayer('cajas').objects) {
-        new Box(this, objeto.x, objeto.y)
-      }
-    }
-    //creo los fragmentos de escalera desde su capa
-    if (map.getObjectLayer('fragmentos') != null) {
-      for (const objeto of map.getObjectLayer('fragmentos').objects) {
-        let rec = this.matter.add.image(objeto.x + objeto.width / 2, objeto.y + objeto.height / 2, "fragment");
-        rec.label = 'fragmento';
-        rec.setSensor(true);
-        rec.setStatic(true);
-      }
-    }
-    //creo la capa fisica de las escaleras
-    if (map.getObjectLayer('escaleras') != null) {
-      for (const objeto of map.getObjectLayer('escaleras').objects) {
-        let rec = this.matter.add.rectangle(objeto.x + objeto.width / 2, objeto.y + objeto.height / 2, objeto.width, objeto.height, {
-          label: 'escalera',
-          reparada: objeto.properties[2].value,
-          pX: objeto.properties[0].value,
-          pY: objeto.properties[1].value
-        });
-        rec.isStatic = true;
-        rec.isSensor = true;
-        
-      }
+    this.createObjects(map);
 
-    }
-    //Creacion cuerdas desde el JSON
-    if (map.getObjectLayer('cuerdas') != null) {
-      for (const objeto of map.getObjectLayer('cuerdas').objects) {
-        new Rope(this, objeto.x, objeto.y, objeto.properties[1].value, objeto.properties[0].value)
-      }
-    }
     this.coll.setCollisionByProperty({
       collides: true
     })
 
-
     this.matter.world.convertTilemapLayer(this.coll);
+  }
+
+  /**
+   * Crea todos los objetos de una torre
+   * @param {tilemap} map Tilemap de la torre
+   */
+  createObjects(map) {
+    this.createObject(map, 'cajas', (objeto) => {
+      new Box(this, objeto.x, objeto.y);
+    });
+
+    this.createObject(map, 'fragmentos', (objeto) => {
+      let rec = this.matter.add.image(objeto.x + objeto.width / 2, objeto.y + objeto.height / 2, "fragment");
+      rec.label = 'fragmento';
+      rec.setSensor(true);
+      rec.setStatic(true);
+    });
+
+    this.createObject(map, 'escaleras', (objeto) => {
+      let rec = this.matter.add.rectangle(objeto.x + objeto.width / 2, objeto.y + objeto.height / 2, objeto.width, objeto.height, {
+        label: 'escalera',
+        reparada: objeto.properties[2].value,
+        pX: objeto.properties[0].value,
+        pY: objeto.properties[1].value
+      });
+      rec.isStatic = true;
+      rec.isSensor = true;
+    });
+
+    this.createObject(map, 'cuerdas', (objeto) => {
+      new Rope(this, objeto.x, objeto.y, objeto.properties[1].value, objeto.properties[0].value);
+    });
+  }
+
+  /**
+   * Creacion objetos desde el JSON
+   * @param {tilemap} map Tilemap de la torre
+   * @param {string} layerName Nombre de la capa del objeto
+   * @param {function} addObject Función que crea y añade el objeto al mundo
+   */
+  createObject(map, layerName, addObject) {
+    if (map.getObjectLayer(layerName) != null) {
+      for (const objeto of map.getObjectLayer(layerName).objects) {
+        addObject(objeto);
+      }
+    }
   }
 
   createAnimations() {
@@ -334,6 +361,10 @@ export default class Tower extends Phaser.Scene {
     this.defeatTimeText.destroy(true);
   }
 
+  /**
+   * Carga la siguiente escena. Puede ser la proxima torre o la pantalla de selección de niveles, si no quedan más.
+   * También actualiza el record en la torre actual.
+   */
   nextTower() {
     let towerNumber = parseInt(this.scene.key[6]);
 
@@ -367,6 +398,9 @@ export default class Tower extends Phaser.Scene {
     this.cameras.main.startFollow(this.judy);
   }
 
+  /**
+   * Recarga la torre para empezar de nuevo.
+   */
   repeat() {
     this.shadowReachedTop = false;
     this.scene.start(this.key);
@@ -389,14 +423,24 @@ export default class Tower extends Phaser.Scene {
     self._canGrabLastRope = true;
   }
 
+  /**
+   * Se ejecuta cuando Judy termina de pedir ayuda. 
+   * Comienza el scroll vertical de la cámara para ver la torre hasta llegar a Scottie.
+   */
   judyAnimationEndCallback() {
     this.scene.cameras.main.setScroll(0, 0);
     this.scene.cameras.main.pan(0, this.scene.panEnd, this.scene.panSpeed * this.scene.floors, "Cubic.easeInOut", true, this.scene.panEndCallback);
   }
 
+  /**
+   * Se ejecuta cuando la cámara llega a Scottie, tras el scroll vertical.
+   * Comienza la cuenta atrás
+   * @param {camera} camera La cámara principal de la escena
+   * @param {number} progress Índice de progreso del scroll
+   */
   panEndCallback(camera = null, progress = 0) {
     if (progress === 1) {
-      
+
       this.isThisFirstTime = false;
       this.countdown();
     }
@@ -409,7 +453,7 @@ export default class Tower extends Phaser.Scene {
     this.isCinematicFinished = true;
     this.cameras.main.startFollow(this.player);
     this.createUI(this.cameras.main.width, this.cameras.main.height);
-    
+
     let number = 3;
     let count = this.addInterfaceText(this.cameras.main.width / 2, this.cameras.main.height / 2,
       ` ${number} `, 120, '#d00000').setOrigin(.5);
@@ -444,6 +488,9 @@ export default class Tower extends Phaser.Scene {
     }
   }
 
+  /**
+   * Activa el control del jugador, la sombra y el timer para que el juego comience
+   */
   start() {
     this.scene.hasTimerStarted = true;
     this.scene.player.setControllable(true);

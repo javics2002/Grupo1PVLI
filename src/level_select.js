@@ -6,7 +6,6 @@ function enterFullScreen() {
 function exitFullScreen() {
     var canvas = document.querySelector("canvas");
     canvas.style.border ="3vh solid #505050";
-    //canvas.style.transform = "translate(0%,15%)";
     canvas.style.transform = "translateY(15%)";
 }
 

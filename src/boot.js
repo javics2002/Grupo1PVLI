@@ -143,7 +143,7 @@ export default class Boot extends Phaser.Scene {
       this.load.audio(element, `${element}.mp3`);
     });
   }
-  
+
   /**
    * Creación de la escena. En este caso, solo cambiamos a la escena que representa la pantalla de título
    */
@@ -170,7 +170,7 @@ export default class Boot extends Phaser.Scene {
     let percentText = this.addInterfaceText(width / 2, height / 2 + 25, '0%', 18, '#ffffff');
 
     //Información sobre el asset cargado
-    let assetText = this.addInterfaceText(width / 2,height / 2 + 80,'',18,'#ffffff');
+    let assetText = this.addInterfaceText(width / 2, height / 2 + 80, '', 18, '#ffffff');
 
     //Nos suscribimos a eventos sobre la carga de archivos
     this.load.on('progress', function (value) {
@@ -202,7 +202,7 @@ export default class Boot extends Phaser.Scene {
    * @param {string} color Color del texto. Se trata de un string con el código RGB del mismo ('#XXXXXX')
    * @returns 
    */
-   addInterfaceText(x, y, s, size, color) {
+  addInterfaceText(x, y, s, size, color) {
     let text = this.add.text(x, y, s, {
       fontFamily: 'Caveat',
       fontSize: size,

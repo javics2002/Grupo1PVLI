@@ -1,5 +1,5 @@
 /**
- * Jusdy
+ * Judy. Está en la cima de la torre a punto de caerse. Si no llegamos a ella a tiempo, se caerá.
  */
 export default class Judy extends Phaser.GameObjects.Sprite {
     /**
@@ -22,6 +22,10 @@ export default class Judy extends Phaser.GameObjects.Sprite {
         });
     }
 
+    /**
+     * Tira a Judy de la torre y se estampa en el suelo dejando un agujero.
+     * Recarga el nivel tras esto.
+     */
     fall() {
         this.setPosition(1150, 572)
         this.scream.play();
@@ -45,6 +49,9 @@ export default class Judy extends Phaser.GameObjects.Sprite {
         });
     }
 
+    /**
+     * Reproduce la animación de ganar de Judy
+     */
     celebrate() {
         this.play("judy_win");
     }

@@ -1,6 +1,5 @@
 export default class Box extends Phaser.Physics.Matter.Sprite {
-    /**
-     * 
+    /** 
      * @param {Phaser.Scene} scene Escena en la que aparece la caja
      * @param {Number} x Coordenada X
      * @param {Number} y Coordenada Y

@@ -11,8 +11,6 @@ export default class Tower1 extends Tower {
     }, {
       "max": 635,
       "min": 100
-    }],1400);
-    this.isCinematicFinished = false;
-    this.isThisFirstTime = true;
+    }], 1400);
   }
 }
