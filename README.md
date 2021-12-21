@@ -17,15 +17,15 @@ Grupo 1
 
 
 
-**ASPECTOS GENERALES**
+# **ASPECTOS GENERALES**
 
 
-**Resumen en una frase**
+## **Resumen en una frase**
 
 Subir pisos de la torre para alcanzar a Judy antes de que caiga en un simple juego en red de plataformas 2D contrarreloj inspirado en la película Vertigo de 1958.
 
 
-**Fases de una Partida Típica**
+## **Fases de una Partida Típica**
 
 Empezamos en el menú principal, con una imagen de fondo y con un único botón de *Play*.
 
@@ -36,7 +36,7 @@ Durante la partida, vemos en la zona izquierda de pantalla a la sombra, ascendie
 El objetivo general de la partida es llegar a Judy antes de que llegue la sombra, en cuyo caso superaremos el nivel, accediendo directamente al siguiente (si lo hay), repitiendo la secuencia ya explicada; y en caso contrario el jugador perderá, pudiendo ver como Judy cae desde lo alto del último piso. Tras esto se reinicia automáticamente el nivel, empezando directamente desde abajo (sin la cinemática que muestra a Judy y la torre).
 
 
-**Experiencia Deseada**
+## **Experiencia Deseada**
 
 Se busca un desafío de plataformas ligero, al que se añade un factor de resolución de problemas, basados en la interacción con el entorno, ya sea moviendo cajas o arreglando escaleras, para así poder continuar.
 
@@ -46,9 +46,9 @@ Se buscan sesiones de juego cortas. El atractivo no es solo completar todos los 
 Arquitectura del Juego
 
 
-**JUGABILIDAD**
+# **JUGABILIDAD**
 
-**Mecánicas del Personaje Jugable**
+## **Mecánicas del Personaje Jugable**
 
 Movimiento horizontal del jugador a velocidad constante (valor relativo 1) pulsando las teclas A y D para moverse a izquierda y derecha respectivamente. Los cambios de velocidad son instantáneos.
 
@@ -87,7 +87,7 @@ El estado del jugador se determina mediante estos parámetros:
 - Puede escalar (Si/No)
 
 
-**Mecánicas del Escenario**
+## **Mecánicas del Escenario**
 
 - **Escaleras:** Alcanzar la escalera en un piso te permite avanzar hasta el principio del piso siguiente . Algunas escaleras están rotas, así que necesitamos un fragmento de Escalera (que está en el mismo piso, pero no junto a la escalera) para avanzar. Alcanzar una escalera rota no hace nada. 
 
@@ -104,14 +104,13 @@ El estado del jugador se determina mediante estos parámetros:
 ![Aspose Words e19c3987-c387-41b0-8837-c9e1790f7a7c 010](https://user-images.githubusercontent.com/61164466/146970016-89a5799b-fbd7-49cb-ab09-a202c94cacec.png)
 
 
-**Tiempo Récord**
+## **Tiempo Récord**
 
 `	`Si terminamos una torre por primera vez, o más rápido que nunca, se actualizará nuestro tiempo récord de ese nivel, y se quedará reflejado en el menú de selección de niveles. Estos tiempos se guardan en nuestro navegador, por lo que podremos conservarlos entre sesiones.
 
 
-**Enemigos![Aspose Words e19c3987-c387-41b0-8837-c9e1790f7a7c 011](https://user-images.githubusercontent.com/61164466/146970044-438c6156-6c1d-4f47-b9eb-8383c476e036.png)
-**
-
+## **Enemigos**
+![Aspose Words e19c3987-c387-41b0-8837-c9e1790f7a7c 011](https://user-images.githubusercontent.com/61164466/146970044-438c6156-6c1d-4f47-b9eb-8383c476e036.png)
 Sombra: Sube por una escalera de caracol a la izquierda de la pantalla. Si llega a la cima antes que el jugador, el jugador pierde. No se interactúa con ella de ninguna otra manera.
 
 Si la sombra se sale de la pantalla (por estar muy arriba o muy abajo), una flecha al borde apunta hacia ella.
@@ -137,7 +136,7 @@ Si la fracción es más grande que el tamaño del canvas, la cámara tendrá lib
 ![Aspose Words e19c3987-c387-41b0-8837-c9e1790f7a7c 013](https://user-images.githubusercontent.com/61164466/146970107-c341d36e-e648-4569-aaca-3bebf5f4e984.png)
 
 
-**Dinámica**
+## **Dinámica**
 
 Debemos subir a la torre para agarrar a Judy antes de que la sombra la asuste. Para subir los pisos, debemos alcanzar escaleras, que a veces están rotas, ayudándonos de cuerdas y cajas para llegar a ellas.
 
@@ -156,9 +155,8 @@ En caso de que no haya niveles restantes, el jugador regresa al menú principal 
 - **Derrota:** La sombra llega antes de nosotros a Judy y la hace caer. La vemos caer y hacer un agujero en el suelo propio de los dibujos animados. El nivel vuelve a comenzar directamente.
 
 ![Aspose Words e19c3987-c387-41b0-8837-c9e1790f7a7c 015](https://user-images.githubusercontent.com/61164466/146970258-1704eb5f-0579-45a6-96a8-52b1b0f5ff91.png)
-**Estética![Aspose Words e19c3987-c387-41b0-8837-c9e1790f7a7c 016](https://user-images.githubusercontent.com/61164466/146970319-dd0840f5-b6f7-42d4-acac-7724499133c3.png)
-**
-
+**Estética**
+![Aspose Words e19c3987-c387-41b0-8837-c9e1790f7a7c 016](https://user-images.githubusercontent.com/61164466/146970319-dd0840f5-b6f7-42d4-acac-7724499133c3.png)
 Tiene un estilo cartoon, inspirado en animaciones de los años 50 y anteriores, ya que Vertigo es del año 1958. Los personajes tienen proporciones Chibi. El juego es a color, pero todos los tonos son poco saturados.
 
 
@@ -190,7 +188,7 @@ Los sonidos incluidos en el juego son:
 
 ![Aspose Words e19c3987-c387-41b0-8837-c9e1790f7a7c 021](https://user-images.githubusercontent.com/61164466/146970405-7fb0783f-2ff1-4759-9ab4-5004cf6519e4.png)
 
-**MENÚS Y MODO DE JUEGO**
+# **MENÚS Y MODO DE JUEGO**
 
 **Selección de Niveles (Torres)**
 
@@ -215,9 +213,9 @@ Durante el juego tenemos acceso a ciertas funciones e información:
 Además, cuando la sombra se encuentre fuera del rango de la cámara, se mostrará una flechita apuntando hacia arriba en caso de que la sombra vaya por delante o hacia abajo en caso de que vayamos por delante nosotros.
 
 
-**CONTENIDO**
+# **CONTENIDO**
 
-**Historia**
+## **Historia**
 
 ![Aspose Words e19c3987-c387-41b0-8837-c9e1790f7a7c 026](https://user-images.githubusercontent.com/61164466/146970513-5b544b22-bf58-441e-9623-43722879e58e.png)
 
@@ -225,7 +223,7 @@ Además, cuando la sombra se encuentre fuera del rango de la cámara, se mostrar
 Judy necesita ayuda para no caerse de la torre, y una sombra maligna quiere asustarla para hacerla caer. Debemos llegar a la cima antes que la sombra para salvarla. 
 
 
-**Niveles**
+## **Niveles**
 
 El juego cuenta con 5 niveles predefinidos . Cada torre es un nivel, que se compone de varios pisos. Cada torre es una escena, así que todos los pisos de una torre son parte de una misma escena.
 
@@ -247,7 +245,7 @@ La torre 5 es la más difícil, y no tiene ninguna escalera arreglada (excepto l
 
 Torres de 1 a 5, de menor a mayor.
 
-**Personajes**
+## **Personajes**
 
 Scottie, el protagonista.
 
@@ -262,7 +260,7 @@ La sombra, que sube la torre para tirar a Judy.
 ![Aspose Words e19c3987-c387-41b0-8837-c9e1790f7a7c 034](https://user-images.githubusercontent.com/61164466/146970651-19548848-f9c5-4de3-938d-3c0789d797c3.png)
 
 
-**Gestión y comunicación**
+## **Gestión y comunicación**
 
 Se ha usado Pivotal Tracker para la gestión del desarrollo y WhatsApp y Discord para la comunicación entre los desarrolladores.
 
@@ -270,11 +268,11 @@ Hemos seguido iteraciones de trabajo semanales, en las que intentábamos quedar 
 
 Para el control de versiones, hemos utilizado GitHub.
 
-**Otra info relevante:** redes sociales.
+## **Otra info relevante:** Redes sociales.
 
 Tenemos una cuenta de Twitter en la que hemos compartido de vez en cuando avances importantes sobre el desarrollo, y algún que otro meme.
 
-**REFERENCIAS**
+# **REFERENCIAS**
 
 Vertigo (Alfred Hitchcock, 1958) - Ambientación
 
