@@ -293,6 +293,7 @@ export default class Tower extends Phaser.Scene {
     this.createAnimation('judy_hole', 1);
     this.createAnimation('judy_win', 11);
     this.createAnimation('scottie_win', 9);
+    this.createAnimation('scottie_wall_slide', 1);
   }
 
   /**

@@ -253,8 +253,13 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         this.horizontalMovement();
 
         if (!this.canClimb)
+        {
           //Control estándar
           this.jumpPerformance(dt);
+
+          if(this.isJumping && (this.isTouching.left || this.isTouching.right))
+            this.play("scottie_wall_slide", true);
+        }
         else
           //Control escalando
           this.climbStairs();
@@ -330,7 +335,6 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         y: this.jumpForce
       });
       this.jumpSound.play();
-      this.play("scottie_jump", true);
 
       //Si se ha saltado por el buffer, lo reseteamos
       if (this.jumpBufferCounter > 0)
@@ -346,6 +350,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         x: 0,
         y: this.lowJumpMultiplier
       });
+
+    //Animación
+    if(this.isJumping && !this.isTouching.left && !this.isTouching.right)
+    this.play("scottie_jump", true);
 
     //Timers
     this.coyoteCounter -= dt;
@@ -378,6 +386,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
      * @param {Player} self referencia al player
      */
     function stop(self) {
+      self.play('scottie_climb', true);
       self.stop();
       self.setVelocityY(0);
     }
