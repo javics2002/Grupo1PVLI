@@ -16,6 +16,10 @@ export default class Judy extends Phaser.GameObjects.Sprite {
         this.scream = scene.sound.add('scream');
         this.fall_sound = scene.sound.add('fall');
         this.thump = scene.sound.add('thump');
+        this.sounds = [this.scream, this.fall_sound, this.thump];
+        this.sounds.forEach(element => {
+            element.setMute(scene.game.audioConfig.mute);
+        });
     }
 
     fall() {

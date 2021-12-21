@@ -55,6 +55,7 @@ export default class Tower extends Phaser.Scene {
 
     //Animaciones
     this.createAnimations();
+    
     //Personajes
     this.player = new Player(this, 400, (this.floors + 1) * this.floorHeight * this.tileSize);
     this.judy = new Judy(this);
@@ -108,6 +109,16 @@ export default class Tower extends Phaser.Scene {
     this.addInterfaceButton(width * 0.05, height * 0.2, mute, 32, function () {
       this.scene.game.audioConfig.mute = !this.scene.game.audioConfig.mute;
       this.scene.music.setMute(!this.scene.music.mute);
+      this.scene.winMusic.setMute(!this.scene.winMusic.mute);
+      this.scene.sounds.forEach(element => {
+        element.setMute(!element.mute);
+      })
+      this.scene.player.sounds.forEach(element => {
+        element.setMute(!element.mute);
+      });
+      this.scene.judy.sounds.forEach(element => {
+        element.setMute(!element.mute);
+      })
       this.setTexture(this.scene.game.audioConfig.mute ? 'mute_on' : 'mute_off');
     });
 
@@ -201,6 +212,10 @@ export default class Tower extends Phaser.Scene {
     this.fall = this.sound.add('fall');
     this.scream = this.sound.add('scream');
     this.thump = this.sound.add('thump');
+    this.sounds = [this.help_me, this.fall, this.scream, this.thump];
+    this.sounds.forEach(element => {
+      element.setMute(this.game.audioConfig.mute);
+    });
   }
 
   buildTower() {
@@ -305,6 +320,7 @@ export default class Tower extends Phaser.Scene {
     this.judy.celebrate();
     this.winMusic.play("winPart");
     this.winMusic.setRate(1.5);
+    this.winMusic.setMute(this.game.audioConfig.mute);
 
     //Pasa al siguiente nivel cuando se acabe la musica
     this.winMusic.scene = this;

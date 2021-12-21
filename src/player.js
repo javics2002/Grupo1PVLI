@@ -212,6 +212,11 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.pick_up = scene.sound.add('pick_up');
     this.push_box = scene.sound.add('push_box');
 
+    this.sounds = [this.fix_stairs, this.jumpSound, this.ladder1, this.ladder2, this.pick_up, this.push_box];
+    this.sounds.forEach(element => {
+      element.setMute(scene.game.audioConfig.mute);
+    });
+
     //Sonidos enlazados a animaciones
     this.on('animationrepeat', (animation) => {
       if (animation.key === "scottie_climb") {
