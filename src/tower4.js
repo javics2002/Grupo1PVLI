@@ -9,7 +9,7 @@ export default class Tower4 extends Tower {
     {"max": 2869, "min":2310},
     {"max": 2309, "min":1150},
     {"max": 1149, "min":640},
-    {"max": 639, "min":0}],
+    {"max": 639, "min":200}],
      4870);
   }
 }
