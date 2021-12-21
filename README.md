@@ -283,9 +283,7 @@ Cuphead, cortos de Oswald The Lucky Rabbit y de Mickey Mouse - Estilo
 Donkey Kong (Original) - Jugabilidad
 
 ### UML
-![image]![Untitled Diagram](https://user-images.githubusercontent.com/61164466/142723634-ec560e7d-8a45-4fe8-bba4-d4eace786451.png)
-
-
+![vertigo_tower_uml](https://user-images.githubusercontent.com/61164466/146971961-5dd78751-9db7-4ab8-aaef-4c9d46d13043.png)
 
 ### Enlaces Importantes
 Página del juego https://javics2002.github.io/Grupo1PVLI/
